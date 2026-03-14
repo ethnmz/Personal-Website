@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | ethnmz's Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Inter:wght@300;500;700&family=Space+Mono&family=Unbounded:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. GLOBAL VARIABLES & RESET 
+           ========================================= */
+        :root {
+            --dark-bg: #11151c;
+            --forest-green: #3a4f3d;
+            --stone-grey: #6a6e6d;
+            --cloud-grey: #b0b7b8;
+            --globe-blue: #54a5e3;
+
+            --text-main: #e8ecee;
+            --text-muted: #8ea4b5;
+
+            --glass-bg: rgba(30, 35, 42, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+            background-color: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(17, 21, 28, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--globe-blue);
+        }
+
+        /* =========================================
+           2. SYSTEM BOOT LOADING SCREEN
+           ========================================= */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            z-index: 99998;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease, backdrop-filter 0.8s ease;
+            background: rgba(17, 21, 28, 0.85);
+            backdrop-filter: blur(20px);
+        }
+
+        .loader-glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .loader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .loader-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--cloud-grey);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .loader-percentage {
+            font-family: 'Space Mono', monospace;
+            color: var(--globe-blue);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 0 15px rgba(84, 165, 227, 0.4);
+        }
+
+        .loader-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--globe-blue);
+            box-shadow: 0 0 10px var(--globe-blue);
+            transition: width 0.15s ease-out;
+        }
+
+        .loader-log {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            height: 15px;
+        }
+
+        /* =========================================
+           3. BACKGROUND & AESTHETIC LAYERS
+           ========================================= */
+        .watercolor-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 15% 50%, rgba(58, 79, 61, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(106, 110, 109, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(84, 165, 227, 0.15) 0%, transparent 60%);
+            filter: blur(40px);
+            z-index: 0;
+            position: fixed;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 24px 24px;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            z-index: 1;
+            position: fixed;
+        }
+
+        .sweeps-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            position: fixed;
+        }
+
+        .sweep {
+            position: absolute;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(-35deg);
+            box-shadow: 0 0 30px rgba(176, 183, 184, 0.1);
+        }
+
+        .sweep-1 {
+            top: -10%;
+            left: -20%;
+            width: 150%;
+            height: 120px;
+            opacity: 0.8;
+        }
+
+        .sweep-2 {
+            top: 40%;
+            left: -10%;
+            width: 120%;
+            height: 40px;
+            opacity: 0.5;
+        }
+
+        .sweep-3 {
+            top: 80%;
+            left: 10%;
+            width: 100%;
+            height: 200px;
+            opacity: 0.3;
+            filter: blur(5px);
+        }
+
+        .micro-text {
+            position: fixed;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            z-index: 10;
+        }
+
+        .micro-right {
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            transform-origin: right center;
+        }
+
+        .micro-left {
+            left: 20px;
+            bottom: 80px;
+        }
+
+        /* =========================================
+           4. UI COMPONENTS (SMOKED GLASS)
+           ========================================= */
+        nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: linear-gradient(180deg, rgba(17, 21, 28, 0.6) 0%, rgba(17, 21, 28, 0) 100%);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-brand {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--globe-blue);
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(84, 165, 227, 0.4);
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--cloud-grey);
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--globe-blue);
+            text-shadow: 0 0 10px rgba(84, 165, 227, 0.5);
+        }
+
+        .glass-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 22px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--cloud-grey);
+            font-family: 'Space Mono', monospace;
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            text-transform: uppercase;
+            backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+            cursor: none;
+        }
+
+        .glass-btn:hover {
+            color: var(--globe-blue);
+            border-color: rgba(84, 165, 227, 0.4);
+            background: rgba(84, 165, 227, 0.08);
+            box-shadow: 0 0 12px rgba(84, 165, 227, 0.15);
+        }
+
+        /* =========================================
+           5. PROJECTS PAGE SPECIFIC
+           ========================================= */
+        .projects-main {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 50px 100px 50px;
+            height: calc(100vh - 61px);
+            overflow-y: auto;
+        }
+
+        .page-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .terminal {
+            background: #0a0d12;
+            border-radius: 8px;
+            padding: 15px 20px;
+            border: 1px solid #2a313b;
+            font-family: 'Space Mono', monospace;
+            color: var(--globe-blue);
+            font-size: 0.9rem;
+            margin-bottom: 50px;
+            min-width: 300px;
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .project-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--globe-blue), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            border-color: rgba(84, 165, 227, 0.3);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover .project-title {
+            color: var(--globe-blue);
+            text-shadow: 0 0 10px rgba(84, 165, 227, 0.3);
+        }
+
+        .project-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .project-description {
+            font-size: 0.95rem;
+            color: var(--cloud-grey);
+            line-height: 1.5;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .project-links .glass-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* =========================================
+           6. CUSTOM GLOWING CURSOR
+           ========================================= */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            z-index: 99999;
+            background-color: var(--globe-blue);
+            box-shadow: 0 0 10px var(--globe-blue);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s, box-shadow 0.2s, border 0.2s;
+        }
+
+        .custom-cursor.hovering {
+            width: 35px;
+            height: 35px;
+            background-color: rgba(84, 165, 227, 0.1);
+            border: 1px solid var(--globe-blue);
+            box-shadow: 0 0 15px rgba(84, 165, 227, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BOOT UP LOADING SCREEN REMOVED -->
+
+    <!-- Background Art Direction -->
+    <div class="watercolor-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Parallax Vector Sweeps -->
+    <div class="sweeps-container" id="sweeps">
+        <div class="sweep sweep-1"></div>
+        <div class="sweep sweep-2"></div>
+        <div class="sweep sweep-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-links">
+            <a href="portfolio.html" class="hover-target">HOME</a>
+            <a href="projects.html" class="hover-target"
+                style="color: var(--globe-blue); text-shadow: 0 0 10px rgba(84, 165, 227, 0.5);">PROJECTS</a>
+            <a href="socials.html" class="hover-target">SOCIALS</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="projects-main">
+        <h1 class="page-title">Projects</h1>
+
+        <div class="terminal">
+            <span id="api-log">> waiting for user identity uplink...</span><span class="cursor-blink">_</span>
+        </div>
+
+        <div class="projects-grid" id="projects-grid">
+            <!-- Dynamic Projects Instantiated Here -->
+        </div>
+    </main>
+
+    <!-- Custom High-Tech Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+
+    <script>
+        // --- 2. Custom Cursor Logic ---
+        const cursor = document.getElementById('cursor');
+        const applyHoverListeners = (targets) => {
+            targets.forEach(target => {
+                target.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+                target.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+            });
+        };
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Apply initial hover targets
+        applyHoverListeners(document.querySelectorAll('.hover-target, .glass-btn'));
+
+        // --- 3. 3D Sweep Parallax Effect ---
+        const sweepsContainer = document.getElementById('sweeps');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+            sweepsContainer.style.transform = `translate(${xAxis}px, ${yAxis}px)`;
+        });
+
+        // --- 4. GITHUB API FETCHING LOGIC ---
+        const apiLog = document.getElementById('api-log');
+        const projectsGrid = document.getElementById('projects-grid');
+        const username = 'ethnmz';
+
+        // --- 1. TRIGGER API FETCH ---
+        fetchProjects();
+
+        async function fetchProjects() {
+            try {
+                apiLog.innerText = `> initializing uplink to api.github.com/users/${username}...`;
+
+                await new Promise(r => setTimeout(r, 600));
+
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                apiLog.innerText = '> parsing repository payloads...';
+                await new Promise(r => setTimeout(r, 400));
+
+                const repos = await response.json();
+
+                const originalRepos = repos.filter(repo => !repo.fork);
+
+                if (originalRepos.length === 0) {
+                    apiLog.innerText = `> 0 original repositories found. status: IDLE.`;
+                    return;
+                }
+
+                apiLog.innerText = `> ${originalRepos.length} repository arrays loaded. status: ONLINE.`;
+
+                // Render into HTML
+                originalRepos.forEach((repo, index) => {
+                    setTimeout(() => {
+                        const card = document.createElement('div');
+                        card.className = 'project-card hover-target';
+
+                        const description = repo.description || 'No system description provided. Module active.';
+                        const language = repo.language || 'SYS/CODE';
+                        const stars = repo.stargazers_count;
+                        const forks = repo.forks_count;
+
+                        card.innerHTML = `
+                            <div>
+                                <div class="project-title">${repo.name}</div>
+                                <div class="project-description">${description}</div>
+                            </div>
+                            <div>
+                                <div class="project-meta">
+                                    <span class="tech-tag">${language}</span>
+                                    <div class="project-stats">
+                                        <span class="stat-item">★ ${stars}</span>
+                                        <span class="stat-item">⑂ ${forks}</span>
+                                    </div>
+                                </div>
+                                <div class="project-links">
+                                    <a href="${repo.html_url}" target="_blank" class="glass-btn hover-target">REPO</a>
+                                    ${repo.homepage ? `<a href="${repo.homepage}" target="_blank" class="glass-btn hover-target">DEMO</a>` : ''}
+                                </div>
+                            </div>
+                        `;
+
+                        projectsGrid.appendChild(card);
+
+                        applyHoverListeners(card.querySelectorAll('.hover-target, .glass-btn, .project-card'));
+                    }, index * 100);
+                });
+
+            } catch (error) {
+                apiLog.innerText = '> _ERR: uplink failed. rate limits or connection issue.';
+                console.error("Fetch Error: ", error);
+            }
+        }
+    </script>
+</body>
+
+</html>

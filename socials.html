@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socials | ethnmz's Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Space+Mono&family=Unbounded:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --dark-bg: #11151c;
+            --globe-blue: #54a5e3;
+            --cloud-grey: #b0b7b8;
+            --text-main: #e8ecee;
+            --text-muted: #8ea4b5;
+            --glass-bg: rgba(30, 35, 42, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+        body, html {
+            width: 100%; height: 100%;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: var(--dark-bg);
+            overflow: hidden;
+        }
+
+        .watercolor-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 15% 50%, rgba(58, 79, 61, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(106, 110, 109, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(84, 165, 227, 0.15) 0%, transparent 60%);
+            filter: blur(40px); z-index: 0;
+        }
+
+        .grid-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 24px 24px;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        nav {
+            position: relative; z-index: 10;
+            display: flex; justify-content: flex-end; align-items: center;
+            padding: 20px 50px;
+            background: linear-gradient(180deg, rgba(17, 21, 28, 0.6) 0%, rgba(17, 21, 28, 0) 100%);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-links { display: flex; gap: 30px; }
+
+        .nav-links a {
+            text-decoration: none; color: var(--cloud-grey);
+            font-size: 0.9rem; font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--globe-blue);
+            text-shadow: 0 0 10px rgba(84, 165, 227, 0.5);
+        }
+
+        main {
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: calc(100vh - 61px);
+        }
+
+        .wip-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--globe-blue);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .sub {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .custom-cursor {
+            position: fixed; top: 0; left: 0;
+            width: 8px; height: 8px; border-radius: 50%;
+            z-index: 99999;
+            background-color: var(--globe-blue);
+            box-shadow: 0 0 10px var(--globe-blue);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s, box-shadow 0.2s, border 0.2s;
+        }
+
+        .custom-cursor.hovering {
+            width: 35px; height: 35px;
+            background-color: rgba(84, 165, 227, 0.1);
+            border: 1px solid var(--globe-blue);
+            box-shadow: 0 0 15px rgba(84, 165, 227, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="watercolor-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <nav>
+        <div class="nav-links">
+            <a href="portfolio.html" class="hover-target">HOME</a>
+            <a href="projects.html" class="hover-target">PROJECTS</a>
+            <a href="socials.html" class="hover-target"
+                style="color: var(--globe-blue); text-shadow: 0 0 10px rgba(84, 165, 227, 0.5);">SOCIALS</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="wip-label">> work in progress_</div>
+        <h1>Socials</h1>
+        <p class="sub">check back soon.</p>
+    </main>
+
+    <div class="custom-cursor" id="cursor"></div>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        document.querySelectorAll('.hover-target').forEach(t => {
+            t.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+            t.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+        });
+    </script>
+</body>
+
+</html>
