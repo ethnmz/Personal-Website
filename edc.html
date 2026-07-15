@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ethnmz &mdash; edc</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+      /* --- CSS VARIABLES (Colors) --- */
+      :root {
+        --bg-color: #dcd4cb;         /* Main background */
+        --box-bg: #e8e1d9;           /* Container background */
+        --border-color: #b5aea5;     /* Borders */
+        --text-color: #4a3e35;       /* Main text */
+        --link-color: #7d5a44;       /* Links */
+        --select-bg: #d6cfc7;        /* Theme dropdown background */
+        --status-bg: #ece5dd;        /* Status box background */
+        --rss-bg: #dcd6ce;           /* RSS box background */
+        --rss-border: #c0b8b0;       /* RSS box border */
+        --header-font: 'JetBrains Mono', monospace;
+        --body-font: 'JetBrains Mono', monospace;
+      }
+
+      body.dark {
+        --bg-color: #1e1c1a;
+        --box-bg: #28241f;
+        --border-color: #4a423a;
+        --text-color: #d8cfc2;
+        --link-color: #d9a26c;
+        --select-bg: #332e28;
+        --status-bg: #2c2823;
+        --rss-bg: #262220;
+        --rss-border: #443d35;
+      }
+
+      /* --- RESET & BASIC SETUP --- */
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        margin: 0;
+        padding: 20px;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--link-color);
+      }
+
+      a:hover {
+        font-style: italic;
+      }
+
+      /* --- LAYOUT GRID --- */
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+      }
+
+      @media (max-width: 700px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+
+        main {
+          order: 1;
+        }
+
+        aside {
+          order: 2;
+        }
+      }
+
+      /* --- GENERAL BOX STYLES --- */
+      .box {
+        background-color: var(--box-bg);
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        margin-bottom: 20px;
+        box-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+      }
+
+      h1, h2, h3 {
+        font-family: var(--header-font);
+        color: var(--link-color);
+        font-style: italic;
+        margin-top: 0;
+        text-align: center;
+      }
+
+      hr.dashed {
+        border: none;
+        border-top: 1px dashed var(--border-color);
+        margin: 10px 0;
+      }
+
+      /* --- TOP HEADER --- */
+      .top-header {
+        max-width: 900px;
+        margin: 0 auto 20px auto;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 5px;
+        font-style: italic;
+      }
+
+      /* --- SIDEBAR STYLES --- */
+      .sidebar-section h3 {
+        border-bottom: 3px double var(--border-color);
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+      }
+
+      .theme-select {
+        width: 100%;
+        padding: 5px;
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        font-family: var(--body-font);
+        color: var(--text-color);
+      }
+
+      .nav-group {
+        text-align: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+      }
+
+      .nav-group:last-child {
+        border-bottom: none;
+      }
+
+      .nav-header {
+        font-style: italic;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 2px 0;
+      }
+
+      /* Buttons & RSS */
+      .buttons-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .rss-code {
+        background: var(--rss-bg);
+        border: 1px solid var(--rss-border);
+        padding: 5px;
+        font-family: var(--body-font);
+        font-size: 10px;
+        word-break: break-all;
+        color: var(--text-color);
+      }
+
+      /* Decorative waves at bottom left */
+      .waves {
+        height: 100px;
+        background-image: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 5px,
+          var(--border-color) 6px,
+          transparent 7px
+        );
+        opacity: 0.2;
+      }
+
+      /* --- MAIN CONTENT STYLES --- */
+      .path-bar {
+        font-style: italic;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 5px;
+      }
+
+      .page-header {
+        font-size: 2em;
+        text-align: left;
+        border-bottom: 1px dashed var(--border-color);
+        margin-bottom: 15px;
+      }
+
+      .page-desc {
+        font-size: 0.95em;
+        margin-bottom: 15px;
+      }
+
+      /* Box mascot */
+      .box-mascot {
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 10px auto;
+        image-rendering: pixelated;
+      }
+
+      /* EDC list */
+      .edc-list {
+        margin-top: 5px;
+      }
+
+      .edc-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--border-color);
+      }
+
+      .edc-item:last-child {
+        border-bottom: none;
+      }
+
+      .edc-name {
+        font-weight: bold;
+      }
+
+      .edc-tags {
+        font-size: 0.85em;
+        font-style: italic;
+        color: var(--link-color);
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 0.8em;
+        border-top: 1px dashed var(--border-color);
+        padding-top: 10px;
+        display: flex;
+        justify-content: center;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="top-header">
+      <span>Ethan Meza</span>
+      <span>&#10022;</span>
+    </div>
+
+    <div class="container">
+
+      <aside>
+
+        <div class="box sidebar-section">
+          <h3>theme</h3>
+          <select class="theme-select">
+            <option>light</option>
+            <option>dark</option>
+          </select>
+        </div>
+
+        <div class="box sidebar-section">
+          <h3>navigation</h3>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; projects &mdash;</span>
+            <a href="updates.html" class="nav-link">updates</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; daily &mdash;</span>
+            <a href="vgm.html" class="nav-link">vg song of the day</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; personal &mdash;</span>
+            <a href="edc.html" class="nav-link">edc</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; socials &mdash;</span>
+            <a href="https://github.com/ethnmz" class="nav-link" target="_blank" rel="noopener">github</a>
+            <a href="https://www.goodreads.com/user/show/155671209-ethan-meza" class="nav-link" target="_blank" rel="noopener">goodreads</a>
+            <a href="https://www.instagram.com/ethnmz" class="nav-link" target="_blank" rel="noopener">instagram</a>
+            <a href="https://open.spotify.com/user/31awkcd6qoymlogoavf3cly3jqra?si=3d55bfc0e1224de8" class="nav-link" target="_blank" rel="noopener">spotify</a>
+          </div>
+
+        </div>
+
+        <div class="box sidebar-section">
+          <h3>buttons</h3>
+          <div class="buttons-grid">
+            <img src="music.gif" alt="music player button" style="width: 82px; height: auto;">
+            <img src="ilikecomputer.png" alt="I like computer">
+            <img src="ilovemusic.gif" alt="I love music">
+          </div>
+        </div>
+
+        <div class="box sidebar-section">
+          <h3>rss</h3>
+
+          <img src="cat.gif" class="box-mascot" alt="pixel cat mascot">
+
+          <div class="rss-code">
+            https://<br>ethnmz.com<br>/feed.xml
+          </div>
+        </div>
+
+        <div class="box sidebar-section waves"></div>
+
+      </aside>
+
+      <main>
+
+        <div class="box path-bar">
+          <strong>edc</strong> <br>this site is best viewed on a desktop device
+        </div>
+
+        <div class="box">
+          <h1 class="page-header">edc [2026]</h1>
+
+          <p class="page-desc">
+            some of the products here were either gifted to me or bought cheap second hand
+          </p>
+
+          <div class="edc-list">
+            <div class="edc-item">
+              <span class="edc-name">iphone 17</span>
+              <span class="edc-tags">[main]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">iphone SE</span>
+              <span class="edc-tags">[dumb]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">garmin instinct</span>
+              <span class="edc-tags">[fitness tracker]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">lenovo slim pro</span>
+              <span class="edc-tags">[windows + linux]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">macbook pro m4 max</span>
+              <span class="edc-tags">[mac OS] [main]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">airpods pro</span>
+              <span class="edc-tags">[workout headphones]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">Sony XM5</span>
+              <span class="edc-tags">[study headphones]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">nook glow light</span>
+              <span class="edc-tags">[2013] [night e-reader]</span>
+            </div>
+            <div class="edc-item">
+              <span class="edc-name">ti-84 plus</span>
+              <span class="edc-tags">[calculator]</span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+    <footer>
+      <span>est. 2026</span>
+    </footer>
+
+    <script>
+      (function () {
+        var select = document.querySelector('.theme-select');
+        var saved = localStorage.getItem('theme') || 'light';
+
+        function applyTheme(theme) {
+          document.body.classList.toggle('dark', theme === 'dark');
+        }
+
+        applyTheme(saved);
+        select.value = saved;
+
+        select.addEventListener('change', function () {
+          localStorage.setItem('theme', select.value);
+          applyTheme(select.value);
+        });
+      })();
+    </script>
+
+  </body>
+</html>
