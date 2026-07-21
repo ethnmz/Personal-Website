@@ -253,6 +253,53 @@
         justify-content: center;
       }
 
+      /* Mobile notice modal */
+      .mobile-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .mobile-modal-overlay.visible {
+        display: flex;
+      }
+
+      .mobile-modal {
+        background: var(--box-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+        padding: 20px;
+        max-width: 300px;
+        text-align: center;
+      }
+
+      .mobile-modal p {
+        margin: 10px 0 15px 0;
+        font-size: 0.9em;
+      }
+
+      .mobile-modal button {
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-weight: bold;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+
+      .mobile-modal button:hover {
+        background: var(--border-color);
+      }
+
     </style>
   </head>
   <body>
@@ -338,7 +385,7 @@
       <main>
 
         <div class="box path-bar">
-          <strong>resume</strong> <br>this site is best viewed on a desktop device
+          <strong>resume</strong>
         </div>
 
         <div class="box">
@@ -346,6 +393,7 @@
 
           <p class="page-desc">
             Texas A&amp;M &#8226; General Engineering &#8226; <a href="mailto:ethan7714@tamu.edu">ethan7714@tamu.edu</a> &#8226; <a href="https://www.linkedin.com/in/ethan-meza-91997b274" target="_blank" rel="noopener">linkedin</a>
+            <br><br><em>last updated: jan 2026</em>
           </p>
 
           <a href="media/resume.pdf" class="resume-download" download>&#8595; download resume (PDF)</a>
@@ -366,7 +414,31 @@
       <span>est. 2026</span>
     </footer>
 
+    <div class="mobile-modal-overlay" id="mobile-modal-overlay">
+      <div class="mobile-modal">
+        <h3>heads up &#8982;</h3>
+        <p>this site is designed for desktop.</p>
+        <button id="mobile-modal-dismiss">continue anyway</button>
+      </div>
+    </div>
+
     <script>
+      (function () {
+        var overlay = document.getElementById('mobile-modal-overlay');
+        var dismissBtn = document.getElementById('mobile-modal-dismiss');
+        var isMobile = window.matchMedia('(max-width: 700px)').matches;
+        var dismissed = sessionStorage.getItem('mobileNoticeDismissed');
+
+        if (isMobile && !dismissed) {
+          overlay.classList.add('visible');
+        }
+
+        dismissBtn.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+          sessionStorage.setItem('mobileNoticeDismissed', '1');
+        });
+      })();
+
       (function () {
         var select = document.querySelector('.theme-select');
         var saved = localStorage.getItem('theme') || 'light';

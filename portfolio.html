@@ -252,6 +252,53 @@
         justify-content: center;
       }
 
+      /* Mobile notice modal */
+      .mobile-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .mobile-modal-overlay.visible {
+        display: flex;
+      }
+
+      .mobile-modal {
+        background: var(--box-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+        padding: 20px;
+        max-width: 300px;
+        text-align: center;
+      }
+
+      .mobile-modal p {
+        margin: 10px 0 15px 0;
+        font-size: 0.9em;
+      }
+
+      .mobile-modal button {
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-weight: bold;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+
+      .mobile-modal button:hover {
+        background: var(--border-color);
+      }
+
     </style>
   </head>
   <body>
@@ -337,14 +384,14 @@
       <main>
 
         <div class="box path-bar">
-          <strong>portfolio</strong> <br>this site is best viewed on a desktop device
+          <strong>portfolio</strong>
         </div>
 
         <div class="box">
           <h1 class="page-header">portfolio</h1>
 
           <p class="page-desc">
-            everything I've built, from hackathon weekends to ongoing club projects. most of it lives on <a href="https://github.com/ethnmz" target="_blank" rel="noopener">github</a>.
+            everything I have made since college. all of it can be found on my <a href="https://github.com/ethnmz" target="_blank" rel="noopener">github</a>.
           </p>
 
           <div class="portfolio-item">
@@ -410,19 +457,10 @@
             </div>
           </div>
 
-          <div class="portfolio-item">
-            <span class="portfolio-name">ComfyUI-Qwen-TTS</span>
-            <span class="portfolio-lang">Python</span>
-            <p class="portfolio-desc">
-              A simple ComfyUI implementation of Qwen3-TTS.
-            </p>
-            <div class="portfolio-links">
-              <a href="https://github.com/ethnmz/ComfyUI-Qwen-TTS" target="_blank" rel="noopener">github &#8599;</a>
-            </div>
-          </div>
+          
 
           <div class="portfolio-item">
-            <span class="portfolio-name">Micromarket Simulator</span>
+            <span class="portfolio-name">Micromarket Simulator [High School]</span>
             <span class="portfolio-lang">Java</span>
             <p class="portfolio-desc">
               A JavaFX educational tool simulating microeconomic market dynamics &mdash; supply and demand, equilibrium pricing, and how different market forces shift the curves.
@@ -464,7 +502,31 @@
       <span>est. 2026</span>
     </footer>
 
+    <div class="mobile-modal-overlay" id="mobile-modal-overlay">
+      <div class="mobile-modal">
+        <h3>heads up &#8982;</h3>
+        <p>this site is designed for desktop.</p>
+        <button id="mobile-modal-dismiss">continue anyway</button>
+      </div>
+    </div>
+
     <script>
+      (function () {
+        var overlay = document.getElementById('mobile-modal-overlay');
+        var dismissBtn = document.getElementById('mobile-modal-dismiss');
+        var isMobile = window.matchMedia('(max-width: 700px)').matches;
+        var dismissed = sessionStorage.getItem('mobileNoticeDismissed');
+
+        if (isMobile && !dismissed) {
+          overlay.classList.add('visible');
+        }
+
+        dismissBtn.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+          sessionStorage.setItem('mobileNoticeDismissed', '1');
+        });
+      })();
+
       (function () {
         var select = document.querySelector('.theme-select');
         var saved = localStorage.getItem('theme') || 'light';
