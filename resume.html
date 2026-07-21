@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ethnmz &mdash; edc</title>
+    <title>ethnmz &mdash; resume</title>
     <link rel="icon" type="image/png" href="media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,10 +53,6 @@
         border-bottom: 1px dotted var(--link-color);
       }
 
-      a:hover {
-        font-style: italic;
-      }
-
       /* --- LAYOUT GRID --- */
       .container {
         max-width: 900px;
@@ -92,7 +88,6 @@
       h1, h2, h3 {
         font-family: var(--header-font);
         color: var(--link-color);
-        font-style: italic;
         margin-top: 0;
         text-align: center;
       }
@@ -111,7 +106,6 @@
         justify-content: space-between;
         border-bottom: 1px dashed var(--border-color);
         padding-bottom: 5px;
-        font-style: italic;
       }
 
       /* --- SIDEBAR STYLES --- */
@@ -143,7 +137,6 @@
       }
 
       .nav-header {
-        font-style: italic;
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
@@ -187,7 +180,6 @@
 
       /* --- MAIN CONTENT STYLES --- */
       .path-bar {
-        font-style: italic;
         font-size: 0.9em;
         margin-bottom: 10px;
         border-bottom: 1px solid var(--border-color);
@@ -215,34 +207,39 @@
         image-rendering: pixelated;
       }
 
-      /* EDC list */
-      .edc-list {
-        margin-top: 5px;
-      }
-
-      .edc-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 10px;
-        padding: 8px 0;
-        border-bottom: 1px dashed var(--border-color);
-      }
-
-      .edc-item:last-child {
-        border-bottom: none;
-      }
-
-      .edc-name {
+      /* Resume specifics */
+      .resume-download {
+        display: block;
+        text-align: center;
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
         font-weight: bold;
+        padding: 10px;
+        margin-bottom: 15px;
       }
 
-      .edc-tags {
+      .resume-download:hover {
+        background: var(--border-color);
+      }
+
+      .resume-embed-wrap {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        background: var(--select-bg);
+      }
+
+      .resume-embed-wrap iframe {
+        width: 100%;
+        height: 780px;
+        border: none;
+        display: block;
+      }
+
+      .resume-fallback {
+        text-align: center;
         font-size: 0.85em;
-        font-style: italic;
-        color: var(--link-color);
-        text-align: right;
-        white-space: nowrap;
+        padding: 10px;
       }
 
       /* Footer */
@@ -341,54 +338,24 @@
       <main>
 
         <div class="box path-bar">
-          <strong>edc</strong> <br>this site is best viewed on a desktop device
+          <strong>resume</strong> <br>this site is best viewed on a desktop device
         </div>
 
         <div class="box">
-          <h1 class="page-header">edc [2026]</h1>
+          <h1 class="page-header">resume</h1>
 
           <p class="page-desc">
-            some of the products here were either gifted to me or bought cheap second hand
+            Texas A&amp;M &#8226; General Engineering &#8226; <a href="mailto:ethan7714@tamu.edu">ethan7714@tamu.edu</a> &#8226; <a href="https://www.linkedin.com/in/ethan-meza-91997b274" target="_blank" rel="noopener">linkedin</a>
           </p>
 
-          <div class="edc-list">
-            <div class="edc-item">
-              <span class="edc-name">iphone 17</span>
-              <span class="edc-tags">[main]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">iphone SE</span>
-              <span class="edc-tags">[dumb]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">garmin instinct</span>
-              <span class="edc-tags">[fitness tracker]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">lenovo slim pro</span>
-              <span class="edc-tags">[windows + linux]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">macbook pro m4 max</span>
-              <span class="edc-tags">[mac OS] [main]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">airpods pro</span>
-              <span class="edc-tags">[workout headphones]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">Sony XM5</span>
-              <span class="edc-tags">[study headphones]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">nook glow light</span>
-              <span class="edc-tags">[2013] [night e-reader]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">ti-84 plus</span>
-              <span class="edc-tags">[calculator]</span>
-            </div>
+          <a href="media/resume.pdf" class="resume-download" download>&#8595; download resume (PDF)</a>
+
+          <div class="resume-embed-wrap">
+            <iframe src="media/resume.pdf" title="Ethan Meza resume"></iframe>
           </div>
+          <p class="resume-fallback">
+            PDF not loading? <a href="media/resume.pdf" target="_blank" rel="noopener">open it directly</a>.
+          </p>
         </div>
 
       </main>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ethnmz &mdash; edc</title>
+    <title>ethnmz &mdash; portfolio</title>
     <link rel="icon" type="image/png" href="media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,10 +53,6 @@
         border-bottom: 1px dotted var(--link-color);
       }
 
-      a:hover {
-        font-style: italic;
-      }
-
       /* --- LAYOUT GRID --- */
       .container {
         max-width: 900px;
@@ -92,7 +88,6 @@
       h1, h2, h3 {
         font-family: var(--header-font);
         color: var(--link-color);
-        font-style: italic;
         margin-top: 0;
         text-align: center;
       }
@@ -111,7 +106,6 @@
         justify-content: space-between;
         border-bottom: 1px dashed var(--border-color);
         padding-bottom: 5px;
-        font-style: italic;
       }
 
       /* --- SIDEBAR STYLES --- */
@@ -143,7 +137,6 @@
       }
 
       .nav-header {
-        font-style: italic;
         font-weight: bold;
         display: block;
         margin-bottom: 5px;
@@ -187,7 +180,6 @@
 
       /* --- MAIN CONTENT STYLES --- */
       .path-bar {
-        font-style: italic;
         font-size: 0.9em;
         margin-bottom: 10px;
         border-bottom: 1px solid var(--border-color);
@@ -215,34 +207,38 @@
         image-rendering: pixelated;
       }
 
-      /* EDC list */
-      .edc-list {
-        margin-top: 5px;
-      }
-
-      .edc-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 10px;
-        padding: 8px 0;
+      /* Portfolio List */
+      .portfolio-item {
+        margin-bottom: 18px;
         border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 14px;
       }
 
-      .edc-item:last-child {
+      .portfolio-item:last-child {
         border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
       }
 
-      .edc-name {
+      .portfolio-name {
         font-weight: bold;
+        font-size: 1.05em;
       }
 
-      .edc-tags {
-        font-size: 0.85em;
+      .portfolio-lang {
+        font-size: 0.8em;
         font-style: italic;
         color: var(--link-color);
-        text-align: right;
-        white-space: nowrap;
+        margin-left: 6px;
+      }
+
+      .portfolio-desc {
+        margin: 6px 0 8px 0;
+      }
+
+      .portfolio-links a {
+        margin-right: 12px;
+        font-size: 0.85em;
       }
 
       /* Footer */
@@ -341,54 +337,123 @@
       <main>
 
         <div class="box path-bar">
-          <strong>edc</strong> <br>this site is best viewed on a desktop device
+          <strong>portfolio</strong> <br>this site is best viewed on a desktop device
         </div>
 
         <div class="box">
-          <h1 class="page-header">edc [2026]</h1>
+          <h1 class="page-header">portfolio</h1>
 
           <p class="page-desc">
-            some of the products here were either gifted to me or bought cheap second hand
+            everything I've built, from hackathon weekends to ongoing club projects. most of it lives on <a href="https://github.com/ethnmz" target="_blank" rel="noopener">github</a>.
           </p>
 
-          <div class="edc-list">
-            <div class="edc-item">
-              <span class="edc-name">iphone 17</span>
-              <span class="edc-tags">[main]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">iphone SE</span>
-              <span class="edc-tags">[dumb]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">garmin instinct</span>
-              <span class="edc-tags">[fitness tracker]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">lenovo slim pro</span>
-              <span class="edc-tags">[windows + linux]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">macbook pro m4 max</span>
-              <span class="edc-tags">[mac OS] [main]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">airpods pro</span>
-              <span class="edc-tags">[workout headphones]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">Sony XM5</span>
-              <span class="edc-tags">[study headphones]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">nook glow light</span>
-              <span class="edc-tags">[2013] [night e-reader]</span>
-            </div>
-            <div class="edc-item">
-              <span class="edc-name">ti-84 plus</span>
-              <span class="edc-tags">[calculator]</span>
+          <div class="portfolio-item">
+            <span class="portfolio-name">VitalCast AI</span>
+            <span class="portfolio-lang">JavaScript / React</span>
+            <p class="portfolio-desc">
+              A client-side health forecasting web app that ingests 800MB+ Apple Health exports and predicts 10-year cardiovascular risk, sleep quality, and HRV-based stress using validated clinical models (Framingham, PSQI). The parsing engine runs entirely in Web Workers &mdash; large XML exports process in under 30ms without blocking the main thread. Fully privacy-first: everything runs client-side, nothing gets uploaded to a server.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/VitalCast-AI" target="_blank" rel="noopener">github &#8599;</a>
             </div>
           </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">BookEasy Itinerary Planner</span>
+            <span class="portfolio-lang">TypeScript / Python</span>
+            <p class="portfolio-desc">
+              A full-stack travel itinerary planner built in 24 hours at TAMUhack26 &mdash; Next.js/TypeScript frontend, FastAPI backend. The core piece is a deterministic replanning engine: short flight delays keep the plan as-is, longer ones reshuffle the first day and demote lower-priority stops automatically. Led a 4-person team through architecture, API design, and frontend-backend integration under deadline.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/BookEasy-Itinerary-Planner" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">Stack (Discord Bot)</span>
+            <span class="portfolio-lang">Python</span>
+            <p class="portfolio-desc">
+              A custom Discord bot for TAMU ColorStack handling onboarding, self-assignable roles, attendance tracking, event reminders, a points/XP system, and birthdays &mdash; with a personality designed to feel warm and human rather than robotic. Private repo (club-internal); full write-up on the <a href="updates.html">updates page</a>.
+            </p>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">SyllaSync</span>
+            <span class="portfolio-lang">TypeScript</span>
+            <p class="portfolio-desc">
+              Transforms course syllabi into organized calendars in seconds &mdash; no more manually copying due dates out of a PDF.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/SyllaSync" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">Gemini Resume Generator</span>
+            <span class="portfolio-lang">Python</span>
+            <p class="portfolio-desc">
+              A tool that tailors a resume against a specific job description automatically, using Gemini.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/Gemini-Resume-Generator" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">heb-shopper-mcp</span>
+            <span class="portfolio-lang">Python</span>
+            <p class="portfolio-desc">
+              An MCP server for HEB grocery shopping &mdash; search products, manage your cart, and clip coupons directly from an AI assistant.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/heb-shopper-mcp" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">ComfyUI-Qwen-TTS</span>
+            <span class="portfolio-lang">Python</span>
+            <p class="portfolio-desc">
+              A simple ComfyUI implementation of Qwen3-TTS.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/ComfyUI-Qwen-TTS" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">Micromarket Simulator</span>
+            <span class="portfolio-lang">Java</span>
+            <p class="portfolio-desc">
+              A JavaFX educational tool simulating microeconomic market dynamics &mdash; supply and demand, equilibrium pricing, and how different market forces shift the curves.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/Micromarket-Simulator" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">MusicLog</span>
+            <span class="portfolio-lang">TypeScript</span>
+            <p class="portfolio-desc">
+              A personal practice tracker for musicians &mdash; log sessions, keep streaks, track repertoire, and visualize progress over time.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/Music-Practice-Logger" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <span class="portfolio-name">Linux Server Lab</span>
+            <span class="portfolio-lang">Shell</span>
+            <p class="portfolio-desc">
+              An Ubuntu Server 24.04 home lab on UTM (Apple Silicon): SSH key-only auth, a locked-down UFW firewall, nginx, and automated nightly backups via cron.
+            </p>
+            <div class="portfolio-links">
+              <a href="https://github.com/ethnmz/Linux-Server-Lab" target="_blank" rel="noopener">github &#8599;</a>
+            </div>
+          </div>
+
         </div>
 
       </main>
