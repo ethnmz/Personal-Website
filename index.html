@@ -534,7 +534,7 @@
 
         <div class="box status-box">
           <p>
-            <strong>ethnmz &middot; just now</strong><br>
+            <strong>ethnmz &middot; <span id="status-time" data-date="2026-07-13">just now</span></strong><br>
             trying to connect my 2k+ vgm playlist to this site lol
           </p>
         </div>
@@ -577,6 +577,11 @@
             <hr class="dashed">
 
             <div class="update-entry">
+              <div class="date">2026 Jul 20</div>
+              <p>added a <a href="portfolio.html">portfolio</a> and <a href="resume.html">resume</a> page under a new work section.</p>
+            </div>
+
+            <div class="update-entry">
               <div class="date">2026 Jul 12</div>
               <p>site launched!</p>
             </div>
@@ -616,6 +621,23 @@
           overlay.classList.remove('visible');
           sessionStorage.setItem('mobileNoticeDismissed', '1');
         });
+      })();
+
+      (function () {
+        var el = document.getElementById('status-time');
+        if (!el) return;
+
+        var posted = new Date(el.getAttribute('data-date') + 'T00:00:00');
+        var now = new Date();
+        var diffDays = Math.floor((now - posted) / 86400000);
+
+        if (diffDays <= 0) {
+          el.textContent = 'today';
+        } else if (diffDays === 1) {
+          el.textContent = '1 day ago';
+        } else {
+          el.textContent = diffDays + ' days ago';
+        }
       })();
 
       (function () {
