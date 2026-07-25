@@ -244,11 +244,42 @@
         margin-top: 2px;
       }
 
+      .portfolio-img-row {
+        display: flex;
+        gap: 8px;
+        margin: 8px 0;
+      }
+
       .portfolio-img {
-        width: 100%;
+        width: calc(50% - 4px);
         border: 1px solid var(--border-color);
         display: block;
-        margin: 8px 0;
+        cursor: zoom-in;
+      }
+
+      .lightbox-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1001;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        cursor: zoom-out;
+      }
+
+      .lightbox-overlay.visible {
+        display: flex;
+      }
+
+      .lightbox-overlay img {
+        max-width: 100%;
+        max-height: 100%;
+        border: 2px solid var(--border-color);
       }
 
       .portfolio-links a {
@@ -415,8 +446,10 @@
             <p class="portfolio-desc">
               Confidant Tracker turns your real communication data into a Persona 5-style confidant menu. It reads iMessage, macOS call history, and Beeper (Instagram/WhatsApp/Discord) entirely on-device &mdash; no network calls, no data ever leaves the machine. Each contact gets scored on message volume, active days, and call time with a 21-day recency decay, then mapped onto a 1&ndash;10 rank tracked independently per academic semester, so you can see who you were actually closest to each semester instead of just an all-time average. Most importantly, everything runs locally and stays secure.
             </p>
-            <img src="media/confidant-1.png" class="portfolio-img" alt="Confidant Tracker dashboard showing a ranked confidant list and detail card">
-            <img src="media/confidant-2.png" class="portfolio-img" alt="Confidant Tracker semester view showing a max-rank confidant">
+            <div class="portfolio-img-row">
+              <img src="media/confidant-1.png" class="portfolio-img" alt="Confidant Tracker dashboard showing a ranked confidant list and detail card">
+              <img src="media/confidant-2.png" class="portfolio-img" alt="Confidant Tracker semester view showing a max-rank confidant">
+            </div>
           </div>
 
           <div class="portfolio-item">
@@ -426,8 +459,10 @@
             <p class="portfolio-desc">
               A client-side health forecasting web app that ingests 800MB+ Apple Health exports and predicts 10-year cardiovascular risk, sleep quality, and HRV-based stress using validated clinical models (Framingham, PSQI). The parsing engine runs entirely in Web Workers &mdash; large XML exports process in under 30ms without blocking the main thread. Fully privacy-first: everything runs client-side, nothing gets uploaded to a server.
             </p>
-            <img src="media/vitalcast-onboarding.png" class="portfolio-img" alt="VitalCast AI onboarding step asking basic info">
-            <img src="media/vitalcast-dashboard.png" class="portfolio-img" alt="VitalCast AI dashboard showing health snapshot and action plan">
+            <div class="portfolio-img-row">
+              <img src="media/vitalcast-onboarding.png" class="portfolio-img" alt="VitalCast AI onboarding step asking basic info">
+              <img src="media/vitalcast-dashboard.png" class="portfolio-img" alt="VitalCast AI dashboard showing health snapshot and action plan">
+            </div>
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/VitalCast-AI" target="_blank" rel="noopener">github &#8599;</a>
             </div>
@@ -538,7 +573,28 @@
       </div>
     </div>
 
+    <div class="lightbox-overlay" id="lightbox-overlay">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+
     <script>
+      (function () {
+        var overlay = document.getElementById('lightbox-overlay');
+        var lightboxImg = document.getElementById('lightbox-img');
+
+        document.querySelectorAll('.portfolio-img').forEach(function (img) {
+          img.addEventListener('click', function () {
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            overlay.classList.add('visible');
+          });
+        });
+
+        overlay.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+        });
+      })();
+
       (function () {
         var overlay = document.getElementById('mobile-modal-overlay');
         var dismissBtn = document.getElementById('mobile-modal-dismiss');
