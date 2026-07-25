@@ -251,7 +251,7 @@
       }
 
       .portfolio-img {
-        width: calc(50% - 4px);
+        width: calc(44% - 4px);
         border: 1px solid var(--border-color);
         display: block;
         cursor: zoom-in;
@@ -444,7 +444,7 @@
             <span class="portfolio-name">Confidant Tracker</span>
             <span class="portfolio-lang">Python</span>
             <p class="portfolio-desc">
-              Confidant Tracker turns your real communication data into a Persona 5-style confidant menu. It reads iMessage, macOS call history, and Beeper (Instagram/WhatsApp/Discord) entirely on-device &mdash; no network calls, no data ever leaves the machine. Each contact gets scored on message volume, active days, and call time with a 21-day recency decay, then mapped onto a 1&ndash;10 rank tracked independently per academic semester, so you can see who you were actually closest to each semester instead of just an all-time average. Most importantly, everything runs locally and stays secure.
+              Confidant Tracker turns your real communication data into a Persona 5-style confidant menu. It reads iMessage, macOS call history, and Beeper (Instagram/WhatsApp/Discord) entirely on-device, with no network calls and no data ever leaving the machine. Each contact gets scored on message volume, active days, and call time with a 21-day recency decay, then mapped onto a 1&ndash;10 rank tracked independently per academic semester, so you can see who you were actually closest to each semester instead of just an all-time average. Most importantly, everything runs locally and stays secure.
             </p>
             <div class="portfolio-img-row">
               <img src="media/confidant-1.png" class="portfolio-img" alt="Confidant Tracker dashboard showing a ranked confidant list and detail card">
@@ -457,7 +457,7 @@
             <span class="portfolio-lang">JavaScript / React</span>
             <span class="portfolio-collab">in collaboration with: Tran Huynh</span>
             <p class="portfolio-desc">
-              A client-side health forecasting web app that ingests 800MB+ Apple Health exports and predicts 10-year cardiovascular risk, sleep quality, and HRV-based stress using validated clinical models (Framingham, PSQI). The parsing engine runs entirely in Web Workers &mdash; large XML exports process in under 30ms without blocking the main thread. Fully privacy-first: everything runs client-side, nothing gets uploaded to a server.
+              A client-side health forecasting web app that ingests 800MB+ Apple Health exports and predicts 10-year cardiovascular risk, sleep quality, and HRV-based stress using validated clinical models (Framingham, PSQI). The parsing engine runs entirely in Web Workers, so large XML exports process in under 30ms without blocking the main thread. Fully privacy-first: everything runs client-side, nothing gets uploaded to a server.
             </p>
             <div class="portfolio-img-row">
               <img src="media/vitalcast-onboarding.png" class="portfolio-img" alt="VitalCast AI onboarding step asking basic info">
@@ -471,9 +471,14 @@
           <div class="portfolio-item">
             <span class="portfolio-name">BookEasy Itinerary Planner</span>
             <span class="portfolio-lang">TypeScript / Python</span>
+            <span class="portfolio-collab">in collaboration with: Gatik B.</span>
             <p class="portfolio-desc">
-              A full-stack travel itinerary planner built in 24 hours at TAMUhack26 &mdash; Next.js/TypeScript frontend, FastAPI backend. The core piece is a deterministic replanning engine: short flight delays keep the plan as-is, longer ones reshuffle the first day and demote lower-priority stops automatically. Led a 4-person team through architecture, API design, and frontend-backend integration under deadline.
+              A full-stack travel itinerary planner built in 24 hours at TAMUhack26, with a Next.js/TypeScript frontend and a FastAPI backend. The core piece is a deterministic replanning engine: short flight delays keep the plan as-is, longer ones reshuffle the first day and demote lower-priority stops automatically. Led a 4-person team through architecture, API design, and frontend-backend integration under deadline.
             </p>
+            <div class="portfolio-img-row">
+              <img src="media/bookeasy-logo.png" class="portfolio-img" alt="BookEasy logo">
+              <img src="media/bookeasy-app.png" class="portfolio-img" alt="BookEasy itinerary planner showing a Paris trip map and flight search">
+            </div>
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/BookEasy-Itinerary-Planner" target="_blank" rel="noopener">github &#8599;</a>
             </div>
@@ -483,7 +488,7 @@
             <span class="portfolio-name">Stack (Discord Bot)</span>
             <span class="portfolio-lang">Python</span>
             <p class="portfolio-desc">
-              A custom Discord bot for TAMU ColorStack handling onboarding, self-assignable roles, attendance tracking, event reminders, a points/XP system, and birthdays &mdash; with a personality designed to feel warm and human rather than robotic. Private repo (club-internal); full write-up on the <a href="updates.html">updates page</a>.
+              A custom Discord bot for TAMU ColorStack handling onboarding, self-assignable roles, attendance tracking, event reminders, a points/XP system, and birthdays, all with a personality designed to feel warm and human rather than robotic. Private repo (club-internal); full write-up on the <a href="updates.html">updates page</a>.
             </p>
           </div>
 
@@ -491,7 +496,7 @@
             <span class="portfolio-name">SyllaSync</span>
             <span class="portfolio-lang">TypeScript</span>
             <p class="portfolio-desc">
-              Transforms course syllabi into organized calendars in seconds &mdash; no more manually copying due dates out of a PDF.
+              Transforms course syllabi into organized calendars in seconds, so there's no more manually copying due dates out of a PDF.
             </p>
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/SyllaSync" target="_blank" rel="noopener">github &#8599;</a>
@@ -513,7 +518,7 @@
             <span class="portfolio-name">heb-shopper-mcp</span>
             <span class="portfolio-lang">Python</span>
             <p class="portfolio-desc">
-              An MCP server for HEB grocery shopping &mdash; search products, manage your cart, and clip coupons directly from an AI assistant.
+              An MCP server for HEB grocery shopping that lets you search products, manage your cart, and clip coupons directly from an AI assistant.
             </p>
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/heb-shopper-mcp" target="_blank" rel="noopener">github &#8599;</a>
@@ -526,7 +531,7 @@
             <span class="portfolio-name">Micromarket Simulator [High School]</span>
             <span class="portfolio-lang">Java</span>
             <p class="portfolio-desc">
-              A JavaFX educational tool simulating microeconomic market dynamics &mdash; supply and demand, equilibrium pricing, and how different market forces shift the curves.
+              A JavaFX educational tool simulating microeconomic market dynamics: supply and demand, equilibrium pricing, and how different market forces shift the curves.
             </p>
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/Micromarket-Simulator" target="_blank" rel="noopener">github &#8599;</a>
@@ -537,7 +542,7 @@
             <span class="portfolio-name">MusicLog</span>
             <span class="portfolio-lang">TypeScript</span>
             <p class="portfolio-desc">
-              A personal practice tracker for musicians &mdash; log sessions, keep streaks, track repertoire, and visualize progress over time.
+              A personal practice tracker for musicians that logs sessions, keeps streaks, tracks repertoire, and visualizes progress over time.
             </p>
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/Music-Practice-Logger" target="_blank" rel="noopener">github &#8599;</a>
