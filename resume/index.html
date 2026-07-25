@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ethnmz &mdash; updates</title>
-    <link rel="icon" type="image/png" href="media/cat.png">
+    <title>ethnmz &mdash; resume</title>
+    <link rel="icon" type="image/png" href="/media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
@@ -207,37 +207,39 @@
         image-rendering: pixelated;
       }
 
-      /* Project Updates List */
-      .project-entry {
+      /* Resume specifics */
+      .resume-download {
+        display: block;
+        text-align: center;
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-weight: bold;
+        padding: 10px;
         margin-bottom: 15px;
-        border-bottom: 1px dashed var(--border-color);
-        padding-bottom: 12px;
       }
 
-      .project-entry:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
+      .resume-download:hover {
+        background: var(--border-color);
       }
 
-      .project-name {
-        font-weight: bold;
-        font-size: 1.05em;
+      .resume-embed-wrap {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        background: var(--select-bg);
       }
 
-      .project-status {
-        font-size: 0.8em;
-        font-style: italic;
-        color: var(--link-color);
-        margin-left: 6px;
+      .resume-embed-wrap iframe {
+        width: 100%;
+        height: 780px;
+        border: none;
+        display: block;
       }
 
-      .update-entry {
-        margin: 8px 0 0 0;
-      }
-
-      .date {
-        font-weight: bold;
-        color: var(--link-color);
+      .resume-fallback {
+        text-align: center;
+        font-size: 0.85em;
+        padding: 10px;
       }
 
       /* Footer */
@@ -323,28 +325,28 @@
           <h3>navigation</h3>
 
           <div class="nav-group">
-            <a href="index.html" class="nav-link">home</a>
+            <a href="/" class="nav-link">home</a>
           </div>
 
           <div class="nav-group">
             <span class="nav-header">&mdash; work &mdash;</span>
-            <a href="portfolio.html" class="nav-link">portfolio</a>
-            <a href="resume.html" class="nav-link">resume</a>
+            <a href="/portfolio/" class="nav-link">portfolio</a>
+            <a href="/resume/" class="nav-link">resume</a>
           </div>
 
           <div class="nav-group">
             <span class="nav-header">&mdash; projects &mdash;</span>
-            <a href="updates.html" class="nav-link">updates</a>
+            <a href="/updates/" class="nav-link">updates</a>
           </div>
 
           <div class="nav-group">
             <span class="nav-header">&mdash; daily &mdash;</span>
-            <a href="vgm.html" class="nav-link">vg song of the day</a>
+            <a href="/vgm/" class="nav-link">vg song of the day</a>
           </div>
 
           <div class="nav-group">
             <span class="nav-header">&mdash; personal &mdash;</span>
-            <a href="edc.html" class="nav-link">edc</a>
+            <a href="/edc/" class="nav-link">edc</a>
           </div>
 
           <div class="nav-group">
@@ -360,16 +362,16 @@
         <div class="box sidebar-section">
           <h3>buttons</h3>
           <div class="buttons-grid">
-            <img src="media/music.gif" alt="music player button" style="width: 82px; height: auto;">
-            <img src="media/ilikecomputer.png" alt="I like computer">
-            <img src="media/ilovemusic.gif" alt="I love music">
+            <img src="/media/music.gif" alt="music player button" style="width: 82px; height: auto;">
+            <img src="/media/ilikecomputer.png" alt="I like computer">
+            <img src="/media/ilovemusic.gif" alt="I love music">
           </div>
         </div>
 
         <div class="box sidebar-section">
           <h3>rss</h3>
 
-          <img src="media/cat.gif" class="box-mascot" alt="pixel cat mascot">
+          <img src="/media/cat.gif" class="box-mascot" alt="pixel cat mascot">
 
           <div class="rss-code">
             https://<br>ethnmz.com<br>/feed.xml
@@ -383,40 +385,25 @@
       <main>
 
         <div class="box path-bar">
-          <strong>updates</strong>
+          <strong>resume</strong>
         </div>
 
         <div class="box">
-          <h1 class="page-header">updates</h1>
+          <h1 class="page-header">resume</h1>
 
           <p class="page-desc">
-            This page is just updates on anything that I am building or creating.
+            Texas A&amp;M &#8226; General Engineering &#8226; <a href="mailto:ethan7714@tamu.edu">ethan7714@tamu.edu</a> &#8226; <a href="https://www.linkedin.com/in/ethan-meza-91997b274" target="_blank" rel="noopener">linkedin</a>
+            <br><br><em>last updated: jan 2026</em>
           </p>
 
-          <div class="project-entry">
-            <span class="project-name">Stack (Discord Bot)</span>
-            <span class="project-status">[in progress]</span>
-            <div class="update-entry">
-              <div class="date">2026 Jun 15</div>
-              <p>
-                Stack is a custom Discord bot I'm building for TAMU ColorStack, the Texas A&amp;M chapter of the ColorStack community for Black and Latinx computer science students. It's written in Python with discord.py, and the goal is for it to be the friendly backbone of the club's server.
-              </p>
-              <p>
-                </p>
-              <p>
-              </p>
-            </div>
-          </div>
+          <a href="/media/resume.pdf" class="resume-download" download>&#8595; download resume (PDF)</a>
 
-          <div class="project-entry">
-            <span class="project-name">[project name]</span>
-            <span class="project-status">[on hold]</span>
-            <div class="update-entry">
-              <div class="date">[date]</div>
-              <p>[short note]</p>
-            </div>
+          <div class="resume-embed-wrap">
+            <iframe src="/media/resume.pdf" title="Ethan Meza resume"></iframe>
           </div>
-
+          <p class="resume-fallback">
+            PDF not loading? <a href="/media/resume.pdf" target="_blank" rel="noopener">open it directly</a>.
+          </p>
         </div>
 
       </main>
