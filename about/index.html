@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ethnmz &mdash; edc</title>
+    <title>ethnmz &mdash; about</title>
     <link rel="icon" type="image/png" href="/media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,6 +64,10 @@
         display: grid;
         grid-template-columns: 200px 1fr;
         gap: 20px;
+      }
+
+      .container > main {
+        min-width: 0;
       }
 
       @media (max-width: 700px) {
@@ -201,81 +205,124 @@
         font-style: normal;
       }
 
-      .page-desc {
-        font-size: 0.95em;
-        margin-bottom: 15px;
+      /* About Me */
+      .about-header {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 10px;
       }
 
-      /* Box mascot */
-      .box-mascot {
+      .about-photo-frame {
+        display: inline-block;
+        position: relative;
+        background: var(--box-bg);
+        border: 3px double var(--border-color);
+        padding: 8px 8px 22px 8px;
+        box-shadow: 2px 3px 6px rgba(0,0,0,0.2);
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+
+      .about-photo {
+        width: 150px;
+        height: 200px;
+        object-fit: cover;
+        border: 1px solid var(--border-color);
         display: block;
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 10px auto;
-        image-rendering: pixelated;
       }
 
-      /* EDC grid */
-      .edc-grid {
-        margin-top: 5px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+      .about-photo-frame::after {
+        content: '\2726';
+        position: absolute;
+        right: 6px;
+        bottom: 2px;
+        color: var(--link-color);
+        font-size: 0.9em;
       }
 
-      @media (max-width: 600px) {
-        .edc-grid {
-          grid-template-columns: repeat(2, 1fr);
+      .about-bio {
+        flex: 1;
+        font-size: 0.95em;
+      }
+
+      @media (max-width: 500px) {
+        .about-header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
         }
       }
 
-      .edc-card {
-        background: var(--box-bg);
-        border: 1px solid var(--border-color);
-        box-shadow: 1px 1px 0px rgba(0,0,0,0.05);
-        padding: 10px;
+      .favorites-section {
+        margin-top: 20px;
+      }
+
+      .favorites-section h3 {
+        border-bottom: 3px double var(--border-color);
+        padding-bottom: 5px;
+        margin-bottom: 0;
+        font-size: 1.1em;
+        text-align: left;
+      }
+
+      .shelf {
+        overflow-x: visible;
+        padding-top: 14px;
+        margin-bottom: 20px;
+      }
+
+      .shelf:last-child {
+        margin-bottom: 0;
+      }
+
+      .shelf-items {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
+        align-items: flex-end;
+        gap: 10px;
+        min-height: 140px;
+        padding: 0 6px;
+      }
+
+      .shelf-cover {
+        height: 140px;
+        width: auto;
+        border: 1px solid var(--border-color);
+        box-shadow: 2px 3px 5px rgba(0,0,0,0.25);
+        flex-shrink: 0;
+        cursor: zoom-in;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
       }
 
-      .edc-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+      .shelf-cover:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 3px 6px 10px rgba(0,0,0,0.35);
       }
 
-      .edc-card-img {
-        height: 110px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 8px;
+      .shelf-cover-sm {
+        height: 95px;
       }
 
-      .edc-card-img img {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-      }
-
-      .edc-name {
-        font-weight: bold;
-      }
-
-      .edc-tags {
+      .shelf-empty {
         font-size: 0.85em;
         font-style: italic;
         color: var(--link-color);
-        margin-top: 3px;
+        padding: 10px 6px;
+      }
+
+      .shelf-board {
+        height: 14px;
+        background: linear-gradient(to bottom, var(--select-bg), var(--border-color));
+        border: 1px solid var(--border-color);
+        border-top: none;
+        box-shadow: 0 4px 5px rgba(0,0,0,0.2);
       }
 
       /* Footer */
       footer {
         text-align: center;
         margin-top: 30px;
+        font-style: italic;
         font-size: 0.8em;
         border-top: 1px dashed var(--border-color);
         padding-top: 10px;
@@ -402,7 +449,7 @@
         <div class="box sidebar-section">
           <h3>rss</h3>
 
-          <img src="/media/cat.gif" class="box-mascot" alt="pixel cat mascot">
+          <img src="/media/cat.gif" class="box-mascot" alt="pixel cat mascot" style="display:block; width:64px; height:64px; margin:0 auto 10px auto; image-rendering:pixelated;">
 
           <div class="rss-code">
             https://<br>ethnmz.com<br>/feed.xml
@@ -416,61 +463,70 @@
       <main>
 
         <div class="box path-bar">
-          <strong>edc</strong>
+          <strong>about</strong>
         </div>
 
         <div class="box">
-          <h1 class="page-header">edc [2026]</h1>
+          <h1 class="page-header">about me</h1>
 
-          <p class="page-desc">
-            some of the products here were either gifted to me or bought cheap second hand
-          </p>
+          <div class="about-header">
+            <div class="about-photo-frame">
+              <img src="/media/about-photo.jpg" class="about-photo" alt="photo of Ethan">
+            </div>
+            <p class="about-bio">
+              Hello, I'm Ethan Meza, a current engineering student at Texas A&M University. I have a strong passion for technology, more specifically web design and organization. I aspire to become a product manager at a tech company due to my love for working with others and bringing ideas from the brightest minds to life. In my free time, I enjoy playing video games, listening to music, and reading books. If it wasn't obvious already, my favorite topic of all time is music from video games. I also love to spend my time researching topics in domestic and international politics as well as psychology. 
+            </p>
+          </div>
 
-          <div class="edc-grid">
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-iphone17.png" alt="iPhone 17"></div>
-              <span class="edc-name">iphone 17</span>
-              <span class="edc-tags">[main]</span>
+          <div class="favorites-section">
+            <h3>favorite video games</h3>
+            <div class="shelf">
+              <div class="shelf-items">
+                <img src="/media/game-persona5.jpg" class="shelf-cover" alt="Persona 5 Royal cover art">
+                <img src="/media/game-undertale.png" class="shelf-cover" alt="Undertale cover art">
+                <img src="/media/game-bombrush.jpg" class="shelf-cover" alt="Bomb Rush Cyberfunk cover art">
+                <img src="/media/game-cuphead.jpg" class="shelf-cover" alt="Cuphead cover art">
+                <img src="/media/game-katanazero.jpg" class="shelf-cover" alt="Katana ZERO cover art">
+                <img src="/media/game-kirby.jpg" class="shelf-cover" alt="Kirby's Return to Dream Land cover art">
+              </div>
+              <div class="shelf-board"></div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-iphonese.png" alt="iPhone SE"></div>
-              <span class="edc-name">iphone SE</span>
-              <span class="edc-tags">[dumb]</span>
+          </div>
+
+          <div class="favorites-section">
+            <h3>favorite albums</h3>
+            <div class="shelf">
+              <div class="shelf-items">
+                <img src="/media/album-speakerboxxx.jpg" class="shelf-cover shelf-cover-sm" alt="Speakerboxxx/The Love Below by OutKast cover art">
+                <img src="/media/album-jsr.jpg" class="shelf-cover shelf-cover-sm" alt="Jet Set Radio Original Soundtrack cover art">
+                <img src="/media/album-ror2.jpg" class="shelf-cover shelf-cover-sm" alt="Risk of Rain 2 Original Soundtrack cover art">
+                <img src="/media/album-vivy.jpg" class="shelf-cover shelf-cover-sm" alt="Vivy -Fluorite Eye's Song- Original Soundtrack cover art">
+                <img src="/media/album-city-slicker.jpg" class="shelf-cover shelf-cover-sm" alt="City Slicker by Ginger Root cover art">
+                <img src="/media/album-neon-white.jpg" class="shelf-cover shelf-cover-sm" alt="Neon White Soundtrack by Machine Girl cover art">
+              </div>
+              <div class="shelf-board"></div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-garmin.png" alt="Garmin Instinct"></div>
-              <span class="edc-name">garmin instinct</span>
-              <span class="edc-tags">[fitness tracker]</span>
+            <div class="shelf">
+              <div class="shelf-items">
+                <img src="/media/album-untourable.jpg" class="shelf-cover shelf-cover-sm" alt="Untourable Album by Men I Trust cover art">
+                <img src="/media/album-simbi.jpg" class="shelf-cover shelf-cover-sm" alt="Sometimes I Might Be Introvert by Little Simz cover art">
+                <img src="/media/album-discovery.jpg" class="shelf-cover shelf-cover-sm" alt="Discovery by Daft Punk cover art">
+                <img src="/media/album-sonicr.jpg" class="shelf-cover shelf-cover-sm" alt="Sonic R Original Soundtrack cover art">
+                <img src="/media/album-sf3.jpg" class="shelf-cover shelf-cover-sm" alt="Street Fighter III 3rd Strike Original Soundtrack cover art">
+                <img src="/media/album-sonic-mania.jpg" class="shelf-cover shelf-cover-sm" alt="Sonic Mania Original Sound Track cover art">
+              </div>
+              <div class="shelf-board"></div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-lenovo.png" alt="Lenovo Slim Pro laptop"></div>
-              <span class="edc-name">lenovo slim pro</span>
-              <span class="edc-tags">[windows + linux]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-macbook.png" alt="MacBook Pro M4 Max"></div>
-              <span class="edc-name">macbook pro m4 max</span>
-              <span class="edc-tags">[mac OS] [main]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-airpods.png" alt="AirPods Pro"></div>
-              <span class="edc-name">airpods pro</span>
-              <span class="edc-tags">[workout headphones]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-sony.png" alt="Sony WH-1000XM5 headphones"></div>
-              <span class="edc-name">Sony XM5</span>
-              <span class="edc-tags">[study headphones]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-nook.png" alt="Nook GlowLight e-reader"></div>
-              <span class="edc-name">nook glow light</span>
-              <span class="edc-tags">[2013] [night e-reader]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-ti84.png" alt="TI-84 Plus calculator"></div>
-              <span class="edc-name">ti-84 plus</span>
-              <span class="edc-tags">[calculator]</span>
+            <div class="shelf">
+              <div class="shelf-items">
+                <img src="/media/album-baduizm.png" class="shelf-cover shelf-cover-sm" alt="Baduizm by Erykah Badu cover art">
+                <img src="/media/album-va11halla.jpg" class="shelf-cover shelf-cover-sm" alt="VA-11 Hall-A Original Soundtrack cover art">
+                <img src="/media/album-undertale.jpg" class="shelf-cover shelf-cover-sm" alt="Undertale Soundtrack cover art">
+                <img src="/media/album-persona5.jpg" class="shelf-cover shelf-cover-sm" alt="Persona 5 Original Soundtrack cover art">
+                <img src="/media/album-crepuscular.jpg" class="shelf-cover shelf-cover-sm" alt="crepuscular by KIRINJI cover art">
+                <img src="/media/album-imaginal-disk.jpg" class="shelf-cover shelf-cover-sm" alt="Imaginal Disk by Magdalena Bay cover art">
+              </div>
+              <div class="shelf-board"></div>
             </div>
           </div>
         </div>
