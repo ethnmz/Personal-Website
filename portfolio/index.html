@@ -257,6 +257,17 @@
         cursor: zoom-in;
       }
 
+      .portfolio-img-row--fit {
+        align-items: center;
+      }
+
+      .portfolio-img-row--fit .portfolio-img {
+        width: auto;
+        height: 140px;
+        max-width: calc(60% - 4px);
+        object-fit: contain;
+      }
+
       .lightbox-overlay {
         display: none;
         position: fixed;
@@ -381,11 +392,6 @@
           </div>
 
           <div class="nav-group">
-            <span class="nav-header">&mdash; projects &mdash;</span>
-            <a href="/updates/" class="nav-link">updates</a>
-          </div>
-
-          <div class="nav-group">
             <span class="nav-header">&mdash; daily &mdash;</span>
             <a href="/vgm/" class="nav-link">vg song of the day</a>
           </div>
@@ -442,6 +448,18 @@
           </p>
 
           <div class="portfolio-item">
+            <span class="portfolio-name">Stack (Discord Bot)</span>
+            <span class="portfolio-lang">Python</span>
+            <p class="portfolio-desc">
+              Stack runs the TAMU ColorStack Discord server end to end. New members get a welcome DM with the membership form, and clicking Verify matches their Discord to their row in the Notion Member Directory, auto-assigning the Member role and their class year. Officers take attendance with a single command that generates a check-in code; members who type it get marked present and earn points that sync straight back to Notion alongside a full event log. Members can check their points, profile, and the leaderboard anytime, while officers manage it all without touching a spreadsheet. Private repo, club-internal.
+            </p>
+            <div class="portfolio-img-row portfolio-img-row--fit">
+              <img src="/media/stack-icon.png" class="portfolio-img" alt="Stack bot icon">
+              <img src="/media/stack-verify.png" class="portfolio-img" alt="Stack bot's Get Verified welcome message in Discord">
+            </div>
+          </div>
+
+          <div class="portfolio-item">
             <span class="portfolio-name">Confidant Tracker</span>
             <span class="portfolio-lang">Python</span>
             <p class="portfolio-desc">
@@ -483,14 +501,6 @@
             <div class="portfolio-links">
               <a href="https://github.com/ethnmz/BookEasy-Itinerary-Planner" target="_blank" rel="noopener">github &#8599;</a>
             </div>
-          </div>
-
-          <div class="portfolio-item">
-            <span class="portfolio-name">Stack (Discord Bot)</span>
-            <span class="portfolio-lang">Python</span>
-            <p class="portfolio-desc">
-              A custom Discord bot for TAMU ColorStack handling onboarding, self-assignable roles, attendance tracking, event reminders, a points/XP system, and birthdays, all with a personality designed to feel warm and human rather than robotic. Private repo (club-internal); full write-up on the <a href="/updates/">updates page</a>.
-            </p>
           </div>
 
           <div class="portfolio-item">
