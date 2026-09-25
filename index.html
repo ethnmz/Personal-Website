@@ -18,8 +18,6 @@
         --link-color: #7d5a44;       /* Links */
         --select-bg: #d6cfc7;        /* Theme dropdown background */
         --status-bg: #ece5dd;        /* Status box background */
-        --rss-bg: #dcd6ce;           /* RSS box background */
-        --rss-border: #c0b8b0;       /* RSS box border */
         --header-font: 'JetBrains Mono', monospace;
         --body-font: 'JetBrains Mono', monospace;
       }
@@ -32,8 +30,6 @@
         --link-color: #d9a26c;
         --select-bg: #332e28;
         --status-bg: #2c2823;
-        --rss-bg: #262220;
-        --rss-border: #443d35;
       }
 
       /* --- RESET & BASIC SETUP --- */
@@ -152,22 +148,12 @@
         padding: 2px 0;
       }
 
-      /* Buttons & RSS */
+      /* Buttons */
       .buttons-grid {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 5px;
-      }
-
-      .rss-code {
-        background: var(--rss-bg);
-        border: 1px solid var(--rss-border);
-        padding: 5px;
-        font-family: var(--body-font);
-        font-size: 10px;
-        word-break: break-all;
-        color: var(--text-color);
       }
 
       /* Decorative waves at bottom left */
@@ -231,15 +217,6 @@
         .bottom-split {
           grid-template-columns: 1fr;
         }
-      }
-
-      /* Box mascot */
-      .box-mascot {
-        display: block;
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 10px auto;
-        image-rendering: pixelated;
       }
 
       /* Now Playing Specifics */
@@ -376,17 +353,6 @@
         color: var(--link-color);
       }
 
-      /* Footer */
-      footer {
-        text-align: center;
-        margin-top: 30px;
-        font-size: 0.8em;
-        border-top: 1px dashed var(--border-color);
-        padding-top: 10px;
-        display: flex;
-        justify-content: center;
-      }
-
       /* Mobile notice modal */
       .mobile-modal-overlay {
         display: none;
@@ -435,12 +401,13 @@
       }
 
     </style>
+    <link rel="stylesheet" href="/assets/v2.css">
   </head>
   <body>
 
     <div class="top-header">
       <span>Ethan Meza</span>
-      <span>&#10022;</span>
+      <span class="local-time"></span>
     </div>
 
     <div class="container">
@@ -498,17 +465,9 @@
           </div>
         </div>
 
-        <div class="box sidebar-section">
-          <h3>rss</h3>
-
-          <img src="/media/cat.gif" class="box-mascot" alt="pixel cat mascot">
-
-          <div class="rss-code">
-            https://<br>ethnmz.com<br>/feed.xml
-          </div>
+        <div class="box sidebar-section sky-window" id="sky-window">
+          <h3>outside</h3>
         </div>
-
-        <div class="box sidebar-section waves"></div>
 
       </aside>
 
@@ -589,10 +548,6 @@
       </main>
 
     </div>
-
-    <footer>
-      <span>est. 2026</span>
-    </footer>
 
     <div class="mobile-modal-overlay" id="mobile-modal-overlay">
       <div class="mobile-modal">
@@ -778,6 +733,8 @@
           });
       })();
     </script>
+
+    <script src="/assets/v2.js" defer></script>
 
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "bdf4b1ba951e4b668c1fe5f697a97f86"}'></script>

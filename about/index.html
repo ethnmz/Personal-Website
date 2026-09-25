@@ -18,8 +18,6 @@
         --link-color: #7d5a44;       /* Links */
         --select-bg: #d6cfc7;        /* Theme dropdown background */
         --status-bg: #ece5dd;        /* Status box background */
-        --rss-bg: #dcd6ce;           /* RSS box background */
-        --rss-border: #c0b8b0;       /* RSS box border */
         --header-font: 'JetBrains Mono', monospace;
         --body-font: 'JetBrains Mono', monospace;
       }
@@ -32,8 +30,6 @@
         --link-color: #d9a26c;
         --select-bg: #332e28;
         --status-bg: #2c2823;
-        --rss-bg: #262220;
-        --rss-border: #443d35;
       }
 
       /* --- RESET & BASIC SETUP --- */
@@ -157,22 +153,12 @@
         padding: 2px 0;
       }
 
-      /* Buttons & RSS */
+      /* Buttons */
       .buttons-grid {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 5px;
-      }
-
-      .rss-code {
-        background: var(--rss-bg);
-        border: 1px solid var(--rss-border);
-        padding: 5px;
-        font-family: var(--body-font);
-        font-size: 10px;
-        word-break: break-all;
-        color: var(--text-color);
       }
 
       /* Decorative waves at bottom left */
@@ -258,76 +244,167 @@
         margin-top: 20px;
       }
 
-      .favorites-section h3 {
+      /* Favorites cabinet: the pixel art wood is drawn by /assets/v2.js,
+         so every size here is a multiple of its 3px pixel grid */
+      .fav-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 10px;
         border-bottom: 3px double var(--border-color);
-        padding-bottom: 5px;
-        margin-bottom: 0;
+        padding-bottom: 6px;
+      }
+
+      .fav-head h3 {
+        margin: 0;
         font-size: 1.1em;
         text-align: left;
       }
 
-      .shelf {
-        overflow-x: visible;
-        padding-top: 14px;
-        margin-bottom: 20px;
-      }
-
-      .shelf:last-child {
-        margin-bottom: 0;
-      }
-
-      .shelf-items {
+      .fav-tabs {
         display: flex;
-        align-items: flex-end;
-        gap: 10px;
-        min-height: 140px;
-        padding: 0 6px;
+        gap: 12px;
+        padding: 3px 3px 0 0;
       }
 
-      .shelf-cover {
-        height: 140px;
-        width: auto;
-        border: 1px solid var(--border-color);
-        box-shadow: 2px 3px 5px rgba(0,0,0,0.25);
-        flex-shrink: 0;
-        cursor: zoom-in;
+      .fav-tab {
+        --edge: var(--border-color);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        padding: 3px 9px;
+        border: 0;
+        background: var(--select-bg);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow:
+          0 -3px 0 0 var(--edge), 0 3px 0 0 var(--edge), -3px 0 0 0 var(--edge), 3px 0 0 0 var(--edge),
+          inset 3px 3px 0 0 rgba(255, 255, 255, 0.35), inset -3px -3px 0 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .fav-tab:hover {
+        --edge: var(--link-color);
+      }
+
+      .fav-tab[aria-selected="true"] {
+        --edge: var(--link-color);
+        background: var(--link-color);
+        color: var(--box-bg);
+        box-shadow:
+          0 -3px 0 0 var(--edge), 0 3px 0 0 var(--edge), -3px 0 0 0 var(--edge), 3px 0 0 0 var(--edge),
+          inset 3px 3px 0 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .fav-tab:focus-visible {
+        outline: 2px dashed var(--link-color);
+        outline-offset: 6px;
+      }
+
+      .fav-icon {
+        fill: currentColor;
+        shape-rendering: crispEdges;
+      }
+
+      .fav-case {
+        position: relative;
+        padding: 75px 21px 36px;
+      }
+
+      .fav-art {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .fav-panel {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 21px 12px;
+      }
+
+      .fav-panel[hidden] {
+        display: none;
+      }
+
+      .fav-albums {
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+        column-gap: 9px;
+      }
+
+      .fav-cover {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        border: 1px solid rgba(0, 0, 0, 0.45);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
         transition: transform 0.15s ease, box-shadow 0.15s ease;
       }
 
-      .shelf-cover:hover {
+      .fav-albums .fav-cover {
+        aspect-ratio: 1;
+      }
+
+      .fav-cover:hover {
+        position: relative;
+        z-index: 2;
         transform: translateY(-4px) scale(1.05);
-        box-shadow: 3px 6px 10px rgba(0,0,0,0.35);
+        box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.3);
       }
 
-      .shelf-cover-sm {
-        height: 95px;
+      .fav-panel.drop .fav-cover {
+        animation: fav-drop 0.24s steps(3) backwards;
+        animation-delay: calc(var(--i) * 30ms);
       }
 
-      .shelf-empty {
-        font-size: 0.85em;
-        font-style: italic;
-        color: var(--link-color);
-        padding: 10px 6px;
+      @keyframes fav-drop {
+        from { transform: translateY(-12px); }
       }
 
-      .shelf-board {
-        height: 14px;
-        background: linear-gradient(to bottom, var(--select-bg), var(--border-color));
-        border: 1px solid var(--border-color);
-        border-top: none;
-        box-shadow: 0 4px 5px rgba(0,0,0,0.2);
-      }
-
-      /* Footer */
-      footer {
+      .fav-plaque {
+        position: absolute;
+        z-index: 2;
+        left: 60px;
+        right: 60px;
+        bottom: 9px;
+        height: 15px;
+        line-height: 15px;
+        font-size: 10px;
+        font-weight: bold;
         text-align: center;
-        margin-top: 30px;
-        font-style: italic;
-        font-size: 0.8em;
-        border-top: 1px dashed var(--border-color);
-        padding-top: 10px;
-        display: flex;
-        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #4a3719;
+        pointer-events: none;
+      }
+
+      body.dark .fav-plaque {
+        color: #1c150c;
+      }
+
+      @media (max-width: 500px) {
+        .fav-games {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .fav-albums {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .fav-panel.drop .fav-cover {
+          animation: none;
+        }
       }
 
       /* Mobile notice modal */
@@ -378,12 +455,13 @@
       }
 
     </style>
+    <link rel="stylesheet" href="/assets/v2.css">
   </head>
   <body>
 
     <div class="top-header">
       <span>Ethan Meza</span>
-      <span>&#10022;</span>
+      <span class="local-time"></span>
     </div>
 
     <div class="container">
@@ -441,23 +519,15 @@
           </div>
         </div>
 
-        <div class="box sidebar-section">
-          <h3>rss</h3>
-
-          <img src="/media/cat.gif" class="box-mascot" alt="pixel cat mascot" style="display:block; width:64px; height:64px; margin:0 auto 10px auto; image-rendering:pixelated;">
-
-          <div class="rss-code">
-            https://<br>ethnmz.com<br>/feed.xml
-          </div>
+        <div class="box sidebar-section sky-window" id="sky-window">
+          <h3>outside</h3>
         </div>
-
-        <div class="box sidebar-section waves"></div>
 
       </aside>
 
       <main>
 
-        <div class="box path-bar">
+        <div class="box path-bar" data-scene="about">
           <strong>about</strong>
         </div>
 
@@ -473,55 +543,48 @@
             </p>
           </div>
 
-          <div class="favorites-section">
-            <h3>favorite video games</h3>
-            <div class="shelf">
-              <div class="shelf-items">
-                <img src="/media/game-persona5.jpg" class="shelf-cover" alt="Persona 5 Royal cover art">
-                <img src="/media/game-undertale.png" class="shelf-cover" alt="Undertale cover art">
-                <img src="/media/game-bombrush.jpg" class="shelf-cover" alt="Bomb Rush Cyberfunk cover art">
-                <img src="/media/game-cuphead.jpg" class="shelf-cover" alt="Cuphead cover art">
-                <img src="/media/game-katanazero.jpg" class="shelf-cover" alt="Katana ZERO cover art">
-                <img src="/media/game-kirby.jpg" class="shelf-cover" alt="Kirby's Return to Dream Land cover art">
+          <div class="favorites-section fav">
+            <div class="fav-head">
+              <h3>favorites</h3>
+              <div class="fav-tabs" role="tablist" aria-label="favorites">
+                <button type="button" class="fav-tab" role="tab" id="fav-tab-games" data-tab="games" aria-controls="fav-games" aria-selected="true">
+                  <svg class="fav-icon" viewBox="0 0 11 7" width="22" height="14" aria-hidden="true"><path d="M1 0h9v1h-9zM0 1h2v1h-2zM3 1h5v1h-5zM9 1h2v1h-2zM0 2h1v1h-1zM4 2h3v1h-3zM8 2h1v1h-1zM10 2h1v1h-1zM0 3h2v1h-2zM3 3h5v1h-5zM9 3h2v1h-2zM0 4h11v1h-11zM0 5h4v1h-4zM7 5h4v1h-4zM1 6h2v1h-2zM8 6h2v1h-2z"/></svg>games
+                </button>
+                <button type="button" class="fav-tab" role="tab" id="fav-tab-albums" data-tab="albums" aria-controls="fav-albums" aria-selected="false" tabindex="-1">
+                  <svg class="fav-icon" viewBox="0 0 7 6" width="14" height="12" aria-hidden="true"><path d="M2 0h5v1h-5zM2 1h5v1h-5zM2 2h1v1h-1zM6 2h1v1h-1zM2 3h1v1h-1zM6 3h1v1h-1zM0 4h3v1h-3zM4 4h3v1h-3zM0 5h3v1h-3zM4 5h3v1h-3z"/></svg>albums
+                </button>
               </div>
-              <div class="shelf-board"></div>
             </div>
-          </div>
-
-          <div class="favorites-section">
-            <h3>favorite albums</h3>
-            <div class="shelf">
-              <div class="shelf-items">
-                <img src="/media/album-speakerboxxx.jpg" class="shelf-cover shelf-cover-sm" alt="Speakerboxxx/The Love Below by OutKast cover art">
-                <img src="/media/album-jsr.jpg" class="shelf-cover shelf-cover-sm" alt="Jet Set Radio Original Soundtrack cover art">
-                <img src="/media/album-ror2.jpg" class="shelf-cover shelf-cover-sm" alt="Risk of Rain 2 Original Soundtrack cover art">
-                <img src="/media/album-vivy.jpg" class="shelf-cover shelf-cover-sm" alt="Vivy -Fluorite Eye's Song- Original Soundtrack cover art">
-                <img src="/media/album-city-slicker.jpg" class="shelf-cover shelf-cover-sm" alt="City Slicker by Ginger Root cover art">
-                <img src="/media/album-neon-white.jpg" class="shelf-cover shelf-cover-sm" alt="Neon White Soundtrack by Machine Girl cover art">
+            <div class="fav-case" id="fav-case" data-tab="games">
+              <div class="fav-panel fav-games" id="fav-games" role="tabpanel" aria-labelledby="fav-tab-games" data-label="6 games &middot; hover one">
+                <img src="/media/game-persona5.jpg" class="fav-cover" alt="Persona 5 Royal cover art" style="--i: 0">
+                <img src="/media/game-undertale.png" class="fav-cover" alt="Undertale cover art" style="--i: 1">
+                <img src="/media/game-bombrush.jpg" class="fav-cover" alt="Bomb Rush Cyberfunk cover art" style="--i: 2">
+                <img src="/media/game-cuphead.jpg" class="fav-cover" alt="Cuphead cover art" style="--i: 3">
+                <img src="/media/game-katanazero.jpg" class="fav-cover" alt="Katana ZERO cover art" style="--i: 4">
+                <img src="/media/game-kirby.jpg" class="fav-cover" alt="Kirby's Return to Dream Land cover art" style="--i: 5">
               </div>
-              <div class="shelf-board"></div>
-            </div>
-            <div class="shelf">
-              <div class="shelf-items">
-                <img src="/media/album-untourable.jpg" class="shelf-cover shelf-cover-sm" alt="Untourable Album by Men I Trust cover art">
-                <img src="/media/album-simbi.jpg" class="shelf-cover shelf-cover-sm" alt="Sometimes I Might Be Introvert by Little Simz cover art">
-                <img src="/media/album-discovery.jpg" class="shelf-cover shelf-cover-sm" alt="Discovery by Daft Punk cover art">
-                <img src="/media/album-sonicr.jpg" class="shelf-cover shelf-cover-sm" alt="Sonic R Original Soundtrack cover art">
-                <img src="/media/album-sf3.jpg" class="shelf-cover shelf-cover-sm" alt="Street Fighter III 3rd Strike Original Soundtrack cover art">
-                <img src="/media/album-sonic-mania.jpg" class="shelf-cover shelf-cover-sm" alt="Sonic Mania Original Sound Track cover art">
+              <div class="fav-panel fav-albums" id="fav-albums" role="tabpanel" aria-labelledby="fav-tab-albums" data-label="18 albums &middot; hover one" hidden>
+                <img src="/media/album-speakerboxxx.jpg" class="fav-cover" alt="Speakerboxxx/The Love Below by OutKast cover art" style="--i: 0">
+                <img src="/media/album-jsr.jpg" class="fav-cover" alt="Jet Set Radio Original Soundtrack cover art" style="--i: 1">
+                <img src="/media/album-ror2.jpg" class="fav-cover" alt="Risk of Rain 2 Original Soundtrack cover art" style="--i: 2">
+                <img src="/media/album-vivy.jpg" class="fav-cover" alt="Vivy -Fluorite Eye's Song- Original Soundtrack cover art" style="--i: 3">
+                <img src="/media/album-city-slicker.jpg" class="fav-cover" alt="City Slicker by Ginger Root cover art" style="--i: 4">
+                <img src="/media/album-neon-white.jpg" class="fav-cover" alt="Neon White Soundtrack by Machine Girl cover art" style="--i: 5">
+                <img src="/media/album-untourable.jpg" class="fav-cover" alt="Untourable Album by Men I Trust cover art" style="--i: 6">
+                <img src="/media/album-simbi.jpg" class="fav-cover" alt="Sometimes I Might Be Introvert by Little Simz cover art" style="--i: 7">
+                <img src="/media/album-discovery.jpg" class="fav-cover" alt="Discovery by Daft Punk cover art" style="--i: 8">
+                <img src="/media/album-sonicr.jpg" class="fav-cover" alt="Sonic R Original Soundtrack cover art" style="--i: 9">
+                <img src="/media/album-sf3.jpg" class="fav-cover" alt="Street Fighter III 3rd Strike Original Soundtrack cover art" style="--i: 10">
+                <img src="/media/album-sonic-mania.jpg" class="fav-cover" alt="Sonic Mania Original Sound Track cover art" style="--i: 11">
+                <img src="/media/album-baduizm.png" class="fav-cover" alt="Baduizm by Erykah Badu cover art" style="--i: 12">
+                <img src="/media/album-va11halla.jpg" class="fav-cover" alt="VA-11 Hall-A Original Soundtrack cover art" style="--i: 13">
+                <img src="/media/album-undertale.jpg" class="fav-cover" alt="Undertale Soundtrack cover art" style="--i: 14">
+                <img src="/media/album-persona5.jpg" class="fav-cover" alt="Persona 5 Original Soundtrack cover art" style="--i: 15">
+                <img src="/media/album-crepuscular.jpg" class="fav-cover" alt="crepuscular by KIRINJI cover art" style="--i: 16">
+                <img src="/media/album-imaginal-disk.jpg" class="fav-cover" alt="Imaginal Disk by Magdalena Bay cover art" style="--i: 17">
               </div>
-              <div class="shelf-board"></div>
-            </div>
-            <div class="shelf">
-              <div class="shelf-items">
-                <img src="/media/album-baduizm.png" class="shelf-cover shelf-cover-sm" alt="Baduizm by Erykah Badu cover art">
-                <img src="/media/album-va11halla.jpg" class="shelf-cover shelf-cover-sm" alt="VA-11 Hall-A Original Soundtrack cover art">
-                <img src="/media/album-undertale.jpg" class="shelf-cover shelf-cover-sm" alt="Undertale Soundtrack cover art">
-                <img src="/media/album-persona5.jpg" class="shelf-cover shelf-cover-sm" alt="Persona 5 Original Soundtrack cover art">
-                <img src="/media/album-crepuscular.jpg" class="shelf-cover shelf-cover-sm" alt="crepuscular by KIRINJI cover art">
-                <img src="/media/album-imaginal-disk.jpg" class="shelf-cover shelf-cover-sm" alt="Imaginal Disk by Magdalena Bay cover art">
-              </div>
-              <div class="shelf-board"></div>
+              <div class="fav-plaque" aria-hidden="true"></div>
             </div>
           </div>
         </div>
@@ -529,10 +592,6 @@
       </main>
 
     </div>
-
-    <footer>
-      <span>est. 2026</span>
-    </footer>
 
     <div class="mobile-modal-overlay" id="mobile-modal-overlay">
       <div class="mobile-modal">
@@ -575,7 +634,59 @@
           applyTheme(select.value);
         });
       })();
+
+      (function () {
+        var shelf = document.getElementById('fav-case');
+        var plaque = shelf.querySelector('.fav-plaque');
+        var tabs = Array.prototype.slice.call(document.querySelectorAll('.fav-tab'));
+
+        function openPanel() {
+          return shelf.querySelector('.fav-panel:not([hidden])');
+        }
+
+        function resetPlaque() {
+          plaque.textContent = openPanel().getAttribute('data-label');
+        }
+
+        function select(tab, focus) {
+          if (tab.getAttribute('aria-selected') === 'true') return;
+          tabs.forEach(function (t) {
+            var on = t === tab;
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+            t.tabIndex = on ? 0 : -1;
+            document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+          });
+          if (focus) tab.focus();
+          var panel = openPanel();
+          panel.classList.remove('drop');
+          void panel.offsetWidth;
+          panel.classList.add('drop');
+          shelf.setAttribute('data-tab', tab.getAttribute('data-tab'));
+          resetPlaque();
+          shelf.dispatchEvent(new CustomEvent('shelfchange'));
+        }
+
+        tabs.forEach(function (tab, i) {
+          tab.addEventListener('click', function () { select(tab); });
+          tab.addEventListener('keydown', function (e) {
+            var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+            if (next === undefined) return;
+            e.preventDefault();
+            select(tabs[(next + tabs.length) % tabs.length], true);
+          });
+        });
+
+        shelf.addEventListener('mouseover', function (e) {
+          var cover = e.target.closest('.fav-cover');
+          if (cover) plaque.textContent = cover.alt.replace(/ cover art$/, '');
+          else resetPlaque();
+        });
+        shelf.addEventListener('mouseleave', resetPlaque);
+        resetPlaque();
+      })();
     </script>
+
+    <script src="/assets/v2.js" defer></script>
 
     <!-- Cloudflare Web Analytics -->
     <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "bdf4b1ba951e4b668c1fe5f697a97f86"}'></script>
