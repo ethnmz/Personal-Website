@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ethnmz &mdash; edc</title>
+    <title>ethnmz &mdash; daily apps</title>
     <link rel="icon" type="image/png" href="/media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,61 +192,157 @@
         margin-bottom: 15px;
       }
 
-      /* EDC grid */
-      .edc-grid {
-        margin-top: 5px;
+      /* Daily apps list: icon on the left, what it's for + screenshots on the right */
+      .app {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 16px;
+        padding: 18px 0;
+        border-top: 1px dashed var(--border-color);
       }
 
-      @media (max-width: 600px) {
-        .edc-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
+      .app:first-of-type {
+        border-top: 0;
+        padding-top: 4px;
       }
 
-      .edc-card {
-        background: var(--box-bg);
-        border: 1px solid var(--border-color);
-        box-shadow: 1px 1px 0px rgba(0,0,0,0.05);
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-      }
-
-      .edc-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
-      }
-
-      .edc-card-img {
-        height: 110px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 8px;
-      }
-
-      .edc-card-img img {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-      }
-
-      .edc-name {
+      .app-icon {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 64px;
+        overflow: hidden;
+        border-radius: 14px;
+        background: var(--brand);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25);
+        color: #fff;
+        font-size: 28px;
         font-weight: bold;
       }
 
-      .edc-tags {
+      .app-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .app-name {
+        margin: 0;
+        font-size: 1.3em;
+        text-align: left;
+      }
+
+      .app-tags {
+        margin: 2px 0 8px;
         font-size: 0.85em;
         font-style: italic;
         color: var(--link-color);
-        margin-top: 3px;
+      }
+
+      .app-body > p {
+        margin: 0 0 12px;
+      }
+
+      .app-shots {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        align-items: start;
+      }
+
+      .app-shots .shot {
+        display: block;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        cursor: zoom-in;
+      }
+
+      .app-shots .shot:focus-visible {
+        outline: 2px dashed var(--link-color);
+        outline-offset: 3px;
+      }
+
+      .app-shots img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--hard-shadow);
+        transition: transform 0.15s ease;
+      }
+
+      .app-shots .shot:hover img {
+        transform: translateY(-3px);
+      }
+
+      /* enlarged screenshot */
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 1005;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(20, 16, 12, 0.78);
+        cursor: zoom-out;
+      }
+
+      .lightbox[hidden] {
+        display: none;
+      }
+
+      .lightbox img {
+        display: block;
+        max-width: min(92vw, 1500px);
+        max-height: 86vh;
+        width: auto;
+        height: auto;
+        border: 1px solid var(--border-color);
+        box-shadow: 6px 8px 0 rgba(0, 0, 0, 0.35);
+        animation: v2-pop 0.2s steps(3) both;
+      }
+
+      .lightbox-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .lightbox img {
+          animation: none;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .app {
+          grid-template-columns: 44px minmax(0, 1fr);
+          gap: 12px;
+        }
+
+        .app-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 10px;
+          font-size: 20px;
+        }
+
+        .app-shots {
+          grid-template-columns: minmax(0, 1fr);
+        }
       }
 
       /* Mobile notice modal */
@@ -371,64 +467,81 @@
 
       <main>
 
-        <div class="box path-bar" data-scene="edc">
-          <strong>edc</strong>
+        <div class="box path-bar" data-scene="apps">
+          <strong>daily apps</strong>
         </div>
 
         <div class="box">
-          <h1 class="page-header">edc [2026]</h1>
+          <h1 class="page-header">daily apps</h1>
 
           <p class="page-desc">
-            some of the products here were either gifted to me or bought cheap second hand
+            the apps i open every day and what i actually use them for. mostly productivity stuff.
           </p>
 
-          <div class="edc-grid">
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-iphone17.png" alt="iPhone 17"></div>
-              <span class="edc-name">iphone 17</span>
-              <span class="edc-tags">[main]</span>
+          <article class="app" id="todoist" style="--brand: #e44332">
+            <div class="app-icon" aria-hidden="true"><img src="/media/apps/icon-todoist.jpg" alt=""></div>
+            <div class="app-body">
+              <h2 class="app-name">todoist</h2>
+              <p class="app-tags">[tasks] [paid monthly] [since high school]</p>
+              <p>My to-do list for literally everything: school, home, and personal stuff. School is the number one thing I use it for. I&rsquo;ve been using it since high school and pay for the monthly subscription because I love how I can organize everything.</p>
+              <div class="app-shots">
+                <button type="button" class="shot"><img src="/media/apps/todoist-1.jpg" alt="my Todoist college tasks list with classes and due dates" loading="lazy"></button>
+                <button type="button" class="shot"><img src="/media/apps/todoist-2.jpg" alt="my Todoist upcoming view laid out as a weekly calendar" loading="lazy"></button>
+              </div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-iphonese.png" alt="iPhone SE"></div>
-              <span class="edc-name">iphone SE</span>
-              <span class="edc-tags">[dumb]</span>
+          </article>
+
+          <article class="app" id="beeper" style="--brand: #6b5cf6">
+            <div class="app-icon" aria-hidden="true"><img src="/media/apps/icon-beeper.jpg" alt=""></div>
+            <div class="app-body">
+              <h2 class="app-name">beeper</h2>
+              <p class="app-tags">[messaging] [macbook + iphone]</p>
+              <p>If you haven&rsquo;t heard of it, Beeper connects all your other messaging apps into one app. I use it on my MacBook and iPhone so I don&rsquo;t need the social media apps on my phone and can still message everybody.</p>
+              <div class="app-shots">
+                <button type="button" class="shot"><img src="/media/apps/beeper-1.jpg" alt="my Beeper inbox on Mac, with every conversation blurred" loading="lazy"></button>
+                <button type="button" class="shot"><img src="/media/apps/beeper-2.jpg" alt="Beeper on three phones showing connected networks and a combined inbox" loading="lazy"></button>
+              </div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-garmin.png" alt="Garmin Instinct"></div>
-              <span class="edc-name">garmin instinct</span>
-              <span class="edc-tags">[fitness tracker]</span>
+          </article>
+
+          <article class="app" id="copilot" style="--brand: #1f6feb">
+            <div class="app-icon" aria-hidden="true"><img src="/media/apps/icon-copilot.jpg" alt=""></div>
+            <div class="app-body">
+              <h2 class="app-name">copilot money</h2>
+              <p class="app-tags">[finances]</p>
+              <p>How I manage my finances. I like that I can connect all my credit cards, bank accounts, and investing accounts in one place.</p>
+              <div class="app-shots">
+                <button type="button" class="shot"><img src="/media/apps/copilot-1.jpg" alt="my Copilot Money dashboard with all amounts and accounts blurred" loading="lazy"></button>
+                <button type="button" class="shot"><img src="/media/apps/copilot-2.jpg" alt="Copilot Money on four phones showing budgets and spending" loading="lazy"></button>
+              </div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-lenovo.png" alt="Lenovo Slim Pro laptop"></div>
-              <span class="edc-name">lenovo slim pro</span>
-              <span class="edc-tags">[windows + linux]</span>
+          </article>
+
+          <article class="app" id="obsidian" style="--brand: #7c3aed">
+            <div class="app-icon" aria-hidden="true"><img src="/media/apps/icon-obsidian.jpg" alt=""></div>
+            <div class="app-body">
+              <h2 class="app-name">obsidian</h2>
+              <p class="app-tags">[notes] [drawing tablet]</p>
+              <p>My note-taking app. Sometimes I pair it with a drawing tablet to take notes in my classes. I like it because everything is stored locally, and you can really customize it and use it however you want.</p>
+              <div class="app-shots">
+                <button type="button" class="shot"><img src="/media/apps/obsidian-1.jpg" alt="my Obsidian notes for an engineering exam with handwritten annotations" loading="lazy"></button>
+                <button type="button" class="shot"><img src="/media/apps/obsidian-2.jpg" alt="Obsidian on Mac showing a graph view, and on iPhone showing a daily note" loading="lazy"></button>
+              </div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-macbook.png" alt="MacBook Pro M4 Max"></div>
-              <span class="edc-name">macbook pro m4 max</span>
-              <span class="edc-tags">[mac OS] [main]</span>
+          </article>
+
+          <article class="app" id="notion" style="--brand: #191919">
+            <div class="app-icon" aria-hidden="true"><img src="/media/apps/icon-notion.jpg" alt=""></div>
+            <div class="app-body">
+              <h2 class="app-name">notion</h2>
+              <p class="app-tags">[personal] [club work] [calendar + events]</p>
+              <p>I use Notion for personal stuff, club work, and keeping track of my calendars and all my events.</p>
+              <div class="app-shots">
+                <button type="button" class="shot"><img src="/media/apps/notion-1.jpg" alt="my Notion task board for TAMU ColorStack" loading="lazy"></button>
+                <button type="button" class="shot"><img src="/media/apps/notion-2.jpg" alt="the LeetRoom Lessons gallery in the TAMU ColorStack Notion" loading="lazy"></button>
+              </div>
             </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-airpods.png" alt="AirPods Pro"></div>
-              <span class="edc-name">airpods pro</span>
-              <span class="edc-tags">[workout headphones]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-sony.png" alt="Sony WH-1000XM5 headphones"></div>
-              <span class="edc-name">Sony XM5</span>
-              <span class="edc-tags">[study headphones]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-nook.png" alt="Nook GlowLight e-reader"></div>
-              <span class="edc-name">nook glow light</span>
-              <span class="edc-tags">[2013] [night e-reader]</span>
-            </div>
-            <div class="edc-card">
-              <div class="edc-card-img"><img src="/media/edc-ti84.png" alt="TI-84 Plus calculator"></div>
-              <span class="edc-name">ti-84 plus</span>
-              <span class="edc-tags">[calculator]</span>
-            </div>
-          </div>
+          </article>
         </div>
 
       </main>
@@ -474,6 +587,46 @@
         select.addEventListener('change', function () {
           localStorage.setItem('theme', select.value);
           applyTheme(select.value);
+        });
+      })();
+
+      (function () {
+        var box = document.createElement('div');
+        box.className = 'lightbox';
+        box.hidden = true;
+        box.setAttribute('role', 'dialog');
+        box.setAttribute('aria-modal', 'true');
+        box.setAttribute('aria-label', 'enlarged screenshot');
+        box.innerHTML = '<img alt=""><button type="button" class="lightbox-close" aria-label="close">&times;</button>';
+        document.body.appendChild(box);
+        var big = box.querySelector('img');
+        var closeBtn = box.querySelector('.lightbox-close');
+        var opener = null;
+
+        function open(btn) {
+          var img = btn.querySelector('img');
+          opener = btn;
+          big.src = img.currentSrc || img.src;
+          big.alt = img.alt;
+          box.hidden = false;
+          closeBtn.focus();
+        }
+
+        function close() {
+          if (box.hidden) return;
+          box.hidden = true;
+          if (opener) opener.focus({ preventScroll: true });
+          opener = null;
+        }
+
+        document.querySelectorAll('.app-shots .shot').forEach(function (btn) {
+          btn.addEventListener('click', function () { open(btn); });
+        });
+        box.addEventListener('click', close);
+        document.addEventListener('keydown', function (e) {
+          if (box.hidden) return;
+          if (e.key === 'Escape') close();
+          if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
         });
       })();
     </script>

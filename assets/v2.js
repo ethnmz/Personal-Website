@@ -495,11 +495,12 @@
   var LINES = {
     all: ['mrrp.', 'meow', '*purrs*', '*slow blink*', 'pet accepted ✦', 'this is my website too'],
     home: ['welcome in ✦', 'psst. try the konami code', 'i watch the sky for you'],
-    about: ['that\'s my human up there', 'i\'m the best part of this page', 'i guard the good shelf', 'put on discovery next'],
+    about: ['that\'s my human up there', 'i\'m the best part of this page', 'i guard the good shelf', 'put on discovery next', 'we\'ve come a long way', 'what\'s next?'],
     portfolio: ['my human built all this. i supervised.', 'one day i\'ll reach the top'],
     resume: ['hire my human pls. i need treats', 'where does this road go?'],
     vgm: ['this one slaps', '*bops head*', 'turn it up'],
-    edc: ['the most important carry item is me', 'no marshmallows? rude']
+    edc: ['the most important carry item is me', 'no marshmallows? rude'],
+    apps: ['did you check your to-do list?', '*sits on the keyboard*', 'i have 99+ unread messages']
   };
 
   function pickLine() {
@@ -1150,13 +1151,143 @@
     };
   }
 
-  var BANNERS = { about: sceneAbout, portfolio: scenePortfolio, resume: sceneResume, vgm: sceneVgm, edc: sceneEdc };
+  /* ---------- daily apps: the desk ---------- */
+
+  var DESK = {
+    day: palette({
+      wall: ['#e6dccd', '#d9ccb8'], stripe: '#dfd3c1', frame: '#8a6a50', frameLit: '#a58468', frameDark: '#5c4434',
+      desk: '#9c7a5c', deskLit: '#b8966f', deskDark: '#7a5b43', grain: '#8d6d51',
+      laptop: '#b9bcc0', laptopDark: '#8e9296', bezel: '#1e2126', screen: '#2a2f3a', screenLit: '#48526a', cursor: '#f4f1ea',
+      phone: '#26282c', phoneScreen: '#d5dde8', bubble: '#6b5cf6', bubble2: '#b9c2cf',
+      mug: '#c9453a', mugDark: '#9c3226', coffee: '#4a3222', steam: '#f7f3ec',
+      notes: ['#f3d77a', '#e8a0b4', '#9dc3e6'], noteLine: '#b8a98f', pin: '#c9453a',
+      apps: ['#e44332', '#6b5cf6', '#1f6feb', '#7c3aed', '#f2f2f2']
+    }),
+    night: palette({
+      wall: ['#2a241f', '#221d19'], stripe: '#2e2822', frame: '#3a2e24', frameLit: '#4b3c2f', frameDark: '#140f0b',
+      desk: '#35291f', deskLit: '#433428', deskDark: '#2a2019', grain: '#30251c',
+      laptop: '#5a5d62', laptopDark: '#404347', bezel: '#0e0f12', screen: '#1a2030', screenLit: '#34405e', cursor: '#e8e4dc',
+      phone: '#141518', phoneScreen: '#9fb4cf', bubble: '#8f84ff', bubble2: '#6f7f96',
+      mug: '#8a3226', mugDark: '#6a2418', coffee: '#241810', steam: '#5a524a',
+      notes: ['#8a7a44', '#80566a', '#56708a'], noteLine: '#5a5040', pin: '#8a3226',
+      apps: ['#ff5a48', '#8f84ff', '#4f8ff7', '#9d6bff', '#e8e8e8'], glow: '#3a3326', screenGlow: '#232a3c'
+    })
+  };
+
+  function sceneApps(w, h, night) {
+    var s = bannerBase(w, h, night), P = s.P, B = s.B, F = s.F;
+    var D = night ? DESK.night : DESK.day, S = night ? SHELF.night : SHELF.day;
+    var sr = random(81), gr = random(82);
+    var x, y, i;
+    var deskY = h - 9;
+    var win = { x0: Math.round(w * 0.64), x1: Math.round(w * 0.88), y0: 5, y1: deskY - 8 };
+    function inWindow(xx, yy) { return xx > win.x0 && xx < win.x1 && yy > win.y0 && yy < win.y1; }
+
+    // the view outside, then the wall painted around the window
+    var stars = bannerSky(s, w, h, win.y1, night, sr, win.x1 - 8, win.y0 + 7, false).filter(function (st) { return inWindow(st.x, st.y); });
+    for (x = win.x0; x < win.x1; x += 2 + Math.floor(sr() * 3)) pine(B, x, win.y1, 3 + Math.floor(sr() * 5), P.treeFar, P.treeFar, P.treeFar);
+    for (y = 0; y < deskY; y++) {
+      for (x = 0; x < w; x++) {
+        if (inWindow(x, y)) continue;
+        B(x, y, x % 9 === 4 ? D.stripe : y / deskY > dither(x, y) ? D.wall[1] : D.wall[0]);
+      }
+    }
+    for (x = win.x0; x <= win.x1; x++) { B(x, win.y0, D.frameDark); B(x, win.y1, D.frameDark); }
+    for (y = win.y0; y <= win.y1; y++) { B(win.x0, y, D.frameDark); B(win.x1, y, D.frameDark); }
+    var midX = (win.x0 + win.x1) >> 1, midY = (win.y0 + win.y1) >> 1;
+    for (y = win.y0 + 1; y < win.y1; y++) B(midX, y, D.frame);
+    for (x = win.x0 + 1; x < win.x1; x++) B(x, midY, D.frame);
+    for (x = win.x0 - 2; x <= win.x1 + 2; x++) { B(x, win.y1 + 1, D.frameLit); B(x, win.y1 + 2, D.frameDark); }
+
+    // sticky notes on the wall
+    for (i = 0; i < 3; i++) {
+      var nx = Math.round(w * 0.12) + i * 10, ny = 7 + (i % 2) * 4;
+      rect(B, nx, ny, 7, 7, D.notes[i]);
+      B(nx + 3, ny, D.pin);
+      rect(B, nx + 1, ny + 3, 5, 1, D.noteLine);
+      rect(B, nx + 1, ny + 5, 3, 1, D.noteLine);
+    }
+
+    var lampX = Math.round(w * 0.05), lampY = deskY - LAMP.h;
+    var lx = Math.round(w * 0.42) - 14;
+    if (night) {
+      halo(B, lampX + 4, lampY + 4, 1, 16, D.glow, lampY + 4);
+      halo(B, lx + 14, deskY - 10, 9, 18, D.screenGlow);
+    }
+
+    // the desk
+    for (x = 0; x < w; x++) {
+      F(x, deskY, D.deskLit);
+      F(x, deskY + 1, D.desk);
+      F(x, deskY + 2, D.deskDark);
+      for (y = deskY + 3; y < h; y++) F(x, y, gr() < 0.12 ? D.grain : D.desk);
+    }
+
+    drawSprite(F, LAMP, lampX, lampY, { S: S.lamp, s: S.lampDark, h: S.lampLit, m: S.stem, M: S.stemDark });
+    if (night) { F(lampX + 3, lampY + 4, S.bulb); F(lampX + 4, lampY + 4, S.bulb); }
+
+    // laptop: screen gets drawn every frame
+    rect(F, lx, deskY - 1, 28, 1, D.laptopDark);
+    rect(F, lx + 1, deskY - 2, 26, 1, D.laptop);
+    rect(F, lx + 3, deskY - 17, 22, 15, D.bezel);
+    var scr = { x: lx + 4, y: deskY - 16, w: 20, h: 13 };
+
+    // phone on a little stand
+    var ph = { x: lx + 32, y: deskY - 12 };
+    rect(F, ph.x, ph.y, 7, 11, D.phone);
+    rect(F, ph.x - 1, deskY - 1, 9, 1, D.laptopDark);
+
+    // mug of coffee
+    var mx = lx + 45, my = deskY - 5;
+    rect(F, mx, my, 5, 5, D.mug);
+    rect(F, mx + 1, my, 3, 1, D.coffee);
+    rect(F, mx, my + 4, 5, 1, D.mugDark);
+    F(mx + 5, my + 1, D.mug); F(mx + 6, my + 2, D.mug); F(mx + 5, my + 3, D.mug);
+
+    drawSprite(F, PLANT, w - 16, deskY - PLANT.h, { l: S.leafLit, g: S.leaf, G: S.leafDark, r: S.potLit, p: S.pot, q: S.potDark });
+
+    var cat = new Cat(Math.min(Math.round(w * 0.24), lx - 13), deskY - CAT.h);
+    var steam = particles();
+
+    return {
+      back: s.back, front: s.front, cats: [cat],
+      mid: function (put, f) {
+        if (night && !reduceMotion) twinkle(put, stars, f, P, 3);
+      },
+      top: function (put, f) {
+        var t = reduceMotion ? 0 : f;
+        // laptop: flipping through the apps
+        rect(put, scr.x, scr.y, scr.w, scr.h, D.screen);
+        rect(put, scr.x, scr.y, scr.w, 1, D.screenLit);
+        var pick = (t >> 3) % 5, lines = random(pick + 3);
+        for (var k = 0; k < 5; k++) rect(put, scr.x + 1 + k * 4, scr.y + 3, 3, 3, D.apps[k]);
+        rect(put, scr.x + 1 + pick * 4, scr.y + 7, 3, 1, D.cursor);
+        for (var j = 0; j < 3; j++) rect(put, scr.x + 2, scr.y + 9 + j * 1.5 | 0, 4 + Math.floor(lines() * 12), 1, D.screenLit);
+        // phone: new messages keep rolling in
+        rect(put, ph.x + 1, ph.y + 1, 5, 9, D.phoneScreen);
+        var count = 1 + ((t >> 3) % 4);
+        for (var b = 0; b < count; b++) {
+          var mine = b % 2 === 1, by = ph.y + 8 - (count - 1 - b) * 2;
+          rect(put, ph.x + (mine ? 3 : 2), by, 2 + (b % 2), 1, mine ? D.bubble : D.bubble2);
+        }
+        if (!reduceMotion && f % 4 === 0) steam.add({ x: mx + 1 + Math.random() * 3, y: my - 1, life: 12, c: D.steam });
+        steam.step(put, function (p) {
+          p.y -= 0.4;
+          p.x += Math.sin(p.life * 0.6) * 0.3;
+          p.life -= 1;
+        });
+      }
+    };
+  }
+
+  var BANNERS = { about: sceneAbout, portfolio: scenePortfolio, resume: sceneResume, vgm: sceneVgm, edc: sceneEdc, apps: sceneApps };
   var BANNER_ALT = {
     about: 'pixel art of a black cat sitting in a golden meadow beside an autumn tree',
     portfolio: 'pixel art of a cat at the foot of a mountain trail leading to a flag at the summit',
     resume: 'pixel art of a cat beside a signpost on a road stretching to the horizon',
     vgm: 'pixel art of a city skyline with an arcade sign and a cat on a rooftop',
-    edc: 'pixel art of a campsite with a tent, campfire, backpack and a cat warming up by the fire'
+    edc: 'pixel art of a campsite with a tent, campfire, backpack and a cat warming up by the fire',
+    apps: 'pixel art of a desk by a window with a laptop, phone, mug of coffee, lamp and a cat'
   };
 
   /* ---------- sidebar window: the sky outside, right now ---------- */
@@ -1555,6 +1686,262 @@
     };
   }
 
+  /* ---------- home: the bulletin board ---------- */
+
+  var CORK = {
+    day: palette({
+      cork: '#c49a6c', corkDark: '#b0875b', corkDeep: '#9d764c', corkLight: '#d3ab7e', hole: '#6e5238',
+      wire: '#5a4a3c', bulbs: ['#b8574a', '#c9a24e', '#5f7fa0', '#6f8a5a', '#a8779f']
+    }),
+    night: palette({
+      cork: '#3f3124', corkDark: '#35291e', corkDeep: '#2c2219', corkLight: '#4a3a2b', hole: '#1a130d',
+      wire: '#140f0b', bulbs: ['#ff8466', '#ffd76e', '#86b8ff', '#a4e48f', '#f7a3dc'],
+      dim: ['#8a4a3c', '#8a7440', '#4a6488', '#5a7a4e', '#86587a'],
+      glow: ['#5c2e24', '#5c4a24', '#243a5c', '#2c4a26', '#4c2c46']
+    })
+  };
+
+  function buildBoard(w, h, night) {
+    var P = night ? CORK.night : CORK.day, W = night ? SHELF.night : SHELF.day;
+    var back = new Bitmap(w, h), put = back.painter(), r = random(1717);
+    var x, y, i;
+
+    // cork: speckled granules plus a few clumps
+    for (y = 4; y < h - 4; y++) {
+      for (x = 4; x < w - 4; x++) {
+        var v = r();
+        put(x, y, v < 0.12 ? P.corkDark : v < 0.16 ? P.corkLight : v < 0.18 ? P.corkDeep : P.cork);
+      }
+    }
+    for (i = w * h / 60; i > 0; i--) {
+      var cx = 4 + Math.floor(r() * (w - 8)), cy = 4 + Math.floor(r() * (h - 8)), c = r() < 0.6 ? P.corkDark : P.corkLight;
+      put(cx, cy, c);
+      put(cx + 1, cy, c);
+      put(cx, cy + 1, c);
+    }
+    // old pin holes from photos that came and went
+    for (i = w * h / 420; i > 0; i--) put(4 + Math.floor(r() * (w - 8)), 4 + Math.floor(r() * (h - 8)), P.hole);
+    for (y = 4; y < h - 4; y++) {
+      put(4, y, P.corkDeep);
+      if (dither(5, y) < 0.5) put(5, y, P.corkDeep);
+    }
+    for (x = 4; x < w - 4; x++) {
+      put(x, 4, P.corkDeep);
+      if (dither(x, 5) < 0.5) put(x, 5, P.corkDeep);
+    }
+
+    // the frame: lit from the top left, grain on the middle ring
+    for (var ring = 0; ring < 4; ring++) {
+      for (x = ring; x < w - ring; x++) {
+        for (var side = 0; side < 2; side++) {
+          y = side ? h - 1 - ring : ring;
+          put(x, y, [W.out, side ? W.woodDark : W.woodLit, r() < 0.2 ? W.grain : W.wood, W.woodDark][ring]);
+        }
+      }
+      for (y = ring; y < h - ring; y++) {
+        for (side = 0; side < 2; side++) {
+          x = side ? w - 1 - ring : ring;
+          put(x, y, [W.out, side ? W.woodDark : W.woodLit, r() < 0.2 ? W.grain : W.wood, W.woodDark][ring]);
+        }
+      }
+    }
+    [[1, 1, 1, 1], [w - 2, 1, -1, 1], [1, h - 2, 1, -1], [w - 2, h - 2, -1, -1]].forEach(function (k) {
+      for (var j = 0; j < 3; j++) {
+        put(k[0] + j * k[2], k[1], W.brass);
+        put(k[0], k[1] + j * k[3], W.brass);
+      }
+      put(k[0], k[1], W.brassLit);
+    });
+
+    // fairy lights swagging between nails along the top
+    var swags = Math.max(2, Math.round((w - 12) / 60));
+    var bulbs = [];
+    for (var s = 0; s < swags; s++) {
+      var x0 = Math.round(6 + (w - 13) * s / swags), x1 = Math.round(6 + (w - 13) * (s + 1) / swags);
+      var half = (x1 - x0) / 2, prevY = null;
+      put(x0, 2, W.brassLit);
+      put(x1, 2, W.brassLit);
+      for (x = x0; x <= x1; x++) {
+        var t = (x - x0 - half) / half, wy = Math.round(3 + 3 * (1 - t * t));
+        put(x, wy, P.wire);
+        if (prevY !== null && Math.abs(wy - prevY) > 1) put(x, (wy + prevY) >> 1, P.wire);
+        prevY = wy;
+        if ((x - x0) % 6 === 3 && x1 - x > 2) bulbs.push({ x: x, y: wy + 1, c: bulbs.length % 5 });
+      }
+    }
+    bulbs.forEach(function (b) {
+      put(b.x, b.y, P.wire);
+      rect(put, b.x, b.y + 1, 2, 2, P.bulbs[b.c]);
+    });
+
+    return {
+      back: back,
+      mid: function (p, f) {
+        if (!night && !state.party) return;
+        var tick = reduceMotion ? 0 : f >> 2;
+        bulbs.forEach(function (b, k) {
+          var c = state.party ? PARTY[(k + (reduceMotion ? 0 : f)) % PARTY.length] : null;
+          var lit = state.party || (k * 7 + tick * 3) % 11 !== 0;
+          if (lit && night) halo(p, b.x + 1, b.y + 2, 1, 4, CORK.night.glow[b.c]);
+          rect(p, b.x, b.y + 1, 2, 2, c || (lit ? P.bulbs[b.c] : P.dim[b.c]));
+        });
+      }
+    };
+  }
+
+  /* ---------- about: the road so far ---------- */
+
+  // one grass/tree set per era: spring for middle school, golden for high school, evergreen for college
+  var ROAD = {
+    day: palette({
+      grass: ['#9bb46a', '#b9a760', '#7f9a62'], grassDark: ['#88a05b', '#a6944f', '#6d8853'], grassLight: ['#aec67e', '#cab874', '#91ab73'],
+      treeA: ['#8fa866', '#6f8a4e', '#566e3b'], treeB: ['#e0a05a', '#c9793d', '#a95f2e'], treeC: ['#6f8a5a', '#4f6e45', '#3e5a37'],
+      flower: ['#f1e6cc', '#e8a0b4', '#f3d77a', '#8a2a2a'],
+      path: '#dcc9a1', pathEdge: '#a8916a', pebble: '#c2ad86', rock: '#a39c92', rockDark: '#857e74', trunk: '#6b5040',
+      out: '#3a2f27', career: '#5f86b0', careerLit: '#9dbcdf', fun: '#e08d3b', funLit: '#f6c283', gold: '#d9ae45', goldLit: '#f6e3a0',
+      pole: '#8a8378', flag: '#c9453a', flagDark: '#9c3226'
+    }),
+    night: palette({
+      grass: ['#27301c', '#2e2a1a', '#1f2a1e'], grassDark: ['#212a17', '#272315', '#1a2419'], grassLight: ['#2e3822', '#36311f', '#253224'],
+      treeA: ['#2c3820', '#222c19', '#1a2214'], treeB: ['#3a2a1a', '#2e2014', '#241810'], treeC: ['#22301f', '#1a2618', '#141e12'],
+      flower: ['#6a6258', '#5a3a44', '#6a5a30', '#4a1a1a'],
+      path: '#4e4434', pathEdge: '#2e271e', pebble: '#433a2c', rock: '#3a3632', rockDark: '#2a2724', trunk: '#241a14',
+      out: '#0e0b09', career: '#4a6e96', careerLit: '#86b0e0', fun: '#c77a30', funLit: '#ffc070', gold: '#c9a040', goldLit: '#ffe9a0',
+      pole: '#5a554e', flag: '#a83a2c', flagDark: '#7a2a20', firefly: '#f1c878', fireflyDim: '#7d6437'
+    })
+  };
+
+  function buildRoad(w, h, night, m) {
+    var P = night ? ROAD.night : ROAD.day, H = night ? WORLD.night : WORLD.day;
+    var back = new Bitmap(w, h), put = back.painter(), r = random(9090);
+    var trees = [P.treeA, P.treeB, P.treeC], R = 3;
+    var mask = new Uint8Array(w * h);
+    var x, y, i, k;
+
+    function eraAt(yy) {
+      var e = 0;
+      for (var j = 0; j < m.eras.length; j++) if (yy >= m.eras[j]) e = Math.min(j, 2);
+      return e;
+    }
+
+    // grass, blending into the next era over a few dithered rows
+    for (y = 0; y < h; y++) {
+      for (x = 0; x < w; x++) {
+        var e = eraAt(y), v = r();
+        if (e > 0 && y - m.eras[e] < 10 && dither(x, y) > (y - m.eras[e]) / 10) e -= 1;
+        put(x, y, v < 0.1 ? P.grassDark[e] : v < 0.16 ? P.grassLight[e] : P.grass[e]);
+      }
+    }
+
+    // the road snakes from stop to stop, then fades out as a trail past "you are here"
+    var pts = m.points, samples = [];
+    for (i = 0; i < pts.length - 1; i++) {
+      var a = pts[i], b = pts[i + 1], dy = b.y - a.y;
+      var amp = Math.min(m.amp, dy / 3) * (i % 2 ? -1 : 1);
+      var steps = Math.max(2, Math.ceil(dy * 1.5));
+      for (k = 0; k <= steps; k++) {
+        var t = k / steps;
+        samples.push([a.x + (b.x - a.x) * t + 3 * amp * t * (1 - t), a.y + dy * t]);
+      }
+    }
+    samples.forEach(function (s) {
+      for (var yy = -R - 5; yy <= R + 5; yy++) {
+        for (var xx = -R - 5; xx <= R + 5; xx++) {
+          var mx = Math.round(s[0]) + xx, my = Math.round(s[1]) + yy;
+          if (mx >= 0 && my >= 0 && mx < w && my < h) mask[my * w + mx] = 1;
+        }
+      }
+    });
+    samples.forEach(function (s) { disc(put, Math.round(s[0]), Math.round(s[1]), R + 1, P.pathEdge); });
+    samples.forEach(function (s) {
+      disc(put, Math.round(s[0]), Math.round(s[1]), R, P.path);
+      if (r() < 0.12) put(Math.round(s[0]) + Math.floor(r() * 5) - 2, Math.round(s[1]) + Math.floor(r() * 5) - 2, P.pebble);
+    });
+    var end = pts[pts.length - 1];
+    for (y = end.y + 8, k = 0; y < h - 2; y += 4, k++) {
+      if (r() < k / 9) continue;
+      put(end.x, y, P.path);
+      put(end.x + 1, y, P.path);
+      put(end.x, y + 1, P.pathEdge);
+      put(end.x + 1, y + 1, P.pathEdge);
+    }
+
+    // scenery on the grass, kept off the road; trees drawn back to front
+    var forest = [];
+    for (i = Math.round(w * h / 80); i > 0; i--) {
+      x = Math.floor(r() * w);
+      y = Math.floor(r() * h);
+      if (mask[y * w + x]) continue;
+      var era = eraAt(y), pick = r();
+      if (pick < 0.5) {
+        put(x, y, P.grassDark[era]);
+        put(x + 1, y - 1, P.grassDark[era]);
+        put(x + 2, y, P.grassDark[era]);
+      } else if (pick < 0.78) {
+        put(x, y, P.flower[era === 2 && r() < 0.5 ? 3 : Math.floor(r() * 3)]);
+      } else if (pick < 0.86) {
+        put(x, y, P.rock);
+        put(x + 1, y, P.rockDark);
+      } else if (y > 12 && !mask[(y - 8) * w + x] && !mask[(y - 4) * w + Math.max(0, x - 4)] && !mask[(y - 4) * w + Math.min(w - 1, x + 4)]) {
+        forest.push({ x: x, y: y, era: era, size: r() });
+      }
+    }
+    forest.sort(function (p, q) { return p.y - q.y; }).forEach(function (f) {
+      var c = trees[f.era];
+      if (f.era === 2) pine(put, f.x, f.y, 7 + Math.floor(f.size * 5), c[0], c[2], P.trunk);
+      else roundTree(put, f.x, f.y, 2 + Math.floor(f.size * 2), c, P.trunk, r);
+    });
+
+    // start house, stops, and the finish line
+    var start = pts[0];
+    drawSprite(put, CABIN, start.x - 7, start.y - 11, {
+      c: H.chimney, R: H.roof, q: H.roofShade, r: H.roofShade, W: H.wall, w: H.wallShade, G: H.window, D: H.door
+    });
+    pts.forEach(function (p) {
+      if (p.type !== 'stop') return;
+      var c = p.kind === 'fun' ? P.fun : P.career, lit = p.kind === 'fun' ? P.funLit : P.careerLit;
+      disc(put, p.x, p.y, 5, P.out);
+      disc(put, p.x, p.y, 4, c);
+      put(p.x - 2, p.y - 2, lit);
+      put(p.x - 1, p.y - 2, lit);
+      put(p.x - 2, p.y - 1, lit);
+    });
+    disc(put, end.x, end.y, 6, P.out);
+    disc(put, end.x, end.y, 5, P.gold);
+    put(end.x - 2, end.y - 3, P.goldLit);
+    put(end.x - 3, end.y - 2, P.goldLit);
+
+    var narrow = end.x < 24;
+    var flagX = narrow ? end.x + 8 : end.x - 10;
+    line(put, flagX, end.y - 15, flagX, end.y + 1, P.pole);
+    var cat = narrow ? new Cat(end.x + 5, end.y + 4, {}) : new Cat(end.x - 25, end.y - 8, {});
+
+    var bugs = [];
+    for (i = 0; i < Math.round(h / 25); i++) bugs.push({ x: r() * w, y: r() * h, s: r() * 6.28 });
+
+    return {
+      back: back,
+      cats: [cat],
+      mid: function (p, f) {
+        var still = reduceMotion ? 0 : f;
+        // flag waving at the finish
+        var wave = (still >> 1) & 1;
+        for (var fy = 0; fy < 5; fy++) {
+          for (var fx = 1; fx <= 7; fx++) {
+            if (fx === 7 && fy !== 2 - wave && fy !== 2) continue;
+            var dip = wave && fx > 3 ? 1 : 0;
+            p(flagX + fx, end.y - 15 + fy + dip, fy === 4 || fx > 5 ? P.flagDark : P.flag);
+          }
+        }
+        if (!night) return;
+        bugs.forEach(function (b, n) {
+          var bx = Math.round(b.x + Math.sin(still * 0.12 + b.s) * 4), by = Math.round(b.y + Math.cos(still * 0.09 + b.s) * 3);
+          if ((still + n * 5) % 23 < 15) p(bx, by, (still + n) % 7 < 2 ? P.fireflyDim : P.firefly);
+        });
+      }
+    };
+  }
+
   /* ---------- views + render loop ---------- */
 
   var views = [];
@@ -1752,6 +2139,78 @@
     box.addEventListener('shelfchange', function () { mountView(v); });
   }
 
+  function setupRoad() {
+    var road = document.getElementById('road');
+    if (!road) return;
+    var S = 3;
+    var art = document.createElement('div');
+    art.className = 'road-art';
+    var cv = document.createElement('canvas');
+    cv.className = 'pixel-canvas';
+    cv.setAttribute('aria-hidden', 'true');
+    art.appendChild(cv);
+    road.insertBefore(art, road.firstChild);
+
+    // read where the signs and cards actually landed, in art pixels
+    function measure() {
+      var top = road.getBoundingClientRect().top;
+      function at(el, off) { return Math.round((el.getBoundingClientRect().top - top + off) / S); }
+      var first = road.querySelector('.road-era');
+      var cs = getComputedStyle(first);
+      var cols = cs.gridTemplateColumns.split(' ').map(parseFloat);
+      var pad = parseFloat(cs.paddingLeft);
+      var x = Math.round((pad + (cols.length > 2 ? cols[0] + cols[1] / 2 : cols[0] / 2)) / S);
+      var start = road.querySelector('.road-start'), end = road.querySelector('.road-end');
+      var pts = [{ x: x, y: at(start, start.offsetHeight / 2 + 12), type: 'start' }], eras = [];
+      Array.prototype.forEach.call(road.querySelectorAll('.road-era'), function (sec) {
+        var sign = sec.querySelector('.road-sign');
+        eras.push(at(sec, 0));
+        pts.push({ x: x, y: at(sign, sign.offsetHeight / 2), type: 'sign' });
+        Array.prototype.forEach.call(sec.querySelectorAll('.road-stop'), function (st) {
+          pts.push({ x: x, y: at(st, 19), type: 'stop', kind: st.getAttribute('data-kind') });
+        });
+      });
+      pts.push({ x: x, y: at(end, 34), type: 'end' });
+      pts.sort(function (a, b) { return a.y - b.y; });
+      return { points: pts, eras: eras, amp: cols.length > 2 ? 9 : 3 };
+    }
+
+    var v = addView({
+      el: road, canvas: cv, scale: S, fit: 'floor', observe: true, resizeWith: road,
+      size: function () { return { w: road.clientWidth, h: road.clientHeight }; },
+      build: function (w, h, night) { return buildRoad(w, h, night, measure()); }
+    });
+    enableCats(v);
+
+    // cards can change height (fonts, photos), so redraw the map when the road gets taller or shorter
+    if ('ResizeObserver' in window) {
+      var lastH = road.clientHeight, timer;
+      new ResizeObserver(function () {
+        if (road.clientHeight === lastH) return;
+        lastH = road.clientHeight;
+        clearTimeout(timer);
+        timer = setTimeout(function () { mountView(v); }, 150);
+      }).observe(road);
+    }
+  }
+
+  function setupBoard() {
+    var board = document.getElementById('board');
+    if (!board) return;
+    var art = document.createElement('div');
+    art.className = 'board-art';
+    var cv = document.createElement('canvas');
+    cv.className = 'pixel-canvas';
+    cv.setAttribute('aria-hidden', 'true');
+    art.appendChild(cv);
+    board.insertBefore(art, board.firstChild);
+    addView({
+      el: board, canvas: cv, scale: 3, fit: 'floor', observe: true, resizeWith: board,
+      size: function () { return { w: board.clientWidth, h: board.clientHeight }; },
+      build: buildBoard
+    });
+  }
+
   /* ---------- little extras ---------- */
 
   function toast(text) {
@@ -1804,6 +2263,8 @@
   setupBanner();
   setupWindow();
   setupShelf();
+  setupRoad();
+  setupBoard();
   var updateClock = setupClock();
   setupKonami();
 

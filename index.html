@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="/media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
     <style>
       /* --- CSS VARIABLES (Colors) --- */
       :root {
@@ -187,13 +187,319 @@
         gap: 10px;
       }
 
-      .main-image {
+      /* Bulletin board: the cork and frame are pixel art from /assets/v2.js.
+         Items are laid out on a 660 x 580 grid (--x/--y/--w) and scale with the board. */
+      .board {
+        --u: calc(100cqw / 660);
+        --p: 3px;
+        --paper: #f6f1e8;
+        --ink: #3a2f27;
+        position: relative;
+        container-type: inline-size;
+        aspect-ratio: 660 / 580;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      body.dark .board {
+        --paper: #d6cdbf;
+        --ink: #2e251e;
+      }
+
+      .board-art {
+        position: absolute;
+        inset: 0;
+      }
+
+      .board-item {
+        position: absolute;
+        left: calc(var(--x) * var(--u));
+        top: calc(var(--y) * var(--u));
+        width: calc(var(--w) * var(--u));
         box-sizing: border-box;
-        width: 100%;
-        height: auto;
-        border: 4px solid rgba(0, 0, 0, 0.849);
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--ink);
+        font: inherit;
+        text-align: left;
+        transform: rotate(var(--r));
+        transition: transform 0.18s ease, filter 0.18s ease;
+        -webkit-touch-callout: none;
+      }
+
+      .board-item img {
         display: block;
-        margin-bottom: 15px;
+        width: 100%;
+        -webkit-user-drag: none;
+      }
+
+      .board .pin,
+      .board .tape {
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .board-item:focus-visible {
+        outline: 2px dashed var(--link-color);
+        outline-offset: 3px;
+      }
+
+      /* photos */
+      .polaroid,
+      .strip {
+        background: var(--paper);
+        padding: calc(6 * var(--u)) calc(6 * var(--u)) 0;
+        box-shadow: calc(3 * var(--u)) calc(4 * var(--u)) 0 rgba(0, 0, 0, 0.28);
+      }
+
+      .polaroid img {
+        aspect-ratio: var(--ar);
+        object-fit: cover;
+        background: #1e1b18;
+      }
+
+      .polaroid {
+        padding-bottom: calc(18 * var(--u));
+      }
+
+      .polaroid.print {
+        padding-bottom: calc(6 * var(--u));
+      }
+
+      .strip {
+        padding-bottom: calc(1 * var(--u));
+      }
+
+      .board .shot {
+        display: block;
+        width: 100%;
+        margin: 0 0 calc(5 * var(--u));
+        background: #1e1b18;
+      }
+
+      .board .shot img {
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+
+      @media (hover: hover) {
+        .board-item:hover {
+          z-index: 60;
+          transform: rotate(calc(var(--r) * 0.4)) scale(1.06);
+        }
+
+        .polaroid:hover,
+        .strip:hover {
+          box-shadow: calc(6 * var(--u)) calc(9 * var(--u)) 0 rgba(0, 0, 0, 0.24);
+        }
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .board-item {
+          cursor: grab;
+        }
+      }
+
+      .board-item.dragging {
+        z-index: 80;
+        cursor: grabbing;
+        transition: none;
+        transform: rotate(calc(var(--r) * 0.4)) scale(1.08);
+      }
+
+      /* pushpins are drawn pixel by pixel with box-shadows */
+      .board .pin {
+        --hi: color-mix(in srgb, var(--c) 45%, #fff);
+        --lo: color-mix(in srgb, var(--c) 65%, #000);
+        --n: #8a8378;
+        left: 50%;
+        top: calc(var(--p) * -2);
+        width: var(--p);
+        height: var(--p);
+        margin-left: calc(var(--p) * -3.5);
+        box-shadow:
+          calc(var(--p) * 2) 0 var(--c), calc(var(--p) * 3) 0 var(--c), calc(var(--p) * 4) 0 var(--c),
+          var(--p) var(--p) var(--c), calc(var(--p) * 2) var(--p) var(--hi), calc(var(--p) * 3) var(--p) var(--c), calc(var(--p) * 4) var(--p) var(--c), calc(var(--p) * 5) var(--p) var(--lo),
+          var(--p) calc(var(--p) * 2) var(--c), calc(var(--p) * 2) calc(var(--p) * 2) var(--c), calc(var(--p) * 3) calc(var(--p) * 2) var(--c), calc(var(--p) * 4) calc(var(--p) * 2) var(--lo), calc(var(--p) * 5) calc(var(--p) * 2) var(--lo),
+          calc(var(--p) * 2) calc(var(--p) * 3) var(--lo), calc(var(--p) * 3) calc(var(--p) * 3) var(--lo), calc(var(--p) * 4) calc(var(--p) * 3) var(--lo),
+          calc(var(--p) * 3) calc(var(--p) * 4) var(--n),
+          calc(var(--p) * 4) calc(var(--p) * 4) rgba(0, 0, 0, 0.25), calc(var(--p) * 5) calc(var(--p) * 3) rgba(0, 0, 0, 0.25);
+      }
+
+      /* washi tape with torn ends */
+      .board .tape {
+        top: calc(-9 * var(--u));
+        left: 50%;
+        width: calc(58 * var(--u));
+        height: calc(17 * var(--u));
+        transform: translateX(-50%) rotate(var(--tr));
+        background:
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.28) 0 calc(4 * var(--u)), transparent calc(4 * var(--u)) calc(9 * var(--u))),
+          color-mix(in srgb, var(--t) 78%, transparent);
+        clip-path: polygon(0 0, 100% 0, 97% 25%, 100% 50%, 97% 75%, 100% 100%, 0 100%, 3% 75%, 0 50%, 3% 25%);
+      }
+
+      /* paper bits */
+      .board .note {
+        aspect-ratio: 1;
+        padding: calc(9 * var(--u)) calc(8 * var(--u));
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.06) 0 calc(14 * var(--u)), transparent calc(14 * var(--u))), #f3d77a;
+        box-shadow: calc(3 * var(--u)) calc(4 * var(--u)) 0 rgba(0, 0, 0, 0.22);
+        font-family: 'Gaegu', 'Comic Sans MS', cursive;
+        font-size: calc(13 * var(--u));
+        font-weight: 700;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      body.dark .board .note {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 0 calc(14 * var(--u)), transparent calc(14 * var(--u))), #c4ab5c;
+      }
+
+      .note-title {
+        display: block;
+        font-size: calc(16 * var(--u));
+        margin-bottom: calc(2 * var(--u));
+      }
+
+      .board .note ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .board .note li::before {
+        content: '\2610\00a0';
+        font-family: var(--body-font);
+      }
+
+      .board .note li.done {
+        text-decoration: line-through;
+        text-decoration-thickness: calc(2 * var(--u));
+      }
+
+      .board .note li.done::before {
+        content: '\2611\00a0';
+      }
+
+      .board .card {
+        padding: calc(16 * var(--u)) calc(10 * var(--u)) calc(6 * var(--u));
+        background:
+          linear-gradient(to bottom, transparent calc(13 * var(--u)), rgba(201, 69, 58, 0.55) calc(13 * var(--u)) calc(14 * var(--u)), transparent calc(14 * var(--u))),
+          repeating-linear-gradient(to bottom, transparent 0 calc(19 * var(--u)), rgba(95, 134, 176, 0.35) calc(19 * var(--u)) calc(20 * var(--u))),
+          var(--paper);
+        background-position: 0 0, 0 calc(12 * var(--u)), 0 0;
+        box-shadow: calc(3 * var(--u)) calc(4 * var(--u)) 0 rgba(0, 0, 0, 0.22);
+        font-family: 'Gaegu', 'Comic Sans MS', cursive;
+        font-size: calc(16 * var(--u));
+        font-weight: 700;
+        line-height: calc(20 * var(--u));
+      }
+
+      .board .card p {
+        margin: 0;
+      }
+
+      .board .card .sig {
+        text-align: right;
+        color: #7d5a44;
+      }
+
+      /* stickers get a die-cut white edge */
+      .board .sticker {
+        filter:
+          drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+          drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.25));
+      }
+
+      .board .sticker img {
+        image-rendering: pixelated;
+      }
+
+      .board .sticker[data-sticker="kirby"] img {
+        animation: board-float 2.4s ease-in-out infinite;
+      }
+
+      @keyframes board-float {
+        50% { transform: translateY(calc(-5 * var(--u))); }
+      }
+
+      .board .sticker.dash {
+        animation: board-dash 1.1s cubic-bezier(0.55, 0, 0.45, 1);
+      }
+
+      @keyframes board-dash {
+        45% { transform: rotate(var(--r)) translateX(900%); }
+        45.01% { transform: rotate(var(--r)) translateX(-900%); }
+        100% { transform: rotate(var(--r)) translateX(0); }
+      }
+
+      .board .sticker.hop img {
+        animation: board-hop 0.5s steps(4);
+      }
+
+      @keyframes board-hop {
+        50% { transform: translateY(calc(-14 * var(--u))) rotate(-10deg); }
+      }
+
+      .board .sticker.spin img {
+        animation: board-spin 0.6s steps(8);
+      }
+
+      @keyframes board-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .board .howdy {
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #6b1f1f;
+        box-shadow: 0 0 0 calc(3 * var(--u)) #fff, calc(3 * var(--u)) calc(5 * var(--u)) 0 calc(3 * var(--u)) rgba(0, 0, 0, 0.22);
+        color: #fff;
+        font-family: 'Gaegu', 'Comic Sans MS', cursive;
+        font-size: calc(17 * var(--u));
+        font-weight: 700;
+      }
+
+      .board .howdy::before {
+        content: '';
+        position: absolute;
+        inset: calc(4 * var(--u));
+        border: calc(1.5 * var(--u)) dashed rgba(255, 255, 255, 0.55);
+        border-radius: 50%;
+      }
+
+      .board-say {
+        position: absolute;
+        z-index: 90;
+        transform: translate(-50%, calc(-100% - 6px));
+        background: var(--box-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.18);
+        color: var(--text-color);
+        font-size: 11px;
+        padding: 3px 7px;
+        white-space: nowrap;
+        pointer-events: none;
+      }
+
+      @media (max-width: 500px) {
+        .board {
+          --p: 2px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .board-item,
+        .board .sticker img {
+          animation: none !important;
+          transition: none;
+        }
       }
 
       .caption {
@@ -444,6 +750,7 @@
           <div class="nav-group">
             <span class="nav-header">&mdash; personal &mdash;</span>
             <a href="/edc/" class="nav-link">edc</a>
+            <a href="/apps/" class="nav-link">daily apps</a>
           </div>
 
           <div class="nav-group">
@@ -452,6 +759,7 @@
             <a href="https://www.goodreads.com/user/show/155671209-ethan-meza" class="nav-link" target="_blank" rel="noopener">goodreads</a>
             <a href="https://www.instagram.com/ethnmz" class="nav-link" target="_blank" rel="noopener">instagram</a>
             <a href="https://open.spotify.com/user/31awkcd6qoymlogoavf3cly3jqra?si=3d55bfc0e1224de8" class="nav-link" target="_blank" rel="noopener">spotify</a>
+            <a href="https://www.tiktok.com/@ethanmeza10" class="nav-link" target="_blank" rel="noopener">tiktok</a>
           </div>
 
         </div>
@@ -480,7 +788,121 @@
         <div class="box">
           <h1 class="hello-header">welcome!</h1>
 
-          <img src="/media/beachimage.png" class="main-image" alt="site header image">
+          <div class="board" id="board" role="group" aria-label="bulletin board of photos and stickers">
+
+            <div class="board-item polaroid" style="--x: 18; --y: 38; --w: 172; --r: -4deg">
+              <img src="/media/board/eboard-sm.jpg" style="--ar: 4 / 3" alt="the TAMU ColorStack 2026-2027 e-board giving thumbs up" draggable="false">
+              <span class="tape" style="--t: #9cc49a; --tr: -3deg"></span>
+            </div>
+
+            <div class="board-item note" style="--x: 202; --y: 34; --w: 108; --r: 3deg">
+              <span class="note-title">to do:</span>
+              <ul>
+                <li class="done">build my site</li>
+                <li class="done">add a cat</li>
+                <li>touch grass</li>
+              </ul>
+            </div>
+
+            <div class="board-item polaroid print" style="--x: 322; --y: 40; --w: 100; --r: 5deg">
+              <img src="/media/board/campus-sm.jpg" style="--ar: 3 / 4" alt="Ethan giving a thumbs up outside a campus building" draggable="false">
+              <span class="tape" style="--t: #e7b46a; --tr: 4deg"></span>
+            </div>
+
+            <div class="board-item polaroid" style="--x: 436; --y: 36; --w: 170; --r: 3deg">
+              <img src="/media/board/crew-sm.jpg" style="--ar: 1284 / 949" alt="big group photo with friends outside a building" draggable="false">
+              <span class="pin" style="--c: #c9453a"></span>
+            </div>
+
+            <div class="board-item polaroid" style="--x: 24; --y: 196; --w: 104; --r: -3deg">
+              <img src="/media/board/kirby-sm.jpg" style="--ar: 3 / 4" alt="Ethan on campus next to a giant Kirby mascot" draggable="false">
+              <span class="pin" style="--c: #5f86b0"></span>
+            </div>
+
+            <div class="board-item strip" style="--x: 146; --y: 176; --w: 70; --r: -4deg">
+              <div class="shot">
+                <img src="/media/board/pikachu-sm.jpg" alt="selfie with a Pikachu plush" draggable="false">
+              </div>
+              <div class="shot">
+                <img src="/media/board/digicam-sm.jpg" alt="night flash photo of Ethan from a digital camera" draggable="false">
+              </div>
+              <div class="shot">
+                <img src="/media/board/river-sm.jpg" alt="sunny selfie by a rocky river" draggable="false">
+              </div>
+              <span class="pin" style="--c: #d9ae45"></span>
+            </div>
+
+            <div class="board-item polaroid print" style="--x: 232; --y: 166; --w: 168; --r: 3deg">
+              <img src="/media/board/colorstack-sm.jpg" style="--ar: 3 / 2" alt="Ethan in a ColorStack polo pointing in a lecture hall" draggable="false">
+              <span class="tape" style="--t: #8fb8d9; --tr: 3deg"></span>
+            </div>
+
+            <div class="board-item polaroid print" style="--x: 414; --y: 192; --w: 100; --r: -5deg">
+              <img src="/media/board/hallway-sm.jpg" style="--ar: 3 / 4" alt="fisheye selfie of Ethan in a hallway lined with lockers" draggable="false">
+              <span class="pin" style="--c: #b07ab8"></span>
+            </div>
+
+            <div class="board-item polaroid" style="--x: 524; --y: 196; --w: 120; --r: 4deg">
+              <img src="/media/board/balcony-sm.jpg" style="--ar: 4 / 3" alt="Ethan on a balcony with a city skyline behind him" draggable="false">
+              <span class="pin" style="--c: #6f8a4e"></span>
+            </div>
+
+            <div class="board-item polaroid" style="--x: 30; --y: 360; --w: 100; --r: 4deg">
+              <img src="/media/board/ducks-sm.jpg" style="--ar: 3 / 4" alt="Ethan reaching toward a duck by a pond with a fountain" draggable="false">
+              <span class="pin" style="--c: #c9453a"></span>
+            </div>
+
+            <div class="board-item polaroid" style="--x: 236; --y: 312; --w: 100; --r: -3deg">
+              <img src="/media/board/friends-sm.jpg" style="--ar: 3 / 4" alt="group selfie with friends" draggable="false">
+              <span class="pin" style="--c: #6f8a4e"></span>
+            </div>
+
+            <div class="board-item polaroid print" style="--x: 350; --y: 330; --w: 100; --r: 4deg">
+              <img src="/media/board/bonfire-sm.jpg" style="--ar: 3 / 4" alt="Ethan and a friend in front of a bonfire at night" draggable="false">
+              <span class="tape" style="--t: #d98fae; --tr: -6deg"></span>
+            </div>
+
+            <div class="board-item polaroid print" style="--x: 464; --y: 318; --w: 100; --r: -4deg">
+              <img src="/media/board/park-sm.jpg" style="--ar: 3 / 4" alt="Ethan and a friend sitting on a park sign at dusk" draggable="false">
+              <span class="pin" style="--c: #5f86b0"></span>
+            </div>
+
+            <div class="board-item polaroid" style="--x: 548; --y: 420; --w: 96; --r: 5deg">
+              <img src="/media/board/trail-sm.jpg" style="--ar: 3 / 4" alt="Ethan walking down a tree-covered trail" draggable="false">
+              <span class="tape" style="--t: #9cc49a; --tr: 2deg"></span>
+            </div>
+
+            <div class="board-item card" style="--x: 136; --y: 480; --w: 136; --r: -2deg">
+              <p>thanks for stopping by! &hearts;</p>
+              <p class="sig">&mdash; ethan</p>
+              <span class="pin" style="--c: #c9453a"></span>
+            </div>
+
+            <div class="board-item howdy" style="--x: 196; --y: 136; --w: 54; --r: -12deg" aria-hidden="true">
+              <span>howdy!</span>
+            </div>
+
+            <button type="button" class="board-item sticker" data-sticker="kirby" style="--x: 92; --y: 172; --w: 56; --r: -8deg" aria-label="kirby sticker">
+              <img src="/media/board/sticker-kirby.gif" alt="" draggable="false">
+            </button>
+
+            <button type="button" class="board-item sticker" data-sticker="star" style="--x: 598; --y: 24; --w: 50; --r: 10deg" aria-label="star sticker">
+              <img src="/media/board/sticker-star.gif" alt="" draggable="false">
+            </button>
+
+            <button type="button" class="board-item sticker" data-sticker="dog" style="--x: 162; --y: 404; --w: 50; --r: 6deg" aria-label="annoying dog sticker">
+              <img src="/media/board/sticker-dog.gif" alt="" draggable="false">
+            </button>
+
+            <button type="button" class="board-item sticker" data-sticker="sonic" style="--x: 290; --y: 482; --w: 70; --r: -3deg" aria-label="sonic sticker">
+              <img src="/media/board/sticker-sonic.gif" alt="" draggable="false">
+            </button>
+
+            <button type="button" class="board-item sticker" data-sticker="mario" style="--x: 368; --y: 484; --w: 132; --r: -2deg" aria-label="mario and yoshi sticker">
+              <img src="/media/board/sticker-mario.gif" alt="" draggable="false">
+            </button>
+
+          </div>
 
           <p class="caption">
             Hey guys this is my personal website. I wanted to make something that felt less corpratey and more personal. I will just be posting random updates and songs here mainly for me but if you find any of this interesting feel free to check everything out!
@@ -532,6 +954,11 @@
             <hr class="dashed">
 
             <div class="update-entry">
+              <div class="date">2026 Sep 25</div>
+              <p>version 2 released!!</p>
+            </div>
+
+            <div class="update-entry">
               <div class="date">2026 Jul 20</div>
               <p>added a <a href="/portfolio/">portfolio</a> and <a href="/resume/">resume</a> page under a new work section.</p>
             </div>
@@ -571,6 +998,85 @@
         dismissBtn.addEventListener('click', function () {
           overlay.classList.remove('visible');
           sessionStorage.setItem('mobileNoticeDismissed', '1');
+        });
+      })();
+
+      (function () {
+        var board = document.getElementById('board');
+        if (!board) return;
+        var GRID = 660;
+        var stack = 20;
+        var dragged = false;
+
+        // drag things around with a mouse (touch keeps normal scrolling)
+        board.addEventListener('pointerdown', function (e) {
+          var item = e.target.closest('.board-item');
+          if (!item || e.pointerType !== 'mouse' || e.button !== 0) return;
+          e.preventDefault();
+          var u = board.clientWidth / GRID;
+          var x0 = parseFloat(item.style.getPropertyValue('--x'));
+          var y0 = parseFloat(item.style.getPropertyValue('--y'));
+          var maxX = GRID - item.offsetWidth / u + 20;
+          var maxY = board.clientHeight / u - item.offsetHeight / u + 20;
+          var sx = e.clientX, sy = e.clientY, moving = false;
+          dragged = false;
+          item.style.zIndex = ++stack;
+
+          function move(ev) {
+            var dx = ev.clientX - sx, dy = ev.clientY - sy;
+            if (!moving && dx * dx + dy * dy < 25) return;
+            moving = dragged = true;
+            item.classList.add('dragging');
+            item.style.setProperty('--x', Math.round(Math.min(maxX, Math.max(-20, x0 + dx / u))));
+            item.style.setProperty('--y', Math.round(Math.min(maxY, Math.max(-20, y0 + dy / u))));
+          }
+          function up() {
+            item.classList.remove('dragging');
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', up);
+            setTimeout(function () { dragged = false; }, 0);
+          }
+          window.addEventListener('pointermove', move);
+          window.addEventListener('pointerup', up);
+        });
+
+        // stickers have opinions
+        var sayings = {
+          kirby: ['poyo!', 'hi!!', '*floats*'],
+          dog: ['bark!', '*wags tail*', 'the dog absorbs the photo'],
+          sonic: ['gotta go fast', 'too slow!'],
+          star: ['*twinkle*', 'invincible for 10 seconds', 'here we go!'],
+          mario: ['yahoo!', 'wahoo!', '*yoshi noises*']
+        };
+
+        function say(item, text) {
+          var old = board.querySelector('.board-say');
+          if (old) old.remove();
+          var b = document.createElement('div');
+          b.className = 'board-say';
+          b.setAttribute('role', 'status');
+          b.textContent = text;
+          b.style.left = item.offsetLeft + item.offsetWidth / 2 + 'px';
+          b.style.top = Math.max(30, item.offsetTop) + 'px';
+          board.appendChild(b);
+          setTimeout(function () { b.remove(); }, 1800);
+        }
+
+        function poke(item) {
+          var kind = item.getAttribute('data-sticker');
+          var lines = sayings[kind];
+          var cls = { sonic: 'dash', star: 'spin' }[kind] || 'hop';
+          item.classList.remove(cls);
+          void item.offsetWidth;
+          item.classList.add(cls);
+          setTimeout(function () { item.classList.remove(cls); }, 1200);
+          say(item, lines[Math.floor(Math.random() * lines.length)]);
+        }
+
+        board.addEventListener('click', function (e) {
+          if (dragged) return;
+          var sticker = e.target.closest('.sticker');
+          if (sticker) poke(sticker);
         });
       })();
 
