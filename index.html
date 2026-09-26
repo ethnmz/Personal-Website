@@ -299,13 +299,13 @@
 
       @media (hover: hover) and (pointer: fine) {
         .board-item {
-          cursor: grab;
+          cursor: var(--cursor-grab);
         }
       }
 
       .board-item.dragging {
         z-index: 80;
-        cursor: grabbing;
+        cursor: var(--cursor-grabbing);
         transition: none;
         transform: rotate(calc(var(--r) * 0.4)) scale(1.08);
       }
@@ -540,7 +540,7 @@
         border: 1px solid var(--border-color);
         object-fit: cover;
         display: block;
-        cursor: pointer;
+        cursor: var(--cursor-pointer);
         animation: np-spin 6s linear infinite;
         animation-play-state: paused;
       }
@@ -600,7 +600,7 @@
         color: var(--text-color);
         font-family: var(--body-font);
         font-size: 0.7em;
-        cursor: pointer;
+        cursor: var(--cursor-pointer);
       }
 
       .np-btn:hover {
@@ -614,7 +614,7 @@
         border: 1px solid var(--border-color);
         border-radius: 3px;
         overflow: hidden;
-        cursor: pointer;
+        cursor: var(--cursor-pointer);
       }
 
       .np-seek-fill {
@@ -699,7 +699,7 @@
         font-family: var(--body-font);
         font-weight: bold;
         padding: 8px 16px;
-        cursor: pointer;
+        cursor: var(--cursor-pointer);
       }
 
       .mobile-modal button:hover {

@@ -158,6 +158,37 @@ body.dark {
   animation: v2-pop 0.2s steps(3) both;
 }
 
+/* ---------- pixel cursors ---------- */
+
+:root {
+  --cursor-default: image-set(url("/media/cursor/arrow.png") 1x, url("/media/cursor/arrow@2x.png") 2x) 0 0, default;
+  --cursor-pointer: image-set(url("/media/cursor/pointer.png") 1x, url("/media/cursor/pointer@2x.png") 2x) 7 0, pointer;
+  --cursor-grab: image-set(url("/media/cursor/grab.png") 1x, url("/media/cursor/grab@2x.png") 2x) 10 10, grab;
+  --cursor-grabbing: image-set(url("/media/cursor/grabbing.png") 1x, url("/media/cursor/grabbing@2x.png") 2x) 10 9, grabbing;
+  --cursor-zoom-in: image-set(url("/media/cursor/zoom.png") 1x, url("/media/cursor/zoom@2x.png") 2x) 7 7, zoom-in;
+  --cursor-zoom-out: image-set(url("/media/cursor/zoom.png") 1x, url("/media/cursor/zoom@2x.png") 2x) 7 7, zoom-out;
+  --cursor-pet: image-set(url("/media/cursor/paw.png") 1x, url("/media/cursor/paw@2x.png") 2x) 10 1, pointer;
+}
+
+html {
+  cursor: var(--cursor-default);
+}
+
+*,
+*::before,
+*::after {
+  cursor: inherit;
+}
+
+a[href],
+button,
+select,
+summary,
+label,
+[role="tab"] {
+  cursor: var(--cursor-pointer);
+}
+
 /* ---------- party mode (konami code) ---------- */
 
 .crt-overlay {

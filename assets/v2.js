@@ -475,7 +475,11 @@
     var tail = reduceMotion ? 0 : [0, 1, 0, 2][Math.floor((f + this.seed) / 9) % 4];
     this.part(put, TAILS[tail], 0, 6, c, dy);
     this.part(put, closed ? CAT_CLOSED : CAT, 0, 0, c, dy);
-    if (state.party) this.part(put, HAT, 4, -4, c, dy);
+    var hat = state.party ? 'party' : state.hat;
+    if (hat) {
+      var H = HATS[hat];
+      this.part(put, H.s, H.ox, H.oy, hat === 'party' ? c : HAT_COLORS[night ? 'night' : 'day'], dy);
+    }
     for (var i = this.hearts.length - 1; i >= 0; i--) {
       var h = this.hearts[i];
       drawSprite(put, HEART, Math.round(h.x), Math.round(h.y), c);
@@ -489,7 +493,7 @@
   };
   Cat.prototype.pet = function (f) {
     this.happyUntil = f + 12;
-    if (!reduceMotion) this.hearts.push({ x: this.x + (this.flip ? 2 : 4), y: this.y - (state.party ? 10 : 6), life: 10 });
+    if (!reduceMotion) this.hearts.push({ x: this.x + (this.flip ? 2 : 4), y: this.y - (state.party || state.hat ? 11 : 6), life: 10 });
   };
 
   var LINES = {
@@ -509,11 +513,195 @@
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
+  /* ---------- the calendar: real seasons + holidays, in texas time ---------- */
+
+  // ?date=2026-10-31 previews another day for the rest of the visit; ?date=today goes back
+  function today() {
+    var forced = null;
+    try {
+      var q = new URLSearchParams(location.search).get('date');
+      if (q === 'today') sessionStorage.removeItem('v2-date');
+      else if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) sessionStorage.setItem('v2-date', q);
+      forced = sessionStorage.getItem('v2-date');
+    } catch (e) {}
+    var ymd = forced || new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    var p = ymd.split('-').map(Number);
+    return { y: p[0], m: p[1], d: p[2] };
+  }
+
+  function almanac(t) {
+    var md = t.m * 100 + t.d, holiday = null;
+    if (md >= 1231 || md <= 101) holiday = 'newyear';
+    else if (md >= 1201) holiday = 'december';
+    else if (md >= 1024 && md <= 1031) holiday = 'halloween';
+    else if (md >= 213 && md <= 214) holiday = 'valentine';
+    else if (md >= 703 && md <= 704) holiday = 'july4';
+    else if (md === 712) holiday = 'birthday';
+    return {
+      year: t.y,
+      season: t.m >= 3 && t.m <= 5 ? 'spring' : t.m >= 6 && t.m <= 8 ? 'summer' : t.m >= 9 && t.m <= 11 ? 'fall' : 'winter',
+      holiday: holiday
+    };
+  }
+
+  var cal = almanac(today());
+  var PARTY_DAYS = { newyear: 1, july4: 1, birthday: 1 };
+  state.hat = { halloween: 'witch', december: 'santa', newyear: 'party', july4: 'party', birthday: 'party' }[cal.holiday] || null;
+
+  var HATS = {
+    party: { s: HAT, ox: 4, oy: -4 },
+    witch: { s: new Sprite(['....M..', '...MM..', '..MMM..', '..OOO..', 'MMMMMMM']), ox: 2, oy: -5 },
+    santa: { s: new Sprite(['...W...', '..RRR..', '.RRRRR.', 'WWWWWWW']), ox: 2, oy: -4 }
+  };
+  var HAT_COLORS = {
+    day: palette({ M: '#5a3d7a', O: '#e08d3b', R: '#c9453a', W: '#f1ebe2' }),
+    night: palette({ M: '#6a4a90', O: '#f0a050', R: '#c9453a', W: '#e8e0d4' })
+  };
+
+  // how each season repaints the background world
+  var SEASON_TINT = {
+    spring: {
+      day: { meadow: '#9fae82', meadowLit: '#adbb8f', bush: '#7f9464', bushLit: '#93a877', bushShade: '#6c8054', midField: '#a5ad88', grass: '#aab98c', near: '#95977a', nearLit: '#a1a384', blossom: '#ecaec0' },
+      night: { meadow: '#161a13', bush: '#101410', bushLit: '#141913', midField: '#1b1e17', grass: '#1d2218', blossom: '#4a2e36' }
+    },
+    fall: {
+      day: { meadow: '#b0a07c', meadowLit: '#bdad88', bush: '#b87a45', bushLit: '#cc8d55', bushShade: '#955f37', midField: '#b59b6c', midTree: '#9c8568', grass: '#bda67a', reed: '#8f6f4b', red: '#b0553a', redLit: '#c86a4a', redShade: '#8e432e' },
+      night: { meadow: '#1b1711', bush: '#2a1b11', bushLit: '#332114', bushShade: '#20150d', midField: '#221c14', grass: '#261e14', red: '#26140f', redLit: '#2e1812', redShade: '#1e100c' }
+    },
+    winter: {
+      day: {
+        meadow: '#dcdcd6', meadowLit: '#e9e9e4', near: '#d4d5cf', nearLit: '#e7e8e3', grass: '#b3ab98',
+        mid: '#c9c9c3', midLit: '#d7d7d1', midShade: '#bdbdb7', midField: '#d2d2cc', midTree: '#8d9087',
+        bush: '#8e867a', bushLit: '#a39b8f', bushShade: '#7a7266', tree: '#dfe4df', treeShade: '#56634f',
+        water: '#cad6dc', waterDark: '#bcc8cf', waterLit: '#eef3f5', shore: '#b9b9b1', reed: '#9b8f7a',
+        roof: '#e6e6e1', roofShade: '#cfcfc9', far: '#cfcac3', farLit: '#d9d4cd', farShade: '#c4bfb8'
+      },
+      night: {
+        meadow: '#2a2c31', meadowLit: '#33363c', near: '#25272c', nearLit: '#2f3237', grass: '#3a3b3e',
+        mid: '#212328', midLit: '#262930', midShade: '#1d1f24', midField: '#26282d', midTree: '#16181b',
+        bush: '#1b1816', tree: '#3a3e44', treeShade: '#111412', water: '#1d2329', waterDark: '#181d22',
+        roof: '#3b3e44', roofShade: '#2f3237'
+      }
+    }
+  };
+
+  function seasonal(P, night) {
+    var tint = SEASON_TINT[cal.season], over = tint && tint[night ? 'night' : 'day'];
+    if (!over) return P;
+    var out = {};
+    Object.keys(P).forEach(function (k) { out[k] = P[k]; });
+    Object.keys(over).forEach(function (k) { out[k] = rgb(over[k]); });
+    return out;
+  }
+
+  /* ---------- weather: petals, leaves, snow, confetti ---------- */
+
+  var WEATHER_COLORS = {
+    snow: { day: ['#ffffff', '#eef2f4', '#dfe6ea'], night: ['#c8ccd0', '#a3a8ad', '#7c8187'] },
+    leaves: { day: ['#c8793d', '#b0553a', '#d9ae45'], night: ['#5a3a22', '#4a2a1c', '#5c4a26'] },
+    petals: { day: ['#f3c0cc', '#ecaec0', '#fbe3e8'], night: ['#5a3a44', '#4a2e36', '#6a4a52'] },
+    confetti: { day: ['#e0503a', '#f0c24e', '#5f86b0', '#8fa866', '#b07ab8'], night: ['#ff6b6b', '#ffd166', '#6bb8ff', '#8dff9a', '#d49cff'] },
+    usa: { day: ['#c9453a', '#f4f1ea', '#3d5f9e'], night: ['#ff6b6b', '#ffffff', '#6b9bff'] }
+  };
+  Object.keys(WEATHER_COLORS).forEach(function (k) {
+    WEATHER_COLORS[k] = { day: WEATHER_COLORS[k].day.map(rgb), night: WEATHER_COLORS[k].night.map(rgb) };
+  });
+
+  function weatherKind() {
+    if (PARTY_DAYS[cal.holiday] && !isNight()) return cal.holiday === 'july4' ? 'usa' : 'confetti';
+    return { spring: 'petals', fall: 'leaves', winter: 'snow' }[cal.season] || null;
+  }
+
+  function Weather(w, h, kind, ground) {
+    this.w = w;
+    this.h = h;
+    this.kind = kind;
+    this.ground = ground || function () { return h; };
+    var per = { snow: 240, leaves: 1100, petals: 1500, confetti: 420, usa: 420 }[kind];
+    this.list = [];
+    for (var i = Math.round(w * h / per); i > 0; i--) this.list.push(this.spawn(true));
+  }
+  Weather.prototype.spawn = function (anywhere) {
+    var snow = this.kind === 'snow';
+    return {
+      x: Math.random() * this.w,
+      y: anywhere ? Math.random() * this.h : -1 - Math.random() * 8,
+      v: snow ? 0.18 + Math.random() * 0.3 : 0.25 + Math.random() * 0.3,
+      drift: snow ? 0.05 : this.kind === 'leaves' ? 0.25 : 0.12,
+      s: Math.random() * 6.28,
+      c: Math.floor(Math.random() * 5)
+    };
+  };
+  Weather.prototype.draw = function (put, f) {
+    var cols = WEATHER_COLORS[this.kind][isNight() ? 'night' : 'day'], self = this;
+    this.list.forEach(function (p, i) {
+      if (!reduceMotion) {
+        p.y += p.v;
+        p.x += p.drift + Math.sin(f * 0.15 + p.s) * (self.kind === 'snow' ? 0.15 : 0.35);
+        if (p.x > self.w + 2) p.x = -2;
+        if (p.y > self.ground(Math.round(clamp(p.x, 0, self.w - 1)))) self.list[i] = p = self.spawn(false);
+      }
+      var c = cols[p.c % cols.length];
+      put(p.x, p.y, c);
+      if (self.kind === 'leaves' && ((f + i) >> 1) & 1) put(p.x + 1, p.y, c);
+      if (self.kind === 'snow' && p.c === 0) put(p.x + 1, p.y, c);
+    });
+  };
+
+  /* ---------- fireworks for new year's, july 4th, and the site's birthday ---------- */
+
+  var SPARK = ['#ff6b6b', '#ffd166', '#6bd1ff', '#b98cff', '#8dff9a', '#ffffff'].map(rgb);
+
+  function Fireworks(w, h) {
+    this.w = w;
+    this.h = h;
+    this.rockets = [];
+    this.sparks = [];
+  }
+  Fireworks.prototype.draw = function (put, f) {
+    var self = this;
+    if (!reduceMotion && f % 14 === 0 && Math.random() < 0.8) {
+      this.rockets.push({ x: this.w * (0.15 + Math.random() * 0.7), y: this.h * 0.7, top: this.h * (0.08 + Math.random() * 0.22), c: SPARK[Math.floor(Math.random() * SPARK.length)] });
+    }
+    this.rockets = this.rockets.filter(function (r) {
+      r.y -= 2.2;
+      put(r.x, r.y, r.c);
+      put(r.x, r.y + 1, SPARK[1]);
+      if (r.y > r.top) return true;
+      for (var k = 0; k < 18; k++) {
+        var a = k / 18 * 6.283, sp = 0.7 + Math.random() * 0.5;
+        self.sparks.push({ x: r.x, y: r.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 14 + Math.floor(Math.random() * 6), c: r.c });
+      }
+      return false;
+    });
+    this.sparks = this.sparks.filter(function (s) {
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy += 0.05;
+      s.vx *= 0.96;
+      s.life -= 1;
+      if (s.life > 3 || (s.life & 1)) put(s.x, s.y, s.c);
+      return s.life > 0;
+    });
+  };
+
+  /* ---------- holiday props ---------- */
+
+  var PUMPKIN = new Sprite(['..s..', '.OOO.', 'OeOeO', '.OoO.']);
+  var SNOWMAN = new Sprite(['.KKK.', 'KKKKK', '.www.', '.wen.', '.www.', 'wwwww', 'wwwww', 'wwwww', '.www.']);
+  var BAT = [new Sprite(['K...K', '.KKK.']), new Sprite(['.KKK.', 'K...K'])];
+  var TINY_HEART = new Sprite(['H.H', 'HHH', '.H.']);
+  var BULBS = ['#e0503a', '#6fbf5a', '#f0c24e', '#5f86ff'].map(rgb);
+  var PROPS = {
+    day: palette({ O: '#e07a2e', s: '#5a6e3a', e: '#5a2e10', w: '#f4f4f0', K: '#2a2622', n: '#e07a2e', bat: '#3a2a30', heart: '#e06b86' }),
+    night: palette({ O: '#9a5220', s: '#2e3a1e', e: '#ffd166', w: '#7a7d82', K: '#141210', n: '#b0561e', bat: '#6a5480', heart: '#f08aa0' })
+  };
+
   /* ---------- background world ---------- */
 
   function buildWorld(w, h, night) {
-    var P = night ? WORLD.night : WORLD.day;
-    var tr = random(7714), sr = random(1234);
+    var P = seasonal(night ? WORLD.night : WORLD.day, night), PR = night ? PROPS.night : PROPS.day;
+    var tr = random(7714), sr = random(1234), dr = random(4242);
     var back = new Bitmap(w, h), front = new Bitmap(w, h);
     var B = back.painter(), F = front.painter();
     var x, y, i;
@@ -537,7 +725,7 @@
     }
 
     var farTop = normalize(ridge(w, tr, 0.56)).map(function (v) { return Math.round(horizon - h * 0.04 - v * h * 0.2); });
-    var snowLine = Math.min.apply(null, farTop) + Math.round(h * 0.035);
+    var snowLine = Math.min.apply(null, farTop) + Math.round(h * (cal.season === 'winter' ? 0.12 : 0.035));
     for (x = 0; x < w; x++) {
       var y0 = farTop[x], slope = farTop[Math.min(w - 1, x + 1)] - farTop[Math.max(0, x - 1)];
       for (y = y0; y < h; y++) {
@@ -586,7 +774,13 @@
     var groves = smooth(normalize(ridge(w, tr, 0.65)), 3);
     for (x = 2; x < w - 2; x += 3 + Math.floor(tr() * 5)) {
       if (groves[x] < 0.6 || (x > lakeL - 6 && x < lakeR + 6) || (x > cabinX - 18 && x < cabinX + CABIN.w + 18)) continue;
-      roundTree(F, x, meadowTop[x] + 2 + Math.floor(tr() * 3), 2 + Math.floor(tr() * 2), [P.bushLit, P.bush, P.bushShade], P.trunk, tr);
+      var gy = meadowTop[x] + 2 + Math.floor(tr() * 3), gr = 2 + Math.floor(tr() * 2);
+      var leaves = P.red && dr() < 0.35 ? [P.redLit, P.red, P.redShade] : [P.bushLit, P.bush, P.bushShade];
+      roundTree(F, x, gy, gr, leaves, P.trunk, tr);
+      if (P.blossom) {
+        var crown = gy - Math.max(2, Math.round(gr * 0.8)) - gr;
+        for (var bl = 0; bl < 4; bl++) F(x + Math.floor(dr() * (2 * gr + 1)) - gr, crown + Math.floor(dr() * (2 * gr + 1)) - gr, P.blossom);
+      }
     }
 
     var glints = [];
@@ -641,6 +835,19 @@
       W: P.wall, w: P.wallShade, G: P.window, D: P.door
     });
 
+    if (cal.season === 'winter') {
+      var smx = cabinX - 22;
+      if (smx > lakeR + 4) drawSprite(F, SNOWMAN, smx, nearTop[smx + 2] - SNOWMAN.h + 1, PR);
+    }
+    if (cal.holiday === 'halloween') {
+      [cabinX + 13, cabinX - 5].forEach(function (px) {
+        if (px < 0 || px > w - 6) return;
+        var py = nearTop[px + 2] - PUMPKIN.h + 1;
+        if (night) halo(F, px + 2, py + 2, 2, 6, rgb('#3a2616'));
+        drawSprite(F, PUMPKIN, px, py, PR);
+      });
+    }
+
     for (x = 0; x < w; x += 1 + Math.floor(tr() * 3)) {
       if (tr() < 0.5) F(x, nearTop[x] - 1, P.grass);
       if (tr() < 0.15) F(x, nearTop[x] - 2, P.grass);
@@ -676,6 +883,12 @@
       }
     }
 
+    var bats = [];
+    if (cal.holiday === 'halloween') {
+      for (i = 0; i < 5; i++) bats.push({ x: dr() * w, y: h * (0.08 + dr() * 0.3), v: 0.3 + dr() * 0.3, p: dr() * 6.28 });
+    }
+    var fireworks = night && PARTY_DAYS[cal.holiday] ? new Fireworks(w, h) : null;
+
     var chimX = cabinX + 9, chimY = cabinY - 1, smoke = [];
     for (i = 0; i < 8; i++) smoke.push({ x: chimX + i * 0.6, y: chimY - i * 1.3, life: i * 4 });
     var shooting = null;
@@ -683,6 +896,7 @@
     return {
       back: back,
       front: front,
+      ground: function (gx) { return nearTop[gx]; },
       mid: function (put, f, ctx) {
         clouds.forEach(function (cl) {
           if (!reduceMotion) {
@@ -698,6 +912,11 @@
           put(b.x, b.y + (up ? 1 : 0), P.bird);
           put(b.x + 1, b.y + (up ? 0 : 1), P.bird);
         });
+        bats.forEach(function (b) {
+          if (!reduceMotion) { b.x += b.v; if (b.x > w + 5) b.x = -5; }
+          drawSprite(put, BAT[reduceMotion ? 0 : (f >> 1) & 1], Math.round(b.x), Math.round(b.y + Math.sin(f * 0.3 + b.p) * 2), { K: PR.bat });
+        });
+        if (fireworks) fireworks.draw(put, f);
         if (!night) return;
         if (!reduceMotion) twinkle(put, starList, f, P, 6);
         if (!shooting && !reduceMotion && Math.random() < 0.004) {
@@ -713,15 +932,26 @@
       },
       top: function (put, f) {
         if (!reduceMotion && f % 4 === 0) smoke.push({ x: chimX + 0.5, y: chimY, life: 0 });
-        smoke.forEach(function (p) {
+        smoke.forEach(function (p, n) {
           if (!reduceMotion) {
             p.y -= 0.32;
             p.x += 0.14 + Math.sin((p.life + p.x) * 0.4) * 0.08;
             p.life += 1;
           }
+          if (cal.holiday === 'valentine') {
+            if (n % 3 === 0) drawSprite(put, TINY_HEART, Math.round(p.x) - 1, Math.round(p.y), { H: PR.heart });
+            return;
+          }
           put(p.x, p.y, p.life < 16 ? P.smoke : P.smokeDim);
           if (p.life < 8) put(p.x + 1, p.y, P.smoke);
         });
+
+        if (cal.holiday === 'december') {
+          for (var lx = 2, k = 0; lx <= 11; lx += 2, k++) {
+            var on = !night || reduceMotion || (k + (f >> 2)) % 5 !== 0;
+            put(cabinX + lx, cabinY + 7, on ? BULBS[k % 4] : P.wallShade);
+          }
+        }
         smoke = smoke.filter(function (p) { return p.life < 30; });
 
         if (night) {
@@ -1351,6 +1581,8 @@
     return {
       back: back, front: front, cats: cats,
       mid: function (put, f) { if (tod === 'night' && !reduceMotion) twinkle(put, stars, f, N, 2); },
+      weatherBehind: true,
+      ground: function () { return gy1 - 1; },
       caption: 'your sky · ' + now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase(),
       moon: 'moon: ' + phaseName(moonPhase(now))
     };
@@ -1958,6 +2190,8 @@
     v.ctx.imageSmoothingEnabled = false;
     v.put = ctxPainter(v.ctx);
     v.scene = v.build(w, h, isNight());
+    var kind = v.hasWeather && weatherKind();
+    v.weather = kind ? new Weather(w, h, kind, v.scene.ground) : null;
     v.backC = v.scene.back ? v.scene.back.canvas() : null;
     v.frontC = v.scene.front ? v.scene.front.canvas() : null;
     if (v.onMount) v.onMount(v.scene);
@@ -1969,9 +2203,11 @@
     c.clearRect(0, 0, v.canvas.width, v.canvas.height);
     if (v.backC) c.drawImage(v.backC, 0, 0);
     if (s.mid) s.mid(v.put, f, c);
+    if (v.weather && s.weatherBehind) v.weather.draw(v.put, f);
     if (v.frontC) c.drawImage(v.frontC, 0, 0);
     if (s.cats) s.cats.forEach(function (cat) { cat.draw(v.put, f, night); });
     if (s.top) s.top(v.put, f, c);
+    if (v.weather && !s.weatherBehind) v.weather.draw(v.put, f);
   }
 
   function addView(v) {
@@ -2001,7 +2237,7 @@
     b.setAttribute('role', 'status');
     b.textContent = text;
     var cx = (cat.x + CAT.w / 2) * v.scale + v.canvas.offsetLeft;
-    var cy = (cat.y - (state.party ? 5 : 1)) * v.scale + v.canvas.offsetTop;
+    var cy = (cat.y - (state.party || state.hat ? 6 : 1)) * v.scale + v.canvas.offsetTop;
     b.style.left = cx + 'px';
     b.style.top = cy + 'px';
     v.el.appendChild(b);
@@ -2030,7 +2266,7 @@
       render(v);
     });
     v.canvas.addEventListener('mousemove', function (e) {
-      v.canvas.style.cursor = catAt(e) ? 'pointer' : '';
+      v.canvas.style.cursor = catAt(e) ? 'var(--cursor-pet)' : '';
     });
   }
 
@@ -2041,7 +2277,7 @@
     cv.setAttribute('aria-hidden', 'true');
     document.body.insertBefore(cv, document.body.firstChild);
     addView({
-      el: cv, canvas: cv, scale: 4,
+      el: cv, canvas: cv, scale: 4, hasWeather: true,
       size: function () { return { w: window.innerWidth, h: window.innerHeight }; },
       build: buildWorld
     });
@@ -2060,7 +2296,7 @@
     art.appendChild(cv);
     bannerEl.insertBefore(art, bannerEl.firstChild);
     var v = addView({
-      el: bannerEl, canvas: cv, scale: 3, observe: true, resizeWith: bannerEl,
+      el: bannerEl, canvas: cv, scale: 3, observe: true, resizeWith: bannerEl, hasWeather: pageName !== 'apps',
       size: function () { return { w: bannerEl.clientWidth, h: bannerEl.clientHeight }; },
       build: build
     });
@@ -2083,7 +2319,7 @@
     box.appendChild(wrap);
     box.appendChild(cap);
     windowView = addView({
-      el: wrap, canvas: cv, scale: 3, fit: 'floor', observe: true, resizeWith: box,
+      el: wrap, canvas: cv, scale: 3, fit: 'floor', observe: true, resizeWith: box, hasWeather: true,
       size: function () { return { w: box.clientWidth - 22, h: 96 }; },
       build: function (w, h, night) { return buildWindow(w, h, night, pageName === 'home'); },
       onMount: function (scene) {
@@ -2267,6 +2503,15 @@
   setupBoard();
   var updateClock = setupClock();
   setupKonami();
+  if (cal.holiday === 'birthday' && cal.year > 2026) {
+    try {
+      if (!sessionStorage.getItem('v2-bday')) {
+        sessionStorage.setItem('v2-bday', '1');
+        var age = cal.year - 2026;
+        setTimeout(function () { toast('happy birthday ethnmz.com ✦ ' + age + (age === 1 ? ' year' : ' years') + ' old today'); }, 800);
+      }
+    } catch (e) {}
+  }
 
   var lastNight = isNight();
   new MutationObserver(function () {
