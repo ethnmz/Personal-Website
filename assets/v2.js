@@ -2191,6 +2191,7 @@
     v.put = ctxPainter(v.ctx);
     v.scene = v.build(w, h, isNight());
     var kind = v.hasWeather && weatherKind();
+    if (v.skipWeather && v.skipWeather.indexOf(kind) >= 0) kind = null;
     v.weather = kind ? new Weather(w, h, kind, v.scene.ground) : null;
     v.backC = v.scene.back ? v.scene.back.canvas() : null;
     v.frontC = v.scene.front ? v.scene.front.canvas() : null;
@@ -2277,7 +2278,7 @@
     cv.setAttribute('aria-hidden', 'true');
     document.body.insertBefore(cv, document.body.firstChild);
     addView({
-      el: cv, canvas: cv, scale: 4, hasWeather: true,
+      el: cv, canvas: cv, scale: 4, hasWeather: true, skipWeather: ['leaves'],
       size: function () { return { w: window.innerWidth, h: window.innerHeight }; },
       build: buildWorld
     });
