@@ -407,6 +407,34 @@
         }
       }
 
+      /* Contact me, between the bio and favorites */
+      .contact-block {
+        margin-top: 20px;
+        padding: 12px;
+        text-align: center;
+        background-color: var(--status-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.12);
+      }
+
+      .contact-block h3 {
+        margin: 0 0 8px;
+        font-size: 1.1em;
+      }
+
+      .contact-email {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.05em;
+        font-weight: bold;
+      }
+
+      .contact-icon {
+        fill: currentColor;
+        shape-rendering: crispEdges;
+      }
+
       /* Mobile notice modal */
       .mobile-modal-overlay {
         display: none;
@@ -543,6 +571,14 @@
             <p class="about-bio">
               Hello, I'm Ethan Meza, a current engineering student at Texas A&M University. I have a strong passion for technology, more specifically web design and organization. I aspire to become a product manager at a tech company due to my love for working with others and bringing ideas from the brightest minds to life. In my free time, I enjoy playing video games, listening to music, and reading books. If it wasn't obvious already, my favorite topic of all time is music from video games. I also love to spend my time researching topics in domestic and international politics as well as psychology. 
             </p>
+          </div>
+
+          <div class="contact-block">
+            <h3>contact me</h3>
+            <a class="contact-email" href="mailto:ethanmeza43@gmail.com">
+              <svg class="contact-icon" viewBox="0 0 11 8" width="22" height="16" aria-hidden="true"><path d="M0 0h11v1H0zM0 1h1v7H0zM10 1h1v7h-1zM1 7h9v1H1zM1 1h1v1H1zM9 1h1v1H9zM2 2h1v1H2zM8 2h1v1H8zM3 3h1v1H3zM7 3h1v1H7zM4 4h3v1H4z"/></svg>
+              ethanmeza43@gmail.com
+            </a>
           </div>
 
           <div class="favorites-section fav">
