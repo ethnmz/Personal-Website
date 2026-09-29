@@ -119,6 +119,43 @@
         filter: brightness(1.1);
       }
 
+      /* password for the board, hidden until clicked */
+      .password {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-top: 16px;
+        padding: 10px 12px;
+        background: var(--status-bg);
+        border: 1px dashed var(--border-color);
+      }
+
+      .password-label {
+        font-weight: bold;
+      }
+
+      .password-btn {
+        padding: 4px 12px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-size: 13px;
+        font-weight: bold;
+        cursor: var(--cursor-pointer, pointer);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .password-btn:hover {
+        background: var(--select-bg);
+      }
+
+      .password-btn.shown {
+        letter-spacing: 0.12em;
+        color: var(--link-color);
+      }
+
       /* portfolio sites */
       .sites {
         display: grid;
@@ -268,7 +305,12 @@
       <section class="box">
         <h2>FigJam Gallery Walk</h2>
         <p>Browse everyone's portfolios and leave feedback on the shared board.</p>
-        <a class="board-link" href="https://www.figma.com/board/G8tizma3ah0GPc4ZjygM99/AWICS-X-Figma-Portfolio-Gallery-Walk?node-id=0-1&amp;t=tD9k05GiDcGET1tA-1" target="_blank" rel="noopener">AWICS x Figma Portfolio Gallery Walk (FigJam board) &#8599;</a>
+        <a class="board-link" href="https://www.figma.com/board/Fp337YcuG7gCDG2da1xSAO/AWICs-x-Figma-Portfolio-Gallery?node-id=0-1&amp;t=aUYTJZ3Z3ROfMCAy-1" target="_blank" rel="noopener">AWICS x Figma Portfolio Gallery Walk (FigJam board) &#8599;</a>
+
+        <div class="password">
+          <span class="password-label">board password:</span>
+          <button type="button" class="password-btn" id="password-btn" aria-live="polite">click to reveal</button>
+        </div>
       </section>
 
       <section class="box">
@@ -370,6 +412,25 @@ jobs:
         try {
           document.body.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
         } catch (e) {}
+      })();
+
+      (function () {
+        var btn = document.getElementById('password-btn');
+        var secret = 'AWICS';
+        btn.addEventListener('click', function () {
+          if (!btn.classList.contains('shown')) {
+            btn.classList.add('shown');
+            btn.textContent = secret;
+            btn.title = 'click to copy';
+            return;
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(secret).then(function () {
+              btn.textContent = 'copied!';
+              setTimeout(function () { btn.textContent = secret; }, 1200);
+            });
+          }
+        });
       })();
 
       (function () {
