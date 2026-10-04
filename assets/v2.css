@@ -218,3 +218,336 @@ html.party .crt-overlay {
     animation: none;
   }
 }
+
+/* ---------- business mode: same layout, no pixel art, easy for a recruiter to read ---------- */
+
+html.business {
+  --cursor-default: default;
+  --cursor-pointer: pointer;
+  --cursor-grab: default;
+  --cursor-grabbing: default;
+  --cursor-zoom-in: zoom-in;
+  --cursor-zoom-out: zoom-out;
+  --cursor-pet: pointer;
+}
+
+body.business {
+  --bg-color: #f5f6f8;
+  --box-bg: #ffffff;
+  --border-color: #e4e7ec;
+  --text-color: #1d2430;
+  --link-color: #2459c7;
+  --select-bg: #f2f4f7;
+  --status-bg: #f8fafc;
+  --muted: #667085;
+  --header-font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --body-font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --grain: none;
+  --soft: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.07);
+  --hard-shadow: var(--soft);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* the pixel world and everything playful */
+body.business #world-bg,
+body.business .banner-art,
+body.business #sky-window,
+body.business .sidebar-section:has(.buttons-grid),
+body.business .crt-overlay,
+body.business .cat-bubble,
+body.business .about-photo-frame::after,
+body.business .fav-art,
+body.business .fav-plaque,
+body.business .fav-icon,
+body.business .board-art,
+body.business .road-art,
+body.business .board .sticker,
+body.business .board .howdy,
+body.business .board .note,
+body.business .board .card,
+body.business .board .pin,
+body.business .board .tape,
+body.business .board .pill {
+  display: none !important;
+}
+
+body.business *,
+body.business *::before,
+body.business *::after {
+  text-shadow: none !important;
+}
+
+:where(body.business) a {
+  border-bottom: 0;
+}
+
+body.business a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.business code,
+body.business pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* cards */
+body.business .box,
+body.business .edc-card {
+  border-radius: 12px;
+  border-color: var(--border-color);
+  box-shadow: var(--soft);
+  padding: 18px 20px;
+}
+
+body.business .top-header {
+  font-style: normal;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  font-weight: 600;
+}
+
+body.business .local-time {
+  font-weight: 400;
+  color: var(--muted);
+  opacity: 1;
+}
+
+/* type: sentence case, real weights */
+body.business h1,
+body.business h2,
+body.business h3 {
+  color: var(--text-color);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+body.business h1,
+body.business h2,
+body.business h3,
+body.business h4,
+body.business h5 {
+  font-style: normal;
+}
+
+body.business :is(.portfolio-lang, .portfolio-collab, .edc-tags, .app-tags, .road-when) {
+  font-style: normal;
+  color: var(--muted);
+}
+
+body.business .page-header,
+body.business .hello-header {
+  border-bottom: 0;
+  margin-bottom: 6px;
+  font-size: 1.9em;
+  letter-spacing: -0.02em;
+}
+
+body.business .page-desc,
+body.business .caption {
+  color: var(--muted);
+}
+
+body.business hr.dashed {
+  border-top: 1px solid var(--border-color);
+}
+
+/* breadcrumb instead of a pixel banner */
+body.business .path-bar {
+  height: auto !important;
+  margin: 0 0 12px;
+  padding: 0 2px;
+  background: none !important;
+  border: 0;
+  box-shadow: none;
+  font-size: 0.85em;
+  font-style: normal;
+  color: var(--muted);
+}
+
+body.business .path-bar > strong {
+  position: static !important;
+  padding: 0;
+  background: none !important;
+  border: 0;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+body.business .path-bar > strong::before {
+  content: 'ethnmz.com / ';
+  font-weight: 400;
+}
+
+/* sidebar */
+body.business .sidebar-section h3 {
+  margin-bottom: 10px;
+  padding-bottom: 0;
+  border-bottom: 0;
+  font-size: 0.72em;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+body.business .theme-select {
+  padding: 7px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--box-bg);
+  font-family: var(--body-font);
+}
+
+body.business .nav-group {
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+body.business .nav-group:last-child {
+  border-bottom: 0;
+}
+
+body.business .nav-header {
+  margin: 2px 0 4px 8px;
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+body.business .nav-link {
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-color);
+}
+
+body.business .nav-link:hover {
+  background: var(--select-bg);
+  text-decoration: none;
+}
+
+body.business .nav-link[aria-current="page"] {
+  background: var(--select-bg);
+  color: var(--link-color);
+  font-weight: 600;
+}
+
+/* buttons, panels and small cards across the pages */
+body.business :is(.np-btn, .resume-download, .case-cta, .copy-btn, .password-btn, .board-link, .mobile-modal button, .lightbox-close) {
+  border-radius: 8px;
+  box-shadow: none;
+  font-family: var(--body-font);
+}
+
+body.business :is(.status-box, .contact-block, .portfolio-item--case, .tldr, .stat, .decision, .user-card, .arch, .node, .deep, .app-icon, .app-shots img, .portfolio-img, .media-grid img, .ph, .mobile-modal, .road-card, .road-sign) {
+  border-radius: 10px;
+  box-shadow: var(--soft);
+}
+
+body.business .road-sign {
+  background: var(--box-bg);
+  color: var(--text-color);
+}
+
+/* about: photo, favorites */
+body.business .about-photo-frame {
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: var(--soft);
+}
+
+body.business .about-photo {
+  border: 0;
+  border-radius: 12px;
+}
+
+body.business .fav-head {
+  border-bottom: 1px solid var(--border-color);
+}
+
+body.business .fav-tabs {
+  gap: 6px;
+  padding: 0;
+}
+
+body.business .fav-tab {
+  margin: 0;
+  padding: 5px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--box-bg);
+  color: var(--text-color);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+body.business .fav-tab[aria-selected="true"] {
+  border-color: var(--link-color);
+  background: var(--link-color);
+  color: #fff;
+  box-shadow: none;
+}
+
+body.business .fav-case {
+  padding: 14px 0 0;
+}
+
+body.business .fav-panel {
+  gap: 12px;
+}
+
+body.business .fav-cover {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: none;
+  animation: none !important;
+}
+
+/* home: the bulletin board becomes a tidy photo grid */
+body.business .board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  aspect-ratio: auto;
+  overflow: visible;
+  container-type: normal;
+}
+
+body.business .board-item {
+  position: static;
+  width: auto;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  transform: none !important;
+}
+
+body.business .board .strip {
+  display: contents;
+}
+
+body.business .board .shot {
+  margin: 0;
+  background: none;
+}
+
+body.business .board .polaroid img,
+body.business .board .shot img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: var(--select-bg);
+}
+
+@media (max-width: 500px) {
+  body.business .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

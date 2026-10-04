@@ -410,7 +410,10 @@ jobs:
     <script>
       (function () {
         try {
-          document.body.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
+          var theme = localStorage.getItem('theme');
+          document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
         } catch (e) {}
       })();
 

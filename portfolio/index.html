@@ -274,6 +274,66 @@
         border: 2px solid var(--border-color);
       }
 
+      /* projects with a full case study page */
+      .portfolio-item--case {
+        padding: 12px 12px 14px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .portfolio-item--case:last-child {
+        padding-bottom: 14px;
+      }
+
+      .case-tag {
+        display: inline-block;
+        margin-bottom: 4px;
+        padding: 0 6px;
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-size: 0.7em;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      a.portfolio-name {
+        display: inline;
+      }
+
+      .case-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 8px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .case-facts li {
+        padding: 1px 8px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+        font-size: 0.8em;
+      }
+
+      .case-cta {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 5px 12px;
+        border: 0;
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-weight: bold;
+        font-size: 0.9em;
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .case-cta:hover {
+        filter: brightness(1.1);
+      }
+
       .portfolio-links a {
         margin-right: 12px;
         font-size: 0.85em;
@@ -345,6 +405,7 @@
           <select class="theme-select">
             <option>light</option>
             <option>dark</option>
+            <option value="business">business mode</option>
           </select>
         </div>
 
@@ -412,16 +473,24 @@
             everything I have made since college. all of it can be found on my <a href="https://github.com/ethnmz" target="_blank" rel="noopener">github</a>.
           </p>
 
-          <div class="portfolio-item">
-            <span class="portfolio-name">Stack (Discord Bot)</span>
+          <div class="portfolio-item portfolio-item--case">
+            <span class="case-tag">case study</span>
+            <a href="/portfolio/stack/" class="portfolio-name">Stack (Discord Bot)</a>
             <span class="portfolio-lang">Python</span>
             <p class="portfolio-desc">
-              Stack runs the TAMU ColorStack Discord server end to end. New members get a welcome DM with the membership form, and clicking Verify matches their Discord to their row in the Notion Member Directory, auto-assigning the Member role and their class year. Officers take attendance with a single command that generates a check-in code; members who type it get marked present and earn points that sync straight back to Notion alongside a full event log. Members can check their points, profile, and the leaderboard anytime, while officers manage it all without touching a spreadsheet. Private repo, club-internal.
+              Built a Discord bot for TAMU ColorStack's 100+ member chapter so members could get verified, check in to events, and track their points without an officer ever opening a spreadsheet. Sole developer and product owner.
             </p>
+            <ul class="case-facts">
+              <li>100+ members</li>
+              <li>SQLite &harr; Notion sync</li>
+              <li>5+ iterations</li>
+              <li>24/7 on Fly.io</li>
+            </ul>
             <div class="portfolio-img-row portfolio-img-row--fit">
               <img src="/media/stack-icon.png" class="portfolio-img" alt="Stack bot icon">
               <img src="/media/stack-verify.png" class="portfolio-img" alt="Stack bot's Get Verified welcome message in Discord">
             </div>
+            <a href="/portfolio/stack/" class="case-cta">read the case study &rarr;</a>
           </div>
 
           <div class="portfolio-item">
@@ -604,18 +673,37 @@
 
       (function () {
         var select = document.querySelector('.theme-select');
+        var themes = ['light', 'dark', 'business'];
+
+        // ?view=business (or light/dark) opens the site in that theme, handy for links on a resume
+        var params = new URLSearchParams(location.search);
+        var view = params.get('view');
+        if (themes.indexOf(view) >= 0) {
+          localStorage.setItem('theme', view);
+          params.delete('view');
+          var rest = params.toString();
+          history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+        }
+
         var saved = localStorage.getItem('theme') || 'light';
+        if (themes.indexOf(saved) < 0) saved = 'light';
 
         function applyTheme(theme) {
           document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
         }
 
         applyTheme(saved);
         select.value = saved;
 
         select.addEventListener('change', function () {
-          localStorage.setItem('theme', select.value);
-          applyTheme(select.value);
+          var was = saved;
+          saved = select.value;
+          localStorage.setItem('theme', saved);
+          // the pixel art turns fully on or off with business mode, so reload once
+          if (was === 'business' || saved === 'business') location.reload();
+          else applyTheme(saved);
         });
       })();
     </script>

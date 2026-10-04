@@ -417,6 +417,7 @@
           <select class="theme-select">
             <option>light</option>
             <option>dark</option>
+            <option value="business">business mode</option>
           </select>
         </div>
 
@@ -543,18 +544,37 @@
 
       (function () {
         var select = document.querySelector('.theme-select');
+        var themes = ['light', 'dark', 'business'];
+
+        // ?view=business (or light/dark) opens the site in that theme, handy for links on a resume
+        var params = new URLSearchParams(location.search);
+        var view = params.get('view');
+        if (themes.indexOf(view) >= 0) {
+          localStorage.setItem('theme', view);
+          params.delete('view');
+          var rest = params.toString();
+          history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+        }
+
         var saved = localStorage.getItem('theme') || 'light';
+        if (themes.indexOf(saved) < 0) saved = 'light';
 
         function applyTheme(theme) {
           document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
         }
 
         applyTheme(saved);
         select.value = saved;
 
         select.addEventListener('change', function () {
-          localStorage.setItem('theme', select.value);
-          applyTheme(select.value);
+          var was = saved;
+          saved = select.value;
+          localStorage.setItem('theme', saved);
+          // the pixel art turns fully on or off with business mode, so reload once
+          if (was === 'business' || saved === 'business') location.reload();
+          else applyTheme(saved);
         });
       })();
 

@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Case study: Stack, a Discord bot for TAMU ColorStack that handles onboarding, attendance, points, and roles.">
+    <title>ethnmz &mdash; stack case study</title>
+    <link rel="icon" type="image/png" href="/media/cat.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+      /* --- CSS VARIABLES (Colors) --- */
+      :root {
+        --bg-color: #dcd4cb;         /* Main background */
+        --box-bg: #e8e1d9;           /* Container background */
+        --border-color: #b5aea5;     /* Borders */
+        --text-color: #4a3e35;       /* Main text */
+        --link-color: #7d5a44;       /* Links */
+        --select-bg: #d6cfc7;        /* Theme dropdown background */
+        --status-bg: #ece5dd;        /* Status box background */
+        --header-font: 'JetBrains Mono', monospace;
+        --body-font: 'JetBrains Mono', monospace;
+      }
+
+      body.dark {
+        --bg-color: #1e1c1a;
+        --box-bg: #28241f;
+        --border-color: #4a423a;
+        --text-color: #d8cfc2;
+        --link-color: #d9a26c;
+        --select-bg: #332e28;
+        --status-bg: #2c2823;
+      }
+
+      /* --- RESET & BASIC SETUP --- */
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        margin: 0;
+        padding: 20px;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--link-color);
+      }
+
+      /* --- LAYOUT GRID --- */
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+      }
+
+      @media (max-width: 700px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+
+        main {
+          order: 1;
+        }
+
+        aside {
+          order: 2;
+        }
+      }
+
+      /* --- GENERAL BOX STYLES --- */
+      .box {
+        background-color: var(--box-bg);
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        margin-bottom: 20px;
+        box-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+      }
+
+      h1, h2, h3 {
+        font-family: var(--header-font);
+        color: var(--link-color);
+        margin-top: 0;
+        text-align: center;
+      }
+
+      hr.dashed {
+        border: none;
+        border-top: 1px dashed var(--border-color);
+        margin: 10px 0;
+      }
+
+      /* --- TOP HEADER --- */
+      .top-header {
+        max-width: 900px;
+        margin: 0 auto 20px auto;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 5px;
+      }
+
+      /* --- SIDEBAR STYLES --- */
+      .sidebar-section h3 {
+        border-bottom: 3px double var(--border-color);
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+      }
+
+      .theme-select {
+        width: 100%;
+        padding: 5px;
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        font-family: var(--body-font);
+        color: var(--text-color);
+      }
+
+      .nav-group {
+        text-align: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+      }
+
+      .nav-group:last-child {
+        border-bottom: none;
+      }
+
+      .nav-header {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 2px 0;
+      }
+
+      /* Buttons */
+      .buttons-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* Decorative waves at bottom left */
+      .waves {
+        height: 100px;
+        background-image: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 5px,
+          var(--border-color) 6px,
+          transparent 7px
+        );
+        opacity: 0.2;
+      }
+
+      /* --- MAIN CONTENT STYLES --- */
+      .path-bar {
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 5px;
+      }
+
+      .page-header {
+        font-size: 2em;
+        text-align: left;
+        border-bottom: 1px dashed var(--border-color);
+        margin-bottom: 15px;
+      }
+
+      .page-desc {
+        font-size: 0.95em;
+        margin-bottom: 15px;
+      }
+
+      /* --- Case study --- */
+      main h2 {
+        text-align: left;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 8px;
+        font-size: 0.85em;
+      }
+
+      .cs-kicker {
+        margin: 0 0 2px;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.75;
+      }
+
+      .cs-hero .page-header {
+        margin-bottom: 10px;
+      }
+
+      .cs-oneliner {
+        margin: 0 0 14px;
+        font-size: 1.05em;
+        font-weight: bold;
+        line-height: 1.5;
+      }
+
+      /* placeholders still waiting on real numbers */
+      .tbd {
+        padding: 0 3px;
+        border: 1px dashed var(--link-color);
+        background: rgba(217, 162, 108, 0.16);
+        color: var(--link-color);
+        white-space: nowrap;
+      }
+
+      /* jump links: always on phones, hidden when the sidebar contents box is visible */
+      .chip-nav {
+        display: none;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+
+      .chip-nav a {
+        padding: 2px 8px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        font-size: 0.8em;
+      }
+
+      /* tl;dr card */
+      .tldr {
+        padding: 12px 14px;
+        background: var(--status-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12);
+      }
+
+      .tldr h2 {
+        margin: 0 0 8px;
+        font-size: 1em;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .tldr-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px 16px;
+        margin: 0 0 12px;
+      }
+
+      .tldr-grid dt {
+        font-size: 0.75em;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.7;
+      }
+
+      .tldr-grid dd {
+        margin: 0;
+        font-weight: bold;
+      }
+
+      /* stat callouts */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+      }
+
+      .cs-section .stats {
+        margin-bottom: 12px;
+      }
+
+      .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 10px;
+        background-color: var(--box-bg);
+        border: 1px solid var(--border-color);
+        border-top: 4px solid var(--link-color);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-num {
+        font-size: 1.5em;
+        font-weight: 800;
+        color: var(--link-color);
+        line-height: 1.2;
+      }
+
+      .stat-num.tbd {
+        align-self: flex-start;
+        font-size: 1.2em;
+      }
+
+      .stat-label {
+        font-size: 0.8em;
+      }
+
+      /* sections */
+      .cs-section h2 {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+        font-size: 1.25em;
+      }
+
+      .cs-section h2 .num {
+        font-size: 0.7em;
+        padding: 1px 6px;
+        background: var(--link-color);
+        color: var(--box-bg);
+      }
+
+      .cs-section h3 {
+        margin: 0 0 6px;
+        font-size: 1em;
+        color: var(--link-color);
+        text-align: left;
+      }
+
+      .cs-section p {
+        margin: 0 0 10px;
+      }
+
+      .cs-section ul,
+      .cs-section ol {
+        margin: 0 0 10px;
+        padding-left: 20px;
+      }
+
+      .cs-section li {
+        margin-bottom: 4px;
+      }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .user-card {
+        padding: 10px 12px;
+        background: var(--status-bg);
+        border: 1px solid var(--border-color);
+      }
+
+      .user-card ul {
+        margin-bottom: 0;
+      }
+
+      .pull {
+        padding-left: 10px;
+        border-left: 4px solid var(--link-color);
+        font-style: italic;
+      }
+
+      .insights {
+        list-style: none;
+        padding-left: 0 !important;
+      }
+
+      .insights li {
+        padding: 6px 0 6px 22px;
+        position: relative;
+        border-bottom: 1px dashed var(--border-color);
+      }
+
+      .insights li:last-child {
+        border-bottom: 0;
+      }
+
+      .insights li::before {
+        content: '\25B8';
+        position: absolute;
+        left: 4px;
+        color: var(--link-color);
+      }
+
+      /* goals table */
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      .goals {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9em;
+      }
+
+      .goals th,
+      .goals td {
+        padding: 6px 8px;
+        border: 1px solid var(--border-color);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .goals th {
+        background: var(--status-bg);
+        font-size: 0.85em;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* decisions */
+      .decision {
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08);
+      }
+
+      .decision:last-child {
+        margin-bottom: 0;
+      }
+
+      .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        list-style: none;
+        padding: 0 !important;
+        margin: 0 0 10px !important;
+      }
+
+      .options li {
+        margin: 0;
+        padding: 2px 8px;
+        border: 1px solid var(--border-color);
+        font-size: 0.8em;
+        text-decoration: line-through;
+        opacity: 0.65;
+      }
+
+      .options li.chosen {
+        text-decoration: none;
+        opacity: 1;
+        font-weight: bold;
+        background: var(--link-color);
+        border-color: var(--link-color);
+        color: var(--box-bg);
+      }
+
+      .options li.chosen::before {
+        content: '\2713\00a0';
+      }
+
+      .tradeoff {
+        font-size: 0.9em;
+        opacity: 0.85;
+      }
+
+      /* architecture diagram */
+      .arch {
+        margin: 0 0 12px;
+        padding: 14px;
+        background: var(--status-bg);
+        border: 1px solid var(--border-color);
+      }
+
+      .arch-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 110px;
+        padding: 8px 10px;
+        background: var(--box-bg);
+        border: 2px solid var(--border-color);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .node small {
+        font-weight: normal;
+        font-size: 0.75em;
+        opacity: 0.8;
+      }
+
+      .node-bot {
+        border-color: var(--link-color);
+      }
+
+      .node-db,
+      .node-notion {
+        border-style: dashed;
+      }
+
+      .arrow {
+        font-size: 1.4em;
+        color: var(--link-color);
+      }
+
+      .arch-down {
+        margin: 8px 0;
+        text-align: center;
+        font-size: 0.85em;
+        color: var(--link-color);
+      }
+
+      .arch figcaption {
+        margin-top: 10px;
+        font-size: 0.8em;
+        text-align: center;
+        opacity: 0.85;
+      }
+
+      /* technical deep dives */
+      .deep {
+        margin-bottom: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+      }
+
+      .deep summary {
+        padding: 8px 10px;
+        font-weight: bold;
+        cursor: var(--cursor-pointer, pointer);
+        list-style: none;
+      }
+
+      .deep summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .deep summary::before {
+        content: '\25B8\00a0';
+        color: var(--link-color);
+      }
+
+      .deep[open] summary::before {
+        content: '\25BE\00a0';
+      }
+
+      .deep summary span {
+        margin-left: 6px;
+        font-size: 0.75em;
+        font-weight: normal;
+        opacity: 0.7;
+      }
+
+      .deep > :not(summary) {
+        margin-left: 12px;
+        margin-right: 12px;
+      }
+
+      .deep[open] {
+        padding-bottom: 4px;
+      }
+
+      .deep pre {
+        overflow-x: auto;
+        padding: 10px 12px;
+        background: #2a2420;
+        color: #efe6d6;
+        font-size: 0.85em;
+      }
+
+      code {
+        font-family: var(--body-font);
+      }
+
+      /* iteration timeline */
+      .timeline {
+        list-style: none;
+        padding: 0 !important;
+        border-left: 3px solid var(--border-color);
+        margin-left: 8px !important;
+      }
+
+      .timeline li {
+        display: flex;
+        gap: 10px;
+        margin: 0 0 10px -11px !important;
+      }
+
+      .timeline .v {
+        flex: none;
+        width: 34px;
+        padding: 1px 0;
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-size: 0.8em;
+        font-weight: bold;
+        text-align: center;
+        align-self: flex-start;
+      }
+
+      /* links & media */
+      .media-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .media-grid figure {
+        margin: 0;
+      }
+
+      .media-grid img {
+        display: block;
+        width: 100%;
+        height: 160px;
+        object-fit: contain;
+        background: var(--status-bg);
+        border: 1px solid var(--border-color);
+        cursor: var(--cursor-zoom-in);
+      }
+
+      .media-grid figcaption {
+        margin-top: 4px;
+        font-size: 0.8em;
+        opacity: 0.8;
+      }
+
+      .ph {
+        display: grid;
+        place-items: center;
+        height: 160px;
+        border: 2px dashed var(--border-color);
+        background: var(--status-bg);
+        text-align: center;
+        font-weight: bold;
+        opacity: 0.8;
+      }
+
+      .ph small {
+        font-weight: normal;
+      }
+
+      .link-list {
+        list-style: none;
+        padding: 0 !important;
+      }
+
+      .link-list li {
+        padding: 5px 0;
+        border-bottom: 1px dashed var(--border-color);
+      }
+
+      .link-list li > span:first-child {
+        display: inline-block;
+        min-width: 170px;
+        font-weight: bold;
+      }
+
+      /* sticky contents box in the sidebar */
+      .toc {
+        position: sticky;
+        top: 16px;
+      }
+
+      .toc a {
+        display: block;
+        padding: 3px 6px;
+        border: 0;
+        border-left: 3px solid transparent;
+        font-size: 0.9em;
+      }
+
+      .toc a.active {
+        border-left-color: var(--link-color);
+        background: var(--status-bg);
+        font-weight: bold;
+      }
+
+      .lightbox-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1001;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        cursor: var(--cursor-zoom-out);
+      }
+
+      .lightbox-overlay.visible {
+        display: flex;
+      }
+
+      .lightbox-overlay img {
+        max-width: 100%;
+        max-height: 100%;
+        border: 2px solid var(--border-color);
+      }
+
+      @media (max-width: 700px) {
+        .chip-nav {
+          display: flex;
+        }
+
+        .toc {
+          display: none;
+        }
+
+        .two-col,
+        .media-grid,
+        .tldr-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .arch-row {
+          flex-direction: column;
+        }
+
+        .arch-row .arrow {
+          transform: rotate(90deg);
+        }
+
+        .link-list li > span:first-child {
+          display: block;
+        }
+      }
+
+      /* Mobile notice modal */
+      .mobile-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .mobile-modal-overlay.visible {
+        display: flex;
+      }
+
+      .mobile-modal {
+        background: var(--box-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+        padding: 20px;
+        max-width: 300px;
+        text-align: center;
+      }
+
+      .mobile-modal p {
+        margin: 10px 0 15px 0;
+        font-size: 0.9em;
+      }
+
+      .mobile-modal button {
+        background: var(--select-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-weight: bold;
+        padding: 8px 16px;
+        cursor: var(--cursor-pointer);
+      }
+
+      .mobile-modal button:hover {
+        background: var(--border-color);
+      }
+
+    </style>
+    <link rel="stylesheet" href="/assets/v2.css">
+  </head>
+  <body>
+
+    <div class="top-header">
+      <span>Ethan Meza</span>
+      <span class="local-time"></span>
+    </div>
+
+    <div class="container">
+
+      <aside>
+
+        <div class="box sidebar-section">
+          <h3>theme</h3>
+          <select class="theme-select">
+            <option>light</option>
+            <option>dark</option>
+            <option value="business">business mode</option>
+          </select>
+        </div>
+
+        <div class="box sidebar-section">
+          <h3>navigation</h3>
+
+          <div class="nav-group">
+            <a href="/" class="nav-link">home</a>
+            <a href="/about/" class="nav-link">about</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; work &mdash;</span>
+            <a href="/portfolio/" class="nav-link">portfolio</a>
+            <a href="/resume/" class="nav-link">resume</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; daily &mdash;</span>
+            <a href="/vgm/" class="nav-link">vg song of the day</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; personal &mdash;</span>
+            <a href="/edc/" class="nav-link">edc</a>
+            <a href="/apps/" class="nav-link">daily apps</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; socials &mdash;</span>
+            <a href="https://github.com/ethnmz" class="nav-link" target="_blank" rel="noopener">github</a>
+            <a href="https://www.goodreads.com/user/show/155671209-ethan-meza" class="nav-link" target="_blank" rel="noopener">goodreads</a>
+            <a href="https://www.instagram.com/ethnmz" class="nav-link" target="_blank" rel="noopener">instagram</a>
+            <a href="https://open.spotify.com/user/31awkcd6qoymlogoavf3cly3jqra?si=3d55bfc0e1224de8" class="nav-link" target="_blank" rel="noopener">spotify</a>
+            <a href="https://www.tiktok.com/@ethanmeza10" class="nav-link" target="_blank" rel="noopener">tiktok</a>
+          </div>
+
+        </div>
+
+        <nav class="box sidebar-section toc" aria-label="on this page">
+          <h3>on this page</h3>
+          <a href="#tldr">tl;dr</a>
+          <a href="#problem">01 problem</a>
+          <a href="#research">02 research</a>
+          <a href="#goals">03 goals</a>
+          <a href="#decisions">04 decisions</a>
+          <a href="#architecture">05 architecture</a>
+          <a href="#iteration">06 iteration</a>
+          <a href="#results">07 results</a>
+          <a href="#next">08 next</a>
+          <a href="#links">09 links</a>
+        </nav>
+
+      </aside>
+
+      <main>
+
+        <div class="box path-bar" data-scene="portfolio">
+          <strong>portfolio / stack</strong>
+        </div>
+
+        <div class="box cs-hero">
+          <a href="/portfolio/" class="back-link">&larr; portfolio</a>
+          <p class="cs-kicker">case study &middot; discord bot</p>
+          <h1 class="page-header">Stack</h1>
+          <p class="cs-oneliner">
+            Built a Discord bot for TAMU ColorStack's 100+ member chapter so members could get verified, check in to events,
+            and track their points without an officer ever opening a spreadsheet.
+          </p>
+
+          <nav class="chip-nav" aria-label="jump to section">
+            <a href="#problem">problem</a>
+            <a href="#research">research</a>
+            <a href="#goals">goals</a>
+            <a href="#decisions">decisions</a>
+            <a href="#architecture">architecture</a>
+            <a href="#iteration">iteration</a>
+            <a href="#results">results</a>
+            <a href="#next">next</a>
+            <a href="#links">links</a>
+          </nav>
+
+          <section class="tldr" id="tldr" aria-labelledby="tldr-h">
+            <h2 id="tldr-h">tl;dr</h2>
+            <dl class="tldr-grid">
+              <div><dt>role</dt><dd>sole developer + product owner</dd></div>
+              <div><dt>timeline</dt><dd><span class="tbd">[start] &ndash; present</span></dd></div>
+              <div><dt>users</dt><dd>100+ members, [#] officers</dd></div>
+              <div><dt>stack</dt><dd>Python, discord.py, SQLite, Notion API, Docker, Fly.io</dd></div>
+            </dl>
+            <div class="stats">
+              <div class="stat"><span class="stat-num">100+</span><span class="stat-label">members served</span></div>
+              <div class="stat"><span class="stat-num tbd">[__]%</span><span class="stat-label">of members verified</span></div>
+              <div class="stat"><span class="stat-num tbd">[__] hrs</span><span class="stat-label">officer time saved / week</span></div>
+              <div class="stat"><span class="stat-num">5+</span><span class="stat-label">iterations shipped</span></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="box cs-section" id="problem" aria-labelledby="problem-h">
+          <h2 id="problem-h"><span class="num">01</span> the problem</h2>
+          <p>The chapter runs on Discord, but the data that mattered lived everywhere else.</p>
+          <div class="two-col">
+            <div class="user-card">
+              <h3>members</h3>
+              <ul>
+                <li>Joined the server, filled out a form, then waited for an officer to assign their role by hand.</li>
+                <li>Had no way to see their own points or where they stood.</li>
+              </ul>
+            </div>
+            <div class="user-card">
+              <h3>officers</h3>
+              <ul>
+                <li>Took attendance on sign-in sheets and tallied points in spreadsheets after every event.</li>
+                <li>Kept a Notion member directory that drifted out of sync with who was actually in Discord.</li>
+              </ul>
+            </div>
+          </div>
+          <p class="pull">The real cost wasn't any single task. It was that nobody trusted the numbers, so points and attendance got re-checked by hand.</p>
+        </section>
+
+        <section class="box cs-section" id="research" aria-labelledby="research-h">
+          <h2 id="research-h"><span class="num">02</span> users &amp; research</h2>
+          <p>I talked to <span class="tbd">[#]</span> officers and <span class="tbd">[#]</span> members before writing code, then kept talking to them between releases.</p>
+          <ul class="insights">
+            <li><strong>Officers already live in Notion.</strong> A new dashboard would be one more thing to check, so the data had to show up where they already work.</li>
+            <li><strong>Members won't leave Discord.</strong> Anything that sent them to a website or a form lost people, so every flow had to happen inside the server.</li>
+            <li><strong>The directory data is messy.</strong> Nicknames, typos, and personal vs. school emails meant exact matching would lock real members out.</li>
+            <li><strong>Check-in has to be fast.</strong> At a packed meeting, anything slower than typing a short code would back up the room.</li>
+          </ul>
+        </section>
+
+        <section class="box cs-section" id="goals" aria-labelledby="goals-h">
+          <h2 id="goals-h"><span class="num">03</span> goals &amp; success metrics</h2>
+          <div class="table-wrap">
+            <table class="goals">
+              <thead>
+                <tr><th scope="col">goal</th><th scope="col">how i measured it</th><th scope="col">target</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>every member verified and roled</td><td>% of server members linked to a directory row</td><td><span class="tbd">[__]%</span></td></tr>
+                <tr><td>attendance in seconds, not minutes</td><td>time for a full room to check in</td><td><span class="tbd">[under __ min]</span></td></tr>
+                <tr><td>no manual point tracking</td><td>officer hours per week spent on attendance and points</td><td><span class="tbd">[__ &rarr; ~0]</span></td></tr>
+                <tr><td>one trustworthy record</td><td>point disputes / manual corrections per month</td><td><span class="tbd">[__]</span></td></tr>
+                <tr><td>always on</td><td>uptime during the semester</td><td>24/7</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="box cs-section" id="decisions" aria-labelledby="decisions-h">
+          <h2 id="decisions-h"><span class="num">04</span> key product decisions</h2>
+
+          <article class="decision">
+            <h3>where the data lives</h3>
+            <ul class="options">
+              <li>Notion only</li>
+              <li>Google Sheets</li>
+              <li class="chosen">SQLite + Notion sync</li>
+            </ul>
+            <p><strong>Why:</strong> Notion's API is rate-limited and slow, so writing every check-in straight to it would stall during a busy meeting. SQLite gives the bot instant local writes, and a sync layer mirrors everything into Notion, where officers already work.</p>
+            <p class="tradeoff"><strong>Tradeoff:</strong> two copies of the data means sync logic. That's where the race condition came from (see architecture).</p>
+          </article>
+
+          <article class="decision">
+            <h3>how strict verification should be</h3>
+            <ul class="options">
+              <li>exact email match only</li>
+              <li>officer approves everyone</li>
+              <li class="chosen">exact match &rarr; fallback match &rarr; officer review</li>
+            </ul>
+            <p><strong>Why:</strong> exact matching locked out real members with messy records, and manual approval doesn't scale past a few dozen people. A matching cascade verifies most members instantly and only sends the true edge cases to an officer.</p>
+          </article>
+
+          <article class="decision">
+            <h3>how members check in</h3>
+            <ul class="options">
+              <li>react to a message</li>
+              <li>scan a QR code</li>
+              <li class="chosen">officer-generated check-in code</li>
+            </ul>
+            <p><strong>Why:</strong> a reaction can be clicked from anywhere, and QR needs a screen at every event. A short, time-limited code read out in the room proves you were there and works for hybrid events too. QR is on the roadmap as an add-on, not a replacement.</p>
+          </article>
+
+          <article class="decision">
+            <h3>who can do what</h3>
+            <ul class="options">
+              <li>hardcoded officer IDs</li>
+              <li>one admin role</li>
+              <li class="chosen">member / officer / admin tiers mapped to Discord roles</li>
+            </ul>
+            <p><strong>Why:</strong> officer boards turn over every year. Tying permissions to roles means a handoff is just reassigning roles, with no code changes and no redeploy.</p>
+          </article>
+        </section>
+
+        <section class="box cs-section" id="architecture" aria-labelledby="architecture-h">
+          <h2 id="architecture-h"><span class="num">05</span> technical architecture</h2>
+
+          <figure class="arch" aria-label="architecture diagram">
+            <div class="arch-row">
+              <div class="node node-user">members<small>discord</small></div>
+              <span class="arrow" aria-hidden="true">&rarr;</span>
+              <div class="node node-bot">Stack bot<small>python &middot; discord.py</small><small>docker on fly.io</small></div>
+              <span class="arrow" aria-hidden="true">&harr;</span>
+              <div class="node node-db">SQLite<small>source of truth</small></div>
+            </div>
+            <div class="arch-down" aria-hidden="true">&darr; sync worker (locked) &darr;</div>
+            <div class="arch-row">
+              <div class="node node-user">officers<small>read + edit</small></div>
+              <span class="arrow" aria-hidden="true">&larr;</span>
+              <div class="node node-notion">Notion<small>directory &middot; events &middot; points</small></div>
+            </div>
+            <figcaption>Members only ever touch Discord. The bot writes to SQLite instantly, and a locked sync worker mirrors changes into Notion for officers.</figcaption>
+          </figure>
+
+          <p>Two layers on purpose: SQLite handles speed and correctness, and Notion handles visibility. The bot never waits on Notion to answer a member.</p>
+
+          <details class="deep">
+            <summary>the sync race condition <span>for engineers</span></summary>
+            <p>Early on, two things could touch the same member at once: a check-in awarding points and the sync worker pushing that member to Notion (or two check-ins landing together). Both read the row, both computed a new total, and whichever wrote last won, so points silently disappeared.</p>
+            <p>The fix was a per-member <code>asyncio.Lock</code> around every read-modify-write, plus a version number on each row. The sync worker takes the same lock, snapshots the row, pushes it to Notion, and only clears the dirty flag if the version hasn't changed since it started.</p>
+<pre><code>async with locks[member_id]:
+    row = db.get(member_id)
+    row.points += award
+    row.version += 1
+    row.dirty = True
+    db.save(row)</code></pre>
+          </details>
+
+          <details class="deep">
+            <summary>identity verification <span>for engineers</span></summary>
+            <p>New members get a persistent "Get Verified" message. It's registered as a persistent view, so the button keeps working across bot restarts and redeploys. Clicking it opens a modal for name and email, then the matcher runs:</p>
+            <ol>
+              <li>exact email match against the directory</li>
+              <li>normalized fallback: lowercased, trimmed, school vs. personal email, name similarity</li>
+              <li>no confident match: queue it for an officer with the closest candidates attached</li>
+            </ol>
+            <p>A match assigns the Member role and class-year role automatically and links the Discord ID to the directory row.</p>
+          </details>
+
+          <details class="deep">
+            <summary>permissions design <span>for engineers</span></summary>
+            <p>Every command declares a minimum tier: member, officer, or admin. A single check maps the user's Discord roles to a tier before the command runs, so officer commands like starting attendance or adjusting points are invisible to members. New officers get access the moment their role changes.</p>
+          </details>
+
+          <details class="deep">
+            <summary>deployment <span>for engineers</span></summary>
+            <p>Containerized with Docker and deployed to Fly.io for 24/7 uptime, with the SQLite file on a persistent volume and secrets (bot token, Notion key) kept in Fly's secret store. Shipping a change is one deploy, with no laptop that has to stay on.</p>
+          </details>
+        </section>
+
+        <section class="box cs-section" id="iteration" aria-labelledby="iteration-h">
+          <h2 id="iteration-h"><span class="num">06</span> execution &amp; iteration</h2>
+          <p>I shipped small, watched how officers and members actually used it, and changed course based on what club leadership told me.</p>
+          <ol class="timeline">
+            <li><span class="v">v1</span><div><strong>verification + roles.</strong> Linked Discord to the directory and auto-assigned roles. <em>Learned:</em> exact matching failed on messy records.</div></li>
+            <li><span class="v">v2</span><div><strong>fallback matching + officer review.</strong> Most members verified on the first try, and leftovers went to a short officer queue.</div></li>
+            <li><span class="v">v3</span><div><strong>attendance codes + points.</strong> One officer command per event, members type the code, points land instantly. <em>Learned:</em> writing straight to Notion was too slow at busy events.</div></li>
+            <li><span class="v">v4</span><div><strong>SQLite + Notion two-layer sync.</strong> Instant check-ins, with Notion as the readable view. Fixed the sync race condition with locks.</div></li>
+            <li><span class="v">v5+</span><div><strong>points by event type, leaderboard, role tiers.</strong> Different events earn different points, members can check their standing anytime, and officers got a screen-capture tutorial for the attendance flow.</div></li>
+          </ol>
+        </section>
+
+        <section class="box cs-section" id="results" aria-labelledby="results-h">
+          <h2 id="results-h"><span class="num">07</span> results</h2>
+          <div class="stats">
+            <div class="stat"><span class="stat-num">100+</span><span class="stat-label">members on the server</span></div>
+            <div class="stat"><span class="stat-num tbd">[__]</span><span class="stat-label">active users / month</span></div>
+            <div class="stat"><span class="stat-num tbd">[__]%</span><span class="stat-label">verified automatically</span></div>
+            <div class="stat"><span class="stat-num tbd">[__]</span><span class="stat-label">check-ins logged</span></div>
+            <div class="stat"><span class="stat-num tbd">[__] &rarr; [__]</span><span class="stat-label">attendance time, before &rarr; after</span></div>
+            <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">uptime on fly.io</span></div>
+          </div>
+          <ul>
+            <li>Officers no longer tally points or attendance by hand. Notion updates itself.</li>
+            <li>Members check their own points, profile, and leaderboard spot without asking an officer.</li>
+            <li>Permissions survive officer turnover with no code changes.</li>
+          </ul>
+        </section>
+
+        <section class="box cs-section" id="next" aria-labelledby="next-h">
+          <h2 id="next-h"><span class="num">08</span> what's next &amp; what i learned</h2>
+          <div class="two-col">
+            <div>
+              <h3>roadmap</h3>
+              <ul>
+                <li>QR code check-in as an option for big events</li>
+                <li>automated event reminders and announcements</li>
+                <li>an officer analytics view in Notion (attendance trends, at-risk members)</li>
+                <li>handoff docs so the next officer board can own it</li>
+              </ul>
+            </div>
+            <div>
+              <h3>lessons</h3>
+              <ul>
+                <li>Talk to users first. The Notion-only design would have failed at the first big meeting.</li>
+                <li>Design for messy real-world data instead of the clean data you wish you had.</li>
+                <li>Boring tech wins: SQLite plus a lock fixed what a fancier stack would have hidden.</li>
+                <li>Ship small, and let feedback set the next version.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="box cs-section" id="links" aria-labelledby="links-h">
+          <h2 id="links-h"><span class="num">09</span> links &amp; media</h2>
+          <div class="media-grid">
+            <figure>
+              <img src="/media/stack-verify.png" class="portfolio-img" alt="Stack bot's Get Verified welcome message in Discord">
+              <figcaption>the Get Verified welcome message</figcaption>
+            </figure>
+            <figure class="placeholder-media">
+              <div class="ph">demo video<br><small>drop in a screen recording</small></div>
+              <figcaption>check-in flow, start to finish</figcaption>
+            </figure>
+            <figure class="placeholder-media">
+              <div class="ph">screenshot<br><small>leaderboard / points command</small></div>
+              <figcaption>member points + leaderboard</figcaption>
+            </figure>
+            <figure class="placeholder-media">
+              <div class="ph">screenshot<br><small>Notion directory synced</small></div>
+              <figcaption>what officers see in Notion</figcaption>
+            </figure>
+          </div>
+          <ul class="link-list">
+            <li><span>source code</span> private repo (club-internal). <a href="mailto:ethanmeza43@gmail.com?subject=Stack%20repo%20access">ask me for a walkthrough &#8599;</a></li>
+            <li><span>demo video</span> <span class="tbd">[link]</span></li>
+            <li><span>PRD / architecture doc</span> <span class="tbd">[link]</span></li>
+          </ul>
+        </section>
+
+      </main>
+
+
+    </div>
+
+    <div class="mobile-modal-overlay" id="mobile-modal-overlay">
+      <div class="mobile-modal">
+        <h3>heads up &#8982;</h3>
+        <p>this site is designed for desktop.</p>
+        <button id="mobile-modal-dismiss">continue anyway</button>
+      </div>
+    </div>
+
+    <div class="lightbox-overlay" id="lightbox-overlay">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <script>
+      (function () {
+        var overlay = document.getElementById('lightbox-overlay');
+        var lightboxImg = document.getElementById('lightbox-img');
+
+        document.querySelectorAll('.portfolio-img').forEach(function (img) {
+          img.addEventListener('click', function () {
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            overlay.classList.add('visible');
+          });
+        });
+
+        overlay.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+        });
+      })();
+
+      (function () {
+        var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+        if (!links.length || !('IntersectionObserver' in window)) return;
+        var byId = {};
+        links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            links.forEach(function (a) { a.classList.remove('active'); });
+            var a = byId[en.target.id];
+            if (a) a.classList.add('active');
+          });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+        Object.keys(byId).forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) io.observe(el);
+        });
+      })();
+
+      (function () {
+        var overlay = document.getElementById('mobile-modal-overlay');
+        var dismissBtn = document.getElementById('mobile-modal-dismiss');
+        var isMobile = window.matchMedia('(max-width: 700px)').matches;
+        var dismissed = sessionStorage.getItem('mobileNoticeDismissed');
+
+        if (isMobile && !dismissed) {
+          overlay.classList.add('visible');
+        }
+
+        dismissBtn.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+          sessionStorage.setItem('mobileNoticeDismissed', '1');
+        });
+      })();
+
+      (function () {
+        var select = document.querySelector('.theme-select');
+        var themes = ['light', 'dark', 'business'];
+
+        // ?view=business (or light/dark) opens the site in that theme, handy for links on a resume
+        var params = new URLSearchParams(location.search);
+        var view = params.get('view');
+        if (themes.indexOf(view) >= 0) {
+          localStorage.setItem('theme', view);
+          params.delete('view');
+          var rest = params.toString();
+          history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+        }
+
+        var saved = localStorage.getItem('theme') || 'light';
+        if (themes.indexOf(saved) < 0) saved = 'light';
+
+        function applyTheme(theme) {
+          document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
+        }
+
+        applyTheme(saved);
+        select.value = saved;
+
+        select.addEventListener('change', function () {
+          var was = saved;
+          saved = select.value;
+          localStorage.setItem('theme', saved);
+          // the pixel art turns fully on or off with business mode, so reload once
+          if (was === 'business' || saved === 'business') location.reload();
+          else applyTheme(saved);
+        });
+      })();
+    </script>
+
+    <script src="/assets/v2.js" defer></script>
+
+    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "bdf4b1ba951e4b668c1fe5f697a97f86"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
+  </body>
+</html>

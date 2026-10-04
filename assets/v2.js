@@ -2494,7 +2494,47 @@
     });
   }
 
+  /* ---------- business mode: same pages, none of the pixel art ---------- */
+
+  // sentence case for headings and nav, with acronyms and names spelled the way people expect
+  var PROPER = { edc: 'EDC', vg: 'VG', github: 'GitHub', tiktok: 'TikTok', i: 'I', "i'm": "I'm", "i've": "I've", 'tl;dr': 'TL;DR' };
+
+  function sentenceCase(el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), node, first = true;
+    while ((node = walker.nextNode())) {
+      var text = node.nodeValue.replace(/[a-z][a-z;']*/gi, function (w) {
+        var fix = PROPER[w.toLowerCase()];
+        return fix && w === w.toLowerCase() ? fix : w;
+      });
+      if (first && /[a-z]/i.test(text)) {
+        text = text.replace(/[a-z]/i, function (c) { return c.toUpperCase(); });
+        first = false;
+      }
+      node.nodeValue = text;
+    }
+  }
+
+  function setupBusiness() {
+    Array.prototype.forEach.call(document.querySelectorAll('.nav-header'), function (h) {
+      h.textContent = h.textContent.replace(/—/g, '').trim();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('h1, h2, h3, .nav-link, .fav-tab, .case-cta, .back-link, .toc a, .chip-nav a'), sentenceCase);
+    var here = location.pathname.replace(/index\.html$/, '');
+    Array.prototype.forEach.call(document.querySelectorAll('.nav-link'), function (a) {
+      var href = a.getAttribute('href');
+      if (href === here || (href !== '/' && href.charAt(0) === '/' && here.indexOf(href) === 0)) a.setAttribute('aria-current', 'page');
+    });
+    var tick = setupClock();
+    if (tick) setInterval(tick, 30000);
+  }
+
   /* ---------- boot ---------- */
+
+  // business mode skips the art entirely, so no animation loop runs in the background
+  if (document.body.classList.contains('business')) {
+    setupBusiness();
+    return;
+  }
 
   setupWorld();
   setupBanner();
