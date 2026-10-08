@@ -310,8 +310,9 @@
         transform: rotate(calc(var(--r) * 0.4)) scale(1.08);
       }
 
-      /* pushpins are drawn pixel by pixel with box-shadows */
+      /* pushpins are drawn pixel by pixel with box-shadows; one neutral gray for all of them */
       .board .pin {
+        --c: #6f6862;
         --hi: color-mix(in srgb, var(--c) 45%, #fff);
         --lo: color-mix(in srgb, var(--c) 65%, #000);
         --n: #8a8378;
@@ -329,8 +330,9 @@
           calc(var(--p) * 4) calc(var(--p) * 4) rgba(0, 0, 0, 0.25), calc(var(--p) * 5) calc(var(--p) * 3) rgba(0, 0, 0, 0.25);
       }
 
-      /* washi tape with torn ends */
+      /* washi tape with torn ends, plain paper gray */
       .board .tape {
+        --t: #d6d1c9;
         top: calc(-9 * var(--u));
         left: 50%;
         width: calc(58 * var(--u));
@@ -634,18 +636,23 @@
         text-align: center;
       }
 
+      /* youtube needs a real 200x200 player to autoplay, so it sits behind the page instead of shrinking */
       .np-embed-hidden {
-        position: absolute;
-        width: 2px;
-        height: 2px;
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        z-index: -2;
+        width: 200px;
+        height: 200px;
         overflow: hidden;
         opacity: 0.01;
         pointer-events: none;
       }
 
       .np-embed-hidden iframe {
-        width: 2px;
-        height: 2px;
+        width: 200px;
+        height: 200px;
+        border: 0;
       }
 
       /* Updates List */
@@ -774,10 +781,6 @@
           </div>
         </div>
 
-        <div class="box sidebar-section sky-window" id="sky-window">
-          <h3>outside</h3>
-        </div>
-
       </aside>
 
       <main>
@@ -793,7 +796,7 @@
 
             <div class="board-item polaroid" style="--x: 18; --y: 38; --w: 172; --r: -4deg">
               <img src="/media/board/eboard-sm.jpg" style="--ar: 4 / 3" alt="the TAMU ColorStack 2026-2027 e-board giving thumbs up" draggable="false">
-              <span class="tape" style="--t: #9cc49a; --tr: -3deg"></span>
+              <span class="tape" style="--tr: -3deg"></span>
             </div>
 
             <div class="board-item note" style="--x: 202; --y: 34; --w: 108; --r: 3deg">
@@ -807,17 +810,17 @@
 
             <div class="board-item polaroid print" style="--x: 322; --y: 40; --w: 100; --r: 5deg">
               <img src="/media/board/campus-sm.jpg" style="--ar: 3 / 4" alt="Ethan giving a thumbs up outside a campus building" draggable="false">
-              <span class="tape" style="--t: #e7b46a; --tr: 4deg"></span>
+              <span class="tape" style="--tr: 4deg"></span>
             </div>
 
             <div class="board-item polaroid" style="--x: 436; --y: 36; --w: 170; --r: 3deg">
               <img src="/media/board/crew-sm.jpg" style="--ar: 1284 / 949" alt="big group photo with friends outside a building" draggable="false">
-              <span class="pin" style="--c: #c9453a"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid" style="--x: 24; --y: 196; --w: 104; --r: -3deg">
               <img src="/media/board/kirby-sm.jpg" style="--ar: 3 / 4" alt="Ethan on campus next to a giant Kirby mascot" draggable="false">
-              <span class="pin" style="--c: #5f86b0"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item strip" style="--x: 146; --y: 176; --w: 70; --r: -4deg">
@@ -830,53 +833,53 @@
               <div class="shot">
                 <img src="/media/board/river-sm.jpg" alt="sunny selfie by a rocky river" draggable="false">
               </div>
-              <span class="pin" style="--c: #d9ae45"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid print" style="--x: 232; --y: 166; --w: 168; --r: 3deg">
               <img src="/media/board/colorstack-sm.jpg" style="--ar: 3 / 2" alt="Ethan in a ColorStack polo pointing in a lecture hall" draggable="false">
-              <span class="tape" style="--t: #8fb8d9; --tr: 3deg"></span>
+              <span class="tape" style="--tr: 3deg"></span>
             </div>
 
             <div class="board-item polaroid print" style="--x: 414; --y: 192; --w: 100; --r: -5deg">
               <img src="/media/board/hallway-sm.jpg" style="--ar: 3 / 4" alt="fisheye selfie of Ethan in a hallway lined with lockers" draggable="false">
-              <span class="pin" style="--c: #b07ab8"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid" style="--x: 524; --y: 196; --w: 120; --r: 4deg">
               <img src="/media/board/balcony-sm.jpg" style="--ar: 4 / 3" alt="Ethan on a balcony with a city skyline behind him" draggable="false">
-              <span class="pin" style="--c: #6f8a4e"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid" style="--x: 30; --y: 360; --w: 100; --r: 4deg">
               <img src="/media/board/ducks-sm.jpg" style="--ar: 3 / 4" alt="Ethan reaching toward a duck by a pond with a fountain" draggable="false">
-              <span class="pin" style="--c: #c9453a"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid" style="--x: 236; --y: 312; --w: 100; --r: -3deg">
               <img src="/media/board/friends-sm.jpg" style="--ar: 3 / 4" alt="group selfie with friends" draggable="false">
-              <span class="pin" style="--c: #6f8a4e"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid print" style="--x: 350; --y: 330; --w: 100; --r: 4deg">
               <img src="/media/board/bonfire-sm.jpg" style="--ar: 3 / 4" alt="Ethan and a friend in front of a bonfire at night" draggable="false">
-              <span class="tape" style="--t: #d98fae; --tr: -6deg"></span>
+              <span class="tape" style="--tr: -6deg"></span>
             </div>
 
             <div class="board-item polaroid print" style="--x: 464; --y: 318; --w: 100; --r: -4deg">
               <img src="/media/board/park-sm.jpg" style="--ar: 3 / 4" alt="Ethan and a friend sitting on a park sign at dusk" draggable="false">
-              <span class="pin" style="--c: #5f86b0"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item polaroid" style="--x: 548; --y: 420; --w: 96; --r: 5deg">
               <img src="/media/board/trail-sm.jpg" style="--ar: 3 / 4" alt="Ethan walking down a tree-covered trail" draggable="false">
-              <span class="tape" style="--t: #9cc49a; --tr: 2deg"></span>
+              <span class="tape" style="--tr: 2deg"></span>
             </div>
 
             <div class="board-item card" style="--x: 136; --y: 480; --w: 136; --r: -2deg">
               <p>thanks for stopping by! &hearts;</p>
               <p class="sig">&mdash; ethan</p>
-              <span class="pin" style="--c: #c9453a"></span>
+              <span class="pin"></span>
             </div>
 
             <div class="board-item howdy" style="--x: 196; --y: 136; --w: 54; --r: -12deg" aria-hidden="true">
@@ -1178,9 +1181,8 @@
         var muteIcon = '<svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 10v4h4l5 5V5L7 10H3z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></svg>';
         var unmuteIcon = '<svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M3 10v4h4l5 5V5L7 10H3z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>';
 
-        function toggleMute() {
-          if (!ytPlayer || !ytPlayer.isMuted) return;
-          if (ytPlayer.isMuted()) {
+        function setSound(on) {
+          if (on) {
             ytPlayer.unMute();
             muteBtn.innerHTML = unmuteIcon;
             muteBtn.setAttribute('aria-label', 'mute');
@@ -1189,6 +1191,11 @@
             muteBtn.innerHTML = muteIcon;
             muteBtn.setAttribute('aria-label', 'unmute');
           }
+        }
+
+        function toggleMute() {
+          if (!ytPlayer || !ytPlayer.isMuted) return;
+          setSound(ytPlayer.isMuted());
         }
 
         function seekToClientX(clientX) {

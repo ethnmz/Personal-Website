@@ -44,58 +44,6 @@ body.dark {
   opacity: 0.75;
 }
 
-/* ---------- page banners ---------- */
-
-.path-bar.has-banner {
-  position: relative;
-  height: 132px;
-  padding: 0;
-  overflow: visible;
-}
-
-.banner-art {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.path-bar.has-banner > strong {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  background-color: var(--box-bg);
-  background-image: var(--grain);
-  border: 1px solid var(--border-color);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.18);
-  padding: 2px 8px;
-}
-
-@media (max-width: 700px) {
-  .path-bar.has-banner {
-    height: 110px;
-  }
-}
-
-/* ---------- sidebar sky window ---------- */
-
-.sky-view {
-  position: relative;
-}
-
-.sky-view canvas {
-  margin: 0 auto;
-  border: 1px solid var(--border-color);
-}
-
-.sky-caption {
-  text-align: center;
-  font-size: 11px;
-  line-height: 1.5;
-  margin: 8px 0 0 0;
-  opacity: 0.85;
-}
-
 /* ---------- the cat's speech bubble ---------- */
 
 .cat-bubble {
@@ -252,8 +200,6 @@ body.business {
 
 /* the pixel world and everything playful */
 body.business #world-bg,
-body.business .banner-art,
-body.business #sky-window,
 body.business .sidebar-section:has(.buttons-grid),
 body.business .crt-overlay,
 body.business .cat-bubble,
@@ -355,7 +301,7 @@ body.business hr.dashed {
   border-top: 1px solid var(--border-color);
 }
 
-/* breadcrumb instead of a pixel banner */
+/* the page label box becomes a quiet breadcrumb */
 body.business .path-bar {
   height: auto !important;
   margin: 0 0 12px;
