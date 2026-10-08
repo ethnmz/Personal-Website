@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Case study: Stack, a Discord bot for TAMU ColorStack that handles onboarding, attendance, points, and roles.">
+    <meta name="description" content="Case study: Stack, a Discord bot for TAMU ColorStack's 100+ member server that handles verification, event check-ins and points.">
     <title>ethnmz &mdash; stack case study</title>
     <link rel="icon" type="image/png" href="/media/cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -875,8 +875,8 @@
           <p class="cs-kicker">case study &middot; discord bot</p>
           <h1 class="page-header">Stack</h1>
           <p class="cs-oneliner">
-            Built a Discord bot for TAMU ColorStack's 100+ member chapter so members could get verified, check in to events,
-            and track their points without an officer ever opening a spreadsheet.
+            I built a Discord bot for TAMU ColorStack's 100+ member server. Members fill out one profile form, check in to
+            events with a short code, and look up their own points. Officers don't touch attendance data at all.
           </p>
 
           <nav class="chip-nav" aria-label="jump to section">
@@ -895,49 +895,51 @@
             <h2 id="tldr-h">tl;dr</h2>
             <dl class="tldr-grid">
               <div><dt>role</dt><dd>sole developer + product owner</dd></div>
-              <div><dt>timeline</dt><dd><span class="tbd">[start] &ndash; present</span></dd></div>
-              <div><dt>users</dt><dd>100+ members, [#] officers</dd></div>
+              <div><dt>timeline</dt><dd>Aug 2026 &ndash; present</dd></div>
+              <div><dt>users</dt><dd>100+ server members and every officer</dd></div>
               <div><dt>stack</dt><dd>Python, discord.py, SQLite, Notion API, Docker, Fly.io</dd></div>
             </dl>
             <div class="stats">
-              <div class="stat"><span class="stat-num">100+</span><span class="stat-label">members served</span></div>
-              <div class="stat"><span class="stat-num tbd">[__]%</span><span class="stat-label">of members verified</span></div>
-              <div class="stat"><span class="stat-num tbd">[__] hrs</span><span class="stat-label">officer time saved / week</span></div>
-              <div class="stat"><span class="stat-num">5+</span><span class="stat-label">iterations shipped</span></div>
+              <div class="stat"><span class="stat-num">100+</span><span class="stat-label">members in the server</span></div>
+              <div class="stat"><span class="stat-num">~85%</span><span class="stat-label">of active members verified</span></div>
+              <div class="stat"><span class="stat-num">5 min &rarr; &lt;1</span><span class="stat-label">time to check in</span></div>
+              <div class="stat"><span class="stat-num">110</span><span class="stat-label">check-ins in the first 4 weeks</span></div>
             </div>
           </section>
         </div>
 
         <section class="box cs-section" id="problem" aria-labelledby="problem-h">
           <h2 id="problem-h"><span class="num">01</span> the problem</h2>
-          <p>The chapter runs on Discord, but the data that mattered lived everywhere else.</p>
+          <p>The chapter talks on Discord, but attendance lived in Airtable.</p>
           <div class="two-col">
             <div class="user-card">
               <h3>members</h3>
               <ul>
-                <li>Joined the server, filled out a form, then waited for an officer to assign their role by hand.</li>
-                <li>Had no way to see their own points or where they stood.</li>
+                <li>Filled out an Airtable form at every event, typing their name, email, major and class year again each time.</li>
+                <li>Waited for an officer to give them their server roles by hand.</li>
+                <li>Couldn't see their own points.</li>
               </ul>
             </div>
             <div class="user-card">
               <h3>officers</h3>
               <ul>
-                <li>Took attendance on sign-in sheets and tallied points in spreadsheets after every event.</li>
-                <li>Kept a Notion member directory that drifted out of sync with who was actually in Discord.</li>
+                <li>Had to dig through Airtable to see who came to what, while everything else they work on is in Notion.</li>
+                <li>Counted points by hand from those form responses.</li>
               </ul>
             </div>
           </div>
-          <p class="pull">The real cost wasn't any single task. It was that nobody trusted the numbers, so points and attendance got re-checked by hand.</p>
+          <p class="pull">The form was long enough that people skipped it, so the attendance numbers were low before anyone even looked at them.</p>
         </section>
 
         <section class="box cs-section" id="research" aria-labelledby="research-h">
           <h2 id="research-h"><span class="num">02</span> users &amp; research</h2>
-          <p>I talked to <span class="tbd">[#]</span> officers and <span class="tbd">[#]</span> members before writing code, then kept talking to them between releases.</p>
+          <p>Before writing code I talked to the officer board and to members after meetings, and I kept asking them between releases. A few things came up over and over:</p>
           <ul class="insights">
-            <li><strong>Officers already live in Notion.</strong> A new dashboard would be one more thing to check, so the data had to show up where they already work.</li>
-            <li><strong>Members won't leave Discord.</strong> Anything that sent them to a website or a form lost people, so every flow had to happen inside the server.</li>
-            <li><strong>The directory data is messy.</strong> Nicknames, typos, and personal vs. school emails meant exact matching would lock real members out.</li>
-            <li><strong>Check-in has to be fast.</strong> At a packed meeting, anything slower than typing a short code would back up the room.</li>
+            <li>Members skipped the form when they were in a hurry. One told me, "If I have to type my major again I'm just not doing it."</li>
+            <li>Officers wanted the data in Notion, where they already plan events. "I'd have to export the Airtable to figure out who had enough points for anything."</li>
+            <li>Members don't want to leave Discord. Every link out to a form lost people, so the whole flow had to happen in the server.</li>
+            <li>The member records are messy. Nicknames, typos and personal vs. school emails meant exact matching would lock real members out.</li>
+            <li>At a full meeting, anything slower than typing a short code backs up the room.</li>
           </ul>
         </section>
 
@@ -946,14 +948,14 @@
           <div class="table-wrap">
             <table class="goals">
               <thead>
-                <tr><th scope="col">goal</th><th scope="col">how i measured it</th><th scope="col">target</th></tr>
+                <tr><th scope="col">goal</th><th scope="col">how i measured it</th><th scope="col">target</th><th scope="col">result</th></tr>
               </thead>
               <tbody>
-                <tr><td>every member verified and roled</td><td>% of server members linked to a directory row</td><td><span class="tbd">[__]%</span></td></tr>
-                <tr><td>attendance in seconds, not minutes</td><td>time for a full room to check in</td><td><span class="tbd">[under __ min]</span></td></tr>
-                <tr><td>no manual point tracking</td><td>officer hours per week spent on attendance and points</td><td><span class="tbd">[__ &rarr; ~0]</span></td></tr>
-                <tr><td>one trustworthy record</td><td>point disputes / manual corrections per month</td><td><span class="tbd">[__]</span></td></tr>
-                <tr><td>always on</td><td>uptime during the semester</td><td>24/7</td></tr>
+                <tr><td>active members verified</td><td>% of active members linked to a directory row</td><td>80%</td><td>~85%</td></tr>
+                <tr><td>fast check-in</td><td>time for one member to check in</td><td>under 1 min</td><td>under 1 min (was ~5)</td></tr>
+                <tr><td>no manual point tracking</td><td>officer time spent on attendance and points</td><td>~0</td><td>~0</td></tr>
+                <tr><td>members can do it alone</td><td>members who needed help to verify</td><td>a handful</td><td>3</td></tr>
+                <tr><td>always on</td><td>outages this semester</td><td>0</td><td>0</td></tr>
               </tbody>
             </table>
           </div>
@@ -965,12 +967,21 @@
           <article class="decision">
             <h3>where the data lives</h3>
             <ul class="options">
+              <li>keep Airtable</li>
               <li>Notion only</li>
-              <li>Google Sheets</li>
               <li class="chosen">SQLite + Notion sync</li>
             </ul>
-            <p><strong>Why:</strong> Notion's API is rate-limited and slow, so writing every check-in straight to it would stall during a busy meeting. SQLite gives the bot instant local writes, and a sync layer mirrors everything into Notion, where officers already work.</p>
-            <p class="tradeoff"><strong>Tradeoff:</strong> two copies of the data means sync logic. That's where the race condition came from (see architecture).</p>
+            <p>Officers already work in Notion, so the data had to end up there. Notion's API is rate-limited, though, and a bot that waits on it would stall when a room checks in at once. SQLite takes every write instantly, and a sync worker copies changes into Notion.</p>
+            <p class="tradeoff"><strong>Tradeoff:</strong> two copies of the data means sync logic, which is where the race condition came from (see architecture).</p>
+          </article>
+
+          <article class="decision">
+            <h3>one profile form, filled out once</h3>
+            <ul class="options">
+              <li>a form per event</li>
+              <li class="chosen">one Notion member form + a check-in code</li>
+            </ul>
+            <p>The Airtable form asked for the same details at every event. Now members fill out the Notion member form once, and the bot links it to their Discord account. After that, checking in is a single command with the event code.</p>
           </article>
 
           <article class="decision">
@@ -980,7 +991,7 @@
               <li>officer approves everyone</li>
               <li class="chosen">exact match &rarr; fallback match &rarr; officer review</li>
             </ul>
-            <p><strong>Why:</strong> exact matching locked out real members with messy records, and manual approval doesn't scale past a few dozen people. A matching cascade verifies most members instantly and only sends the true edge cases to an officer.</p>
+            <p>Exact matching locked out real members with messy records, and approving everyone by hand doesn't scale to a 100+ person server. The bot tries an exact match, then a looser one, and only sends what's left to an officer.</p>
           </article>
 
           <article class="decision">
@@ -990,7 +1001,7 @@
               <li>scan a QR code</li>
               <li class="chosen">officer-generated check-in code</li>
             </ul>
-            <p><strong>Why:</strong> a reaction can be clicked from anywhere, and QR needs a screen at every event. A short, time-limited code read out in the room proves you were there and works for hybrid events too. QR is on the roadmap as an add-on, not a replacement.</p>
+            <p>Anyone can click a reaction from home, and QR needs a screen at every event. A short, time-limited code read out in the room shows you were there and works at a volleyball practice as well as a general meeting. QR is next on the roadmap as an extra option.</p>
           </article>
 
           <article class="decision">
@@ -1000,7 +1011,7 @@
               <li>one admin role</li>
               <li class="chosen">member / officer / admin tiers mapped to Discord roles</li>
             </ul>
-            <p><strong>Why:</strong> officer boards turn over every year. Tying permissions to roles means a handoff is just reassigning roles, with no code changes and no redeploy.</p>
+            <p>The officer board changes every year. Because permissions follow Discord roles, handing the bot over means reassigning roles, with no code change or redeploy.</p>
           </article>
         </section>
 
@@ -1019,17 +1030,17 @@
             <div class="arch-row">
               <div class="node node-user">officers<small>read + edit</small></div>
               <span class="arrow" aria-hidden="true">&larr;</span>
-              <div class="node node-notion">Notion<small>directory &middot; events &middot; points</small></div>
+              <div class="node node-notion">Notion<small>directory &middot; event log &middot; points</small></div>
             </div>
-            <figcaption>Members only ever touch Discord. The bot writes to SQLite instantly, and a locked sync worker mirrors changes into Notion for officers.</figcaption>
+            <figcaption>Members only use Discord. The bot writes to SQLite right away, and a locked sync worker copies changes into Notion for officers.</figcaption>
           </figure>
 
-          <p>Two layers on purpose: SQLite handles speed and correctness, and Notion handles visibility. The bot never waits on Notion to answer a member.</p>
+          <p>SQLite keeps check-ins fast and correct. Notion is where officers read the data. The bot never waits on Notion before answering a member.</p>
 
           <details class="deep">
             <summary>the sync race condition <span>for engineers</span></summary>
-            <p>Early on, two things could touch the same member at once: a check-in awarding points and the sync worker pushing that member to Notion (or two check-ins landing together). Both read the row, both computed a new total, and whichever wrote last won, so points silently disappeared.</p>
-            <p>The fix was a per-member <code>asyncio.Lock</code> around every read-modify-write, plus a version number on each row. The sync worker takes the same lock, snapshots the row, pushes it to Notion, and only clears the dirty flag if the version hasn't changed since it started.</p>
+            <p>Early on, two things could touch the same member at once: a check-in awarding points and the sync worker pushing that member to Notion, or two check-ins landing together. Both read the row, both computed a new total, and whichever wrote last won. Points disappeared without any error.</p>
+            <p>I fixed it with a per-member <code>asyncio.Lock</code> around every read-modify-write and a version number on each row. The sync worker takes the same lock, snapshots the row, pushes it to Notion, and only clears the dirty flag if the version is unchanged.</p>
 <pre><code>async with locks[member_id]:
     row = db.get(member_id)
     row.points += award
@@ -1040,52 +1051,54 @@
 
           <details class="deep">
             <summary>identity verification <span>for engineers</span></summary>
-            <p>New members get a persistent "Get Verified" message. It's registered as a persistent view, so the button keeps working across bot restarts and redeploys. Clicking it opens a modal for name and email, then the matcher runs:</p>
+            <p>New members see a "Get Verified" message. It's registered as a persistent view, so the button still works after restarts and redeploys. Clicking it opens a modal for name and email, and then the matcher runs:</p>
             <ol>
               <li>exact email match against the directory</li>
               <li>normalized fallback: lowercased, trimmed, school vs. personal email, name similarity</li>
               <li>no confident match: queue it for an officer with the closest candidates attached</li>
             </ol>
-            <p>A match assigns the Member role and class-year role automatically and links the Discord ID to the directory row.</p>
+            <p>A match gives the member the Member role and their class-year role and links their Discord ID to the directory row.</p>
           </details>
 
           <details class="deep">
             <summary>permissions design <span>for engineers</span></summary>
-            <p>Every command declares a minimum tier: member, officer, or admin. A single check maps the user's Discord roles to a tier before the command runs, so officer commands like starting attendance or adjusting points are invisible to members. New officers get access the moment their role changes.</p>
+            <p>Every command declares a minimum tier: member, officer or admin. One check maps the user's Discord roles to a tier before the command runs, so members never see officer commands like starting attendance or adjusting points. A new officer gets access as soon as their role changes.</p>
           </details>
 
           <details class="deep">
             <summary>deployment <span>for engineers</span></summary>
-            <p>Containerized with Docker and deployed to Fly.io for 24/7 uptime, with the SQLite file on a persistent volume and secrets (bot token, Notion key) kept in Fly's secret store. Shipping a change is one deploy, with no laptop that has to stay on.</p>
+            <p>The bot runs in a Docker container on Fly.io, with the SQLite file on a persistent volume and the bot token and Notion key in Fly's secret store. Shipping a change is one deploy, and no laptop has to stay on. It has run since August without an outage.</p>
           </details>
         </section>
 
         <section class="box cs-section" id="iteration" aria-labelledby="iteration-h">
           <h2 id="iteration-h"><span class="num">06</span> execution &amp; iteration</h2>
-          <p>I shipped small, watched how officers and members actually used it, and changed course based on what club leadership told me.</p>
+          <p>I shipped small versions, watched how officers and members used them, and let their feedback decide what came next.</p>
           <ol class="timeline">
-            <li><span class="v">v1</span><div><strong>verification + roles.</strong> Linked Discord to the directory and auto-assigned roles. <em>Learned:</em> exact matching failed on messy records.</div></li>
-            <li><span class="v">v2</span><div><strong>fallback matching + officer review.</strong> Most members verified on the first try, and leftovers went to a short officer queue.</div></li>
-            <li><span class="v">v3</span><div><strong>attendance codes + points.</strong> One officer command per event, members type the code, points land instantly. <em>Learned:</em> writing straight to Notion was too slow at busy events.</div></li>
-            <li><span class="v">v4</span><div><strong>SQLite + Notion two-layer sync.</strong> Instant check-ins, with Notion as the readable view. Fixed the sync race condition with locks.</div></li>
-            <li><span class="v">v5+</span><div><strong>points by event type, leaderboard, role tiers.</strong> Different events earn different points, members can check their standing anytime, and officers got a screen-capture tutorial for the attendance flow.</div></li>
+            <li><span class="v">v1</span><div><strong>verification + roles.</strong> Linked Discord accounts to the directory and assigned roles automatically. <em>Learned:</em> exact matching failed on messy records.</div></li>
+            <li><span class="v">v2</span><div><strong>fallback matching + officer review.</strong> Most members verified on the first try, and the rest went to a short officer queue.</div></li>
+            <li><span class="v">v3</span><div><strong>attendance codes + points.</strong> Replaced the per-event Airtable form. An officer starts attendance with one command, members type the code, and points show up right away.</div></li>
+            <li><span class="v">v4</span><div><strong>SQLite + Notion sync.</strong> Moved everything off Airtable into a shared Notion workspace, with SQLite underneath for instant writes. Fixed the sync race condition with locks.</div></li>
+            <li><span class="v">v5+</span><div><strong>points by event type, leaderboard, role tiers.</strong> General meetings are worth 3 points and smaller events 1. Members can check their standing any time, and officers got a screen-capture tutorial for running attendance.</div></li>
           </ol>
         </section>
 
         <section class="box cs-section" id="results" aria-labelledby="results-h">
           <h2 id="results-h"><span class="num">07</span> results</h2>
+          <p>Numbers from the Notion event log, Sep 13 to Oct 6, 2026:</p>
           <div class="stats">
-            <div class="stat"><span class="stat-num">100+</span><span class="stat-label">members on the server</span></div>
-            <div class="stat"><span class="stat-num tbd">[__]</span><span class="stat-label">active users / month</span></div>
-            <div class="stat"><span class="stat-num tbd">[__]%</span><span class="stat-label">verified automatically</span></div>
-            <div class="stat"><span class="stat-num tbd">[__]</span><span class="stat-label">check-ins logged</span></div>
-            <div class="stat"><span class="stat-num tbd">[__] &rarr; [__]</span><span class="stat-label">attendance time, before &rarr; after</span></div>
-            <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">uptime on fly.io</span></div>
+            <div class="stat"><span class="stat-num">13</span><span class="stat-label">events run on check-in codes</span></div>
+            <div class="stat"><span class="stat-num">110</span><span class="stat-label">check-ins logged</span></div>
+            <div class="stat"><span class="stat-num">186</span><span class="stat-label">points awarded automatically</span></div>
+            <div class="stat"><span class="stat-num">~85%</span><span class="stat-label">of active members verified</span></div>
+            <div class="stat"><span class="stat-num">5 min &rarr; &lt;1</span><span class="stat-label">time to check in</span></div>
+            <div class="stat"><span class="stat-num">0</span><span class="stat-label">outages on fly.io</span></div>
           </div>
           <ul>
-            <li>Officers no longer tally points or attendance by hand. Notion updates itself.</li>
-            <li>Members check their own points, profile, and leaderboard spot without asking an officer.</li>
-            <li>Permissions survive officer turnover with no code changes.</li>
+            <li>Officers spend no time on attendance or points now. The event log and member directory in Notion fill themselves in.</li>
+            <li>Even small events use codes. Volleyball practice, dodgeball, and the weekly web dev and LeetRooms sessions are worth 1 point, and members still check in.</li>
+            <li>64 members have filled out the one-time profile form in the Notion directory.</li>
+            <li>Only 3 members have needed help getting verified, and I rarely get asked to fix anything.</li>
           </ul>
         </section>
 
@@ -1095,19 +1108,17 @@
             <div>
               <h3>roadmap</h3>
               <ul>
-                <li>QR code check-in as an option for big events</li>
-                <li>automated event reminders and announcements</li>
-                <li>an officer analytics view in Notion (attendance trends, at-risk members)</li>
-                <li>handoff docs so the next officer board can own it</li>
+                <li>QR code check-in as a second option next to codes</li>
+                <li>more analytics views in Notion for officers, like attendance trends and who's dropping off</li>
               </ul>
             </div>
             <div>
               <h3>lessons</h3>
               <ul>
-                <li>Talk to users first. The Notion-only design would have failed at the first big meeting.</li>
-                <li>Design for messy real-world data instead of the clean data you wish you had.</li>
-                <li>Boring tech wins: SQLite plus a lock fixed what a fancier stack would have hidden.</li>
-                <li>Ship small, and let feedback set the next version.</li>
+                <li>How easy something is to use decides how often people use it. When checking in took five minutes of retyping, members skipped it. At under a minute, they check in at volleyball practice for a single point.</li>
+                <li>Design for the messy data you have. Clean records were never coming.</li>
+                <li>SQLite and one lock fixed the lost-points bug.</li>
+                <li>Ship small and let feedback pick the next version.</li>
               </ul>
             </div>
           </div>
@@ -1135,8 +1146,6 @@
           </div>
           <ul class="link-list">
             <li><span>source code</span> private repo (club-internal). <a href="mailto:ethanmeza43@gmail.com?subject=Stack%20repo%20access">ask me for a walkthrough &#8599;</a></li>
-            <li><span>demo video</span> <span class="tbd">[link]</span></li>
-            <li><span>PRD / architecture doc</span> <span class="tbd">[link]</span></li>
           </ul>
         </section>
 
