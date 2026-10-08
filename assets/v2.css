@@ -208,7 +208,6 @@ body.business .fav-art,
 body.business .fav-plaque,
 body.business .fav-icon,
 body.business .board-art,
-body.business .road-art,
 body.business .board .sticker,
 body.business .board .howdy,
 body.business .board .note,
@@ -279,7 +278,7 @@ body.business h5 {
   font-style: normal;
 }
 
-body.business :is(.portfolio-lang, .portfolio-collab, .edc-tags, .app-tags, .road-when) {
+body.business :is(.portfolio-lang, .portfolio-collab, .edc-tags, .app-tags) {
   font-style: normal;
   color: var(--muted);
 }
@@ -390,14 +389,9 @@ body.business :is(.np-btn, .resume-download, .case-cta, .copy-btn, .password-btn
   font-family: var(--body-font);
 }
 
-body.business :is(.status-box, .contact-block, .portfolio-item--case, .tldr, .stat, .decision, .user-card, .arch, .node, .deep, .app-icon, .app-shots img, .portfolio-img, .media-grid img, .ph, .mobile-modal, .road-card, .road-sign) {
+body.business :is(.status-box, .contact-block, .portfolio-item--case, .tldr, .stat, .decision, .user-card, .arch, .node, .deep, .app-icon, .app-shots img, .portfolio-img, .media-grid img, .ph, .mobile-modal) {
   border-radius: 10px;
   box-shadow: var(--soft);
-}
-
-body.business .road-sign {
-  background: var(--box-bg);
-  color: var(--text-color);
 }
 
 /* about: photo, favorites */
