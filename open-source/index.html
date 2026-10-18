@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>ethnmz &mdash; open-source alternatives</title>
+    <link rel="icon" type="image/png" href="/media/cat.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-color: #dcd4cb;
+        --box-bg: #e8e1d9;
+        --border-color: #b5aea5;
+        --text-color: #4a3e35;
+        --link-color: #7d5a44;
+        --select-bg: #d6cfc7;
+        --status-bg: #ece5dd;
+        --header-font: 'JetBrains Mono', monospace;
+        --body-font: 'JetBrains Mono', monospace;
+      }
+
+      body.dark {
+        --bg-color: #1e1c1a;
+        --box-bg: #28241f;
+        --border-color: #4a423a;
+        --text-color: #d8cfc2;
+        --link-color: #d9a26c;
+        --select-bg: #332e28;
+        --status-bg: #2c2823;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        margin: 0;
+        padding: 20px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--link-color);
+      }
+
+      .page {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .box {
+        background-color: var(--box-bg);
+        border: 1px solid var(--border-color);
+        padding: 16px 18px;
+        margin-bottom: 20px;
+      }
+
+      h1, h2, h3 {
+        font-family: var(--header-font);
+        color: var(--link-color);
+        margin-top: 0;
+      }
+
+      .hub-head {
+        text-align: center;
+      }
+
+      .hub-head h1 {
+        margin: 0 0 12px;
+        font-size: 1.9em;
+        line-height: 1.2;
+      }
+
+      .how {
+        margin: 0 auto 6px;
+        max-width: 560px;
+        font-size: 0.92em;
+      }
+
+      .key {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px 16px;
+        margin: 12px 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.85em;
+      }
+
+      .key strong {
+        color: var(--link-color);
+      }
+
+      /* jump links + filter */
+      .tools {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+
+      .chips a {
+        padding: 2px 8px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        font-size: 0.85em;
+      }
+
+      .chips a:hover {
+        background: var(--select-bg);
+      }
+
+      .filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .filter input {
+        flex: 1;
+        min-width: 0;
+        padding: 6px 10px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        font-size: 14px;
+      }
+
+      .filter input:focus {
+        outline: 2px solid var(--link-color);
+        outline-offset: -1px;
+      }
+
+      .filter-count {
+        font-size: 0.8em;
+        opacity: 0.8;
+        white-space: nowrap;
+      }
+
+      .cat {
+        scroll-margin-top: 130px;
+      }
+
+      h2 {
+        font-size: 1.15em;
+        border-bottom: 3px double var(--border-color);
+        padding-bottom: 5px;
+        margin-bottom: 12px;
+      }
+
+      .group + .group {
+        margin-top: 18px;
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 0.95em;
+      }
+
+      .apps {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .app {
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.12);
+      }
+
+      .app-name {
+        font-weight: bold;
+      }
+
+      .app-name::after {
+        content: ' \2197';
+        opacity: 0.7;
+      }
+
+      .app-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin: 6px 0;
+      }
+
+      .tag {
+        padding: 0 5px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+        font-size: 0.75em;
+      }
+
+      .app p {
+        margin: 0;
+        font-size: 0.9em;
+      }
+
+      .empty {
+        text-align: center;
+      }
+
+      .thanks > p:last-child {
+        margin-bottom: 0;
+      }
+
+      .hub-foot {
+        text-align: center;
+        font-size: 0.8em;
+        opacity: 0.8;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 12px;
+        }
+
+        .hub-head h1 {
+          font-size: 1.5em;
+        }
+
+        .tools {
+          position: static;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="/assets/v2.css">
+  </head>
+  <body>
+
+    <div class="page">
+
+      <header class="box hub-head">
+        <h1>Free Open-Source Alternatives to Subscription Apps</h1>
+        <p class="how">Each entry lists the project name, license, GitHub stars and platforms, then what it does.</p>
+        <ul class="key">
+          <li><strong>local AI</strong>: the model runs on your own computer for free.</li>
+          <li><strong>your own key</strong>: you pay the AI provider directly at their list price, with no markup.</li>
+        </ul>
+      </header>
+
+      <nav class="box tools" aria-label="categories">
+        <div class="chips">
+          <a href="#ai">ai assistants and search</a>
+          <a href="#voice">dictation and voice</a>
+          <a href="#studying">studying</a>
+          <a href="#video">video, images and slides</a>
+          <a href="#health">health</a>
+          <a href="#careers">careers and sales</a>
+          <a href="#productivity">productivity</a>
+          <a href="#youtube">distraction-free video</a>
+          <a href="#utilities">utilities</a>
+        </div>
+        <label class="filter">
+          <input type="search" id="filter" placeholder="filter, e.g. capcut" aria-label="filter the list">
+          <span class="filter-count" id="filter-count">43 apps</span>
+        </label>
+      </nav>
+
+      <section class="box cat" id="ai">
+        <h2>AI assistants and search</h2>
+        <div class="group">
+          <h3>Instead of ChatGPT Plus or Claude Pro for everyday use</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/ollama/ollama" target="_blank" rel="noopener">Ollama</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 184k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>Runs open models such as Gemma, Qwen, Llama and gpt-oss on your own machine with one command.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/janhq/jan" target="_blank" rel="noopener">Jan</a>
+              <div class="app-meta"><span class="tag">Apache-2.0</span><span class="tag">&#9733; 45k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A desktop chat app for local models, with optional API keys. Easiest place to start if you&#x27;ve never used a terminal.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener">Open WebUI</a>
+              <div class="app-meta"><span class="tag">Open WebUI License</span><span class="tag">&#9733; 156k</span><span class="tag">self-hosted</span></div>
+              <p>A ChatGPT-style interface with document chat, web search and multiple users.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Perplexity</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/ItzCrazyKns/Vane" target="_blank" rel="noopener">Vane, formerly Perplexica</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 37k</span><span class="tag">self-hosted</span></div>
+              <p>An answer engine with cited sources. Works with local models or your own key.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/searxng/searxng" target="_blank" rel="noopener">SearXNG</a>
+              <div class="app-meta"><span class="tag">AGPL-3.0</span><span class="tag">&#9733; 39k</span><span class="tag">self-hosted</span></div>
+              <p>The private metasearch engine that most open answer engines use underneath.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/miurla/morphic" target="_blank" rel="noopener">Morphic</a>
+              <div class="app-meta"><span class="tag">Apache-2.0</span><span class="tag">&#9733; 9.2k</span><span class="tag">web or self-hosted</span></div>
+              <p>A lighter answer engine with a generative interface.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Perplexity Comet and other AI browsers</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/browseros-ai/BrowserOS" target="_blank" rel="noopener">BrowserOS</a>
+              <div class="app-meta"><span class="tag">AGPL-3.0</span><span class="tag">&#9733; 14k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A Chromium-based browser with a built-in agent that can browse for you.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/nanobrowser/nanobrowser" target="_blank" rel="noopener">Nanobrowser</a>
+              <div class="app-meta"><span class="tag">Apache-2.0</span><span class="tag">&#9733; 14k</span><span class="tag">Chrome extension</span></div>
+              <p>Web automation agents inside the browser you already use.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Cluely</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/iamsrikanthnani/pluely" target="_blank" rel="noopener">Pluely</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 2.7k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A lightweight on-screen assistant for meetings and notes, with your own key.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="voice">
+        <h2>Dictation and voice</h2>
+        <div class="group">
+          <h3>Instead of Wispr Flow</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/cjpais/Handy" target="_blank" rel="noopener">Handy</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 34k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>Push-to-talk dictation into any app. Speech recognition runs entirely on your computer.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/OpenWhispr/openwhispr" target="_blank" rel="noopener">OpenWhispr</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 9.5k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>Local Whisper dictation, with optional cloud cleanup using your own key.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/ggml-org/whisper.cpp" target="_blank" rel="noopener">whisper.cpp</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 54k</span></div>
+              <p>The speech engine that most of these apps are built on.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of ElevenLabs</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/jamiepine/voicebox" target="_blank" rel="noopener">Voicebox</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 58k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>Local voice cloning, text-to-speech and dictation.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/resemble-ai/chatterbox" target="_blank" rel="noopener">Chatterbox</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 27k</span><span class="tag">Python</span></div>
+              <p>A high-quality open text-to-speech model with emotion control.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="studying">
+        <h2>Studying</h2>
+        <div class="group">
+          <h3>Instead of Turbo AI and other AI note apps</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/lfnovo/open-notebook" target="_blank" rel="noopener">Open Notebook</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 40k</span><span class="tag">self-hosted</span></div>
+              <p>A NotebookLM-style tool that turns PDFs and videos into notes, summaries and audio overviews. Works with local models or your own key.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/ankitects/anki" target="_blank" rel="noopener">Anki</a>
+              <div class="app-meta"><span class="tag">AGPL-3.0</span><span class="tag">&#9733; 32k</span><span class="tag">Mac, Windows, Linux, Android</span></div>
+              <p>The spaced-repetition flashcard app students have used since 2006.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="video">
+        <h2>Video, images and slides</h2>
+        <div class="group">
+          <h3>Instead of CapCut</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/OpenCut-app/OpenCut" target="_blank" rel="noopener">OpenCut</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 95k</span><span class="tag">web and desktop</span></div>
+              <p>A CapCut-style editor.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/mltframework/shotcut" target="_blank" rel="noopener">Shotcut</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 15k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A mature timeline editor with more than 15 years of releases.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/KDE/kdenlive" target="_blank" rel="noopener">Kdenlive</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A full-featured editor from the KDE community.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/devhyper/open-video-editor" target="_blank" rel="noopener">Open Video Editor</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">Android</span></div>
+              <p>Simple trimming and filters on your phone.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of OpusClip</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/modelscope/FunClip" target="_blank" rel="noopener">FunClip</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 6.4k</span><span class="tag">Python</span></div>
+              <p>Finds and cuts the key moments from long videos using local speech recognition. Vertical reframing is still manual.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Higgsfield and other AI image or video generators</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/Comfy-Org/ComfyUI" target="_blank" rel="noopener">ComfyUI</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 138k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>Node-based image and video generation with open models on your own GPU.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/invoke-ai/InvokeAI" target="_blank" rel="noopener">InvokeAI</a>
+              <div class="app-meta"><span class="tag">Apache-2.0</span><span class="tag">&#9733; 29k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A friendlier canvas-style studio for local image models.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Gamma</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/presenton/presenton" target="_blank" rel="noopener">Presenton</a>
+              <div class="app-meta"><span class="tag">Apache-2.0</span><span class="tag">&#9733; 11k</span><span class="tag">desktop or Docker</span></div>
+              <p>Generates editable decks from a prompt and exports PowerPoint and PDF.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/slidevjs/slidev" target="_blank" rel="noopener">Slidev</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 49k</span></div>
+              <p>Slides written in Markdown.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="health">
+        <h2>Health</h2>
+        <div class="group">
+          <h3>Instead of Flo</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://gitlab.com/bloodyhealth/drip" target="_blank" rel="noopener">drip.</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">iOS and Android, hosted on GitLab</span></div>
+              <p>A privacy-first cycle tracker with no account and no cloud. Available in both app stores.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Cal AI</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/simonoppowa/OpenNutriTracker" target="_blank" rel="noopener">OpenNutriTracker</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 2.7k</span><span class="tag">iOS and Android</span></div>
+              <p>Calorie and macro tracking with barcode scanning and the Open Food Facts database. There is no mature open-source photo-based calorie app yet.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="careers">
+        <h2>Careers and sales</h2>
+        <div class="group">
+          <h3>Instead of Jobright</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/reactive-resume/reactive-resume" target="_blank" rel="noopener">Reactive Resume</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 44k</span><span class="tag">web or self-hosted</span></div>
+              <p>A resume builder with optional AI rewriting using your own key.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/Gsync/jobsync" target="_blank" rel="noopener">JobSync</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 1.4k</span><span class="tag">self-hosted</span></div>
+              <p>An application tracker that matches your resume against job descriptions.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of Apollo.io</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/twentyhq/twenty" target="_blank" rel="noopener">Twenty</a>
+              <div class="app-meta"><span class="tag">AGPL-3.0</span><span class="tag">&#9733; 58k</span><span class="tag">cloud or self-hosted</span></div>
+              <p>A modern open-source CRM.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/mautic/mautic" target="_blank" rel="noopener">Mautic</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 11k</span><span class="tag">self-hosted</span></div>
+              <p>Email campaigns and marketing automation.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="productivity">
+        <h2>Productivity</h2>
+        <div class="group">
+          <h3>Instead of Todoist</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/super-productivity/super-productivity" target="_blank" rel="noopener">Super Productivity</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 23k</span><span class="tag">Mac, Windows, Linux, Android</span></div>
+              <p>Tasks, time tracking and timeboxing.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/go-vikunja/vikunja" target="_blank" rel="noopener">Vikunja</a>
+              <div class="app-meta"><span class="tag">AGPL-3.0</span><span class="tag">&#9733; 5.8k</span><span class="tag">self-hosted</span></div>
+              <p>Lists, kanban and Gantt views.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of TeamGantt</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/opf/openproject" target="_blank" rel="noopener">OpenProject</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 16k</span><span class="tag">self-hosted or cloud</span></div>
+              <p>Gantt charts, dependencies and project tracking.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Instead of CodeRabbit</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/The-PR-Agent/pr-agent" target="_blank" rel="noopener">PR-Agent</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 13k</span><span class="tag">GitHub Action or CLI</span></div>
+              <p>AI pull-request review with your own model key.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="youtube">
+        <h2>Distraction-free video</h2>
+        <div class="group">
+          <h3>Instead of YouTube Premium or Shorts-blocking apps</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/TeamNewPipe/NewPipe" target="_blank" rel="noopener">NewPipe</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 40k</span><span class="tag">Android via F-Droid</span></div>
+              <p>Ad-free YouTube with background play.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/FreeTubeApp/FreeTube" target="_blank" rel="noopener">FreeTube</a>
+              <div class="app-meta"><span class="tag">AGPL-3.0</span><span class="tag">&#9733; 22k</span><span class="tag">Mac, Windows, Linux</span></div>
+              <p>A desktop YouTube client with local subscriptions and Shorts hidden.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/libre-tube/LibreTube" target="_blank" rel="noopener">LibreTube</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 13k</span><span class="tag">Android</span></div>
+              <p>A YouTube client with no Google account.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="box cat" id="utilities">
+        <h2>Utilities</h2>
+        <div class="group">
+          <h3>Keeping your computer awake</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/newmarcel/KeepingYouAwake" target="_blank" rel="noopener">KeepingYouAwake</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 7k</span><span class="tag">Mac</span></div>
+              <p>Menu-bar sleep prevention, maintained since 2014.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/nghialuong/Lidless" target="_blank" rel="noopener">Lidless</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">Mac</span></div>
+              <p>Keeps a Mac running with the lid closed.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/microsoft/PowerToys" target="_blank" rel="noopener">Microsoft PowerToys</a>
+              <div class="app-meta"><span class="tag">MIT</span><span class="tag">&#9733; 139k</span><span class="tag">Windows</span></div>
+              <p>Includes Awake plus more than 30 other utilities.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Installing and updating apps</h3>
+          <ul class="apps">
+            <li class="app">
+              <a class="app-name" href="https://github.com/Homebrew/brew" target="_blank" rel="noopener">Homebrew</a>
+              <div class="app-meta"><span class="tag">BSD-2-Clause</span><span class="tag">Mac and Linux</span></div>
+              <p>Installs most Mac apps above with one command.</p>
+            </li>
+            <li class="app">
+              <a class="app-name" href="https://github.com/ImranR98/Obtainium" target="_blank" rel="noopener">Obtainium</a>
+              <div class="app-meta"><span class="tag">GPL-3.0</span><span class="tag">&#9733; 21k</span><span class="tag">Android</span></div>
+              <p>Installs and updates Android apps straight from their GitHub releases.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <p class="box empty" id="empty" hidden>Nothing matches that. Try the name of the app you pay for.</p>
+
+      <section class="box thanks">
+        <h2>Supporting these projects</h2>
+        <p>If one of these saves you a subscription, the best way to say thanks is to give directly. Most of these repositories have a Sponsor button or an Open Collective link at the top of their GitHub page, and that money goes to the maintainers.</p>
+      </section>
+
+      <p class="hub-foot">hosted on <a href="https://ethnmz.com/">ethnmz.com</a></p>
+
+    </div>
+
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
+        } catch (e) {}
+      })();
+
+      // filter matches the app's own text plus the "instead of" heading and category it sits under
+      (function () {
+        var input = document.getElementById('filter');
+        var count = document.getElementById('filter-count');
+        var empty = document.getElementById('empty');
+        var cats = document.querySelectorAll('.cat');
+        var total = document.querySelectorAll('.app').length;
+
+        input.addEventListener('input', function () {
+          var q = input.value.trim().toLowerCase();
+          var shown = 0;
+          Array.prototype.forEach.call(cats, function (cat) {
+            var catText = cat.querySelector('h2').textContent.toLowerCase();
+            var catShown = 0;
+            Array.prototype.forEach.call(cat.querySelectorAll('.group'), function (group) {
+              var groupText = catText + ' ' + group.querySelector('h3').textContent.toLowerCase();
+              var groupShown = 0;
+              Array.prototype.forEach.call(group.querySelectorAll('.app'), function (app) {
+                var hit = !q || (groupText + ' ' + app.textContent.toLowerCase()).indexOf(q) !== -1;
+                app.hidden = !hit;
+                if (hit) groupShown++;
+              });
+              group.hidden = !groupShown;
+              catShown += groupShown;
+            });
+            cat.hidden = !catShown;
+            shown += catShown;
+          });
+          empty.hidden = shown > 0;
+          count.textContent = q ? shown + ' of ' + total : total + ' apps';
+        });
+      })();
+    </script>
+
+    <script src="/assets/v2.js" defer></script>
+
+    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "bdf4b1ba951e4b668c1fe5f697a97f86"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
+  </body>
+</html>
