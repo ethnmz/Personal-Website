@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>ethnmz &mdash; portfolio hub</title>
+    <meta name="description" content="Portfolio Hub for the TAMU ColorStack portfolio workshop: tools for every step of building your site.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Portfolio Hub">
+    <meta property="og:description" content="Everything you need to build yours.">
+    <meta property="og:url" content="https://ethnmz.com/colorstack/">
+    <link rel="icon" type="image/png" href="/media/cat.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-color: #dcd4cb;
+        --box-bg: #e8e1d9;
+        --border-color: #b5aea5;
+        --text-color: #4a3e35;
+        --link-color: #7d5a44;
+        --select-bg: #d6cfc7;
+        --status-bg: #ece5dd;
+        --muted: #6b5f55;
+        --header-font: 'JetBrains Mono', monospace;
+        --body-font: 'JetBrains Mono', monospace;
+        --nav-h: 48px;
+      }
+
+      body.dark {
+        --bg-color: #1e1c1a;
+        --box-bg: #28241f;
+        --border-color: #4a423a;
+        --text-color: #d8cfc2;
+        --link-color: #d9a26c;
+        --select-bg: #332e28;
+        --status-bg: #2c2823;
+        --muted: #b3a898;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--body-font);
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--link-color);
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--link-color);
+        outline-offset: 2px;
+      }
+
+      h1, h2, h3 {
+        font-family: var(--header-font);
+        color: var(--link-color);
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      button,
+      input {
+        font-family: var(--body-font);
+        font-size: 13px;
+        color: var(--text-color);
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .skip {
+        position: absolute;
+        left: 12px;
+        top: -40px;
+        z-index: 20;
+        padding: 6px 12px;
+        background: var(--link-color);
+        color: var(--box-bg);
+        border: 0;
+      }
+
+      .skip:focus {
+        top: 12px;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      /* ---------- sticky nav: the 5 steps from the workshop ---------- */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--box-bg);
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06);
+      }
+
+      .topbar-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px 12px;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 8px 20px;
+      }
+
+      .brand {
+        border: 0;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .topbar .menu-btn {
+        display: none;
+      }
+
+      .stepper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .stepper li {
+        display: flex;
+        align-items: center;
+      }
+
+      .stepper li + li::before {
+        content: '\2192';
+        padding: 0 2px;
+        opacity: 0.45;
+        font-size: 11px;
+      }
+
+      .stepper a {
+        display: block;
+        padding: 3px 8px;
+        border: 1px solid transparent;
+        font-size: 12.5px;
+        white-space: nowrap;
+      }
+
+      .stepper a:hover {
+        background: var(--select-bg);
+      }
+
+      .stepper a.active {
+        border-color: var(--link-color);
+        background: var(--status-bg);
+        font-weight: bold;
+      }
+
+      .stepper .num {
+        opacity: 0.6;
+        margin-right: 4px;
+      }
+
+      /* ---------- page ---------- */
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 24px 20px 40px;
+      }
+
+      .box {
+        background-color: var(--box-bg);
+        border: 1px solid var(--border-color);
+        padding: 20px 22px;
+        margin-bottom: 22px;
+      }
+
+      section[id] {
+        scroll-margin-top: calc(var(--nav-h) + 14px);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        color: var(--text-color);
+        font-weight: bold;
+        cursor: var(--cursor-pointer, pointer);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.18);
+      }
+
+      .btn:hover {
+        background: var(--select-bg);
+      }
+
+      .btn-primary {
+        border-color: var(--link-color);
+        background: var(--link-color);
+        color: var(--box-bg);
+      }
+
+      .btn-primary:hover {
+        background: var(--link-color);
+        filter: brightness(1.1);
+      }
+
+      .btn-small {
+        padding: 2px 8px;
+        font-size: 12px;
+      }
+
+      .chip {
+        display: inline-block;
+        padding: 0 6px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+        font-size: 11px;
+        line-height: 1.6;
+        white-space: nowrap;
+      }
+
+      .chip-stage {
+        border-color: var(--link-color);
+        color: var(--link-color);
+      }
+
+      .chip-note {
+        border-style: dashed;
+      }
+
+      /* ---------- hero ---------- */
+      .hero {
+        padding: 44px 24px 34px;
+        text-align: center;
+      }
+
+      .kicker {
+        margin: 0 0 8px;
+        font-size: 0.8em;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .hero h1 {
+        font-size: clamp(2em, 6vw, 3.2em);
+        letter-spacing: -0.02em;
+      }
+
+      .subline {
+        margin: 10px 0 22px;
+        font-size: 1.1em;
+      }
+
+      .hero .btn {
+        padding: 9px 16px;
+        font-size: 14px;
+      }
+
+      .questions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .questions li {
+        padding: 3px 10px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        font-size: 12px;
+      }
+
+      /* ---------- resources ---------- */
+      .filters {
+        display: grid;
+        gap: 10px;
+      }
+
+      .filters h2 {
+        font-size: 1.35em;
+        margin-bottom: 2px;
+      }
+
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search input {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 10px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        font-size: 14px;
+      }
+
+      .count {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .chips button {
+        padding: 2px 9px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        font-size: 12px;
+        cursor: var(--cursor-pointer, pointer);
+      }
+
+      .chips button:hover {
+        background: var(--select-bg);
+      }
+
+      .chips button[aria-pressed="true"] {
+        border-color: var(--link-color);
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-weight: bold;
+      }
+
+      .stage-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 3px double var(--border-color);
+      }
+
+      .stage-num {
+        font-weight: bold;
+        color: var(--muted);
+      }
+
+      .stage-head h2 {
+        font-size: 1.35em;
+      }
+
+      .cat + .cat {
+        margin-top: 22px;
+      }
+
+      .cat-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 12px;
+        margin-bottom: 10px;
+      }
+
+      .cat-head h3 {
+        font-size: 1em;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .card a {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        color: var(--text-color);
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.12);
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+      }
+
+      .card a:hover,
+      .card a:focus-visible {
+        transform: translate(-1px, -2px);
+        box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.16);
+        border-color: var(--link-color);
+      }
+
+      .badge {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        background: var(--b, #7d5a44);
+        color: #f4ede4;
+        font-weight: bold;
+        font-size: 15px;
+        box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+      }
+
+      .card-name {
+        font-weight: bold;
+        color: var(--link-color);
+      }
+
+      .card-name::after {
+        content: ' \2197';
+        opacity: 0.6;
+        font-weight: normal;
+      }
+
+      .card-desc {
+        font-size: 12.5px;
+      }
+
+      .card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 2px;
+      }
+
+      .ai-banner {
+        display: inline-block;
+        padding: 2px 10px;
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-weight: bold;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+      }
+
+      .prompts {
+        display: grid;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .prompt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 10px;
+        border: 1px dashed var(--border-color);
+        background: var(--box-bg);
+        font-size: 12.5px;
+      }
+
+      .prompt span {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .empty {
+        margin: 0;
+        padding: 18px;
+        text-align: center;
+        border: 1px dashed var(--border-color);
+      }
+
+      /* ---------- responsive ---------- */
+      @media (max-width: 860px) {
+        .topbar .menu-btn {
+          display: inline-flex;
+        }
+
+        .hub-nav {
+          display: none;
+          flex-basis: 100%;
+        }
+
+        .hub-nav.open {
+          display: block;
+        }
+
+        .stepper {
+          flex-direction: column;
+        }
+
+        .stepper li + li::before {
+          content: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .page {
+          padding: 14px 12px 30px;
+        }
+
+        .topbar-inner {
+          padding: 8px 12px;
+        }
+
+        .box {
+          padding: 16px 14px;
+        }
+
+        .hero {
+          padding: 30px 14px 24px;
+        }
+
+        .grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+          animation: none !important;
+        }
+
+        .card a:hover,
+        .card a:focus-visible {
+          transform: none;
+        }
+      }
+
+      @media print {
+        #world-bg,
+        .topbar,
+        .skip,
+        .btn,
+        .chips,
+        .search {
+          display: none !important;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="/assets/v2.css">
+  </head>
+  <body>
+
+    <a class="skip" href="#main">skip to content</a>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#top">Portfolio Hub</a>
+        <button type="button" class="btn btn-small menu-btn" id="menu-btn" aria-expanded="false" aria-controls="hub-nav">menu</button>
+        <nav class="hub-nav" id="hub-nav" aria-label="portfolio steps">
+          <ol class="stepper" id="stepper"></ol>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page" id="main">
+
+      <section class="box hero" id="top">
+        <p class="kicker">TAMU ColorStack &middot; portfolio workshop</p>
+        <h1>Portfolio Hub</h1>
+        <p class="subline">Everything you need to build yours.</p>
+        <a class="btn btn-primary" href="#resources">Browse Resources</a>
+        <ul class="questions" aria-label="three questions every portfolio answers">
+          <li>Who are you?</li>
+          <li>What have you built?</li>
+          <li>How can I reach you?</li>
+        </ul>
+      </section>
+
+      <section class="box" id="resources" aria-labelledby="resources-h">
+        <div class="filters">
+          <h2 id="resources-h">Resources</h2>
+          <div class="search">
+            <label class="sr-only" for="q">search resources</label>
+            <input type="search" id="q" placeholder="search, e.g. fonts, hosting, icons">
+            <span class="count" id="count" aria-live="polite"></span>
+          </div>
+          <div class="chips" id="stage-chips" role="group" aria-label="filter by step"></div>
+        </div>
+      </section>
+
+      <div id="stages"></div>
+      <p class="box empty" id="empty" hidden>Nothing matches. Try another word or step.</p>
+      <noscript><p class="box empty">The resource cards need JavaScript turned on.</p></noscript>
+
+    </main>
+
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
+        } catch (e) {}
+      })();
+
+      /* ==================== data: edit these to update the page ==================== */
+
+      // the 5 steps from the workshop slides; name is the short nav label, title is the section heading
+      var STAGES = [
+        { id: 'goals', name: 'Goals', title: 'Define your goals and audience' },
+        { id: 'inspiration', name: 'Inspiration', title: 'Gather inspiration' },
+        { id: 'sketch', name: 'Sketch', title: 'Sketch / layout your site' },
+        { id: 'build', name: 'Build', title: 'Build!' },
+        { id: 'deploy', name: 'Deploy', title: 'Deploy' }
+      ];
+
+      // d = description (8 words max), a = portfolio skeleton tags, note = tiny extra label
+      var RESOURCES = [
+        { stage: 'goals', title: 'Campus', items: [
+          { n: 'Texas A&M Career Center', u: 'https://careercenter.tamu.edu/', d: 'Resume reviews, advising and career fairs' }
+        ] },
+        { stage: 'goals', title: 'Resume', items: [
+          { n: 'Overleaf', u: 'https://www.overleaf.com/', d: 'LaTeX resume templates', a: ['experience'] },
+          { n: 'Canva resume templates', u: 'https://www.canva.com/resumes/', d: 'Visual resume templates', a: ['experience'] },
+          { n: 'Google Docs templates', u: 'https://docs.google.com/document/', d: 'Simple resume templates, free', a: ['experience'] }
+        ] },
+        { stage: 'inspiration', title: 'Design inspiration', items: [
+          { n: 'Pinterest', u: 'https://www.pinterest.com/', d: 'Moodboards for colors and vibes' },
+          { n: 'Dribbble', u: 'https://dribbble.com/', d: 'UI shots from designers' },
+          { n: 'Behance', u: 'https://www.behance.net/', d: 'Full creative project case studies', a: ['projects'] },
+          { n: 'Mobbin', u: 'https://mobbin.com/', d: 'Searchable library of real app screens' },
+          { n: 'Neocities', u: 'https://neocities.org/browse', d: 'Browse handmade personal websites' },
+          { n: 'Awwwards', u: 'https://www.awwwards.com/', d: 'Award-winning websites, updated daily', a: ['hero'] },
+          { n: 'Land-book', u: 'https://land-book.com/', d: 'Landing page gallery by category', a: ['hero'] },
+          { n: 'Savee', u: 'https://savee.it/', d: 'Visual bookmarking for designers' },
+          { n: 'Are.na', u: 'https://www.are.na/', d: 'Collect and connect ideas' },
+          { n: 'Cosmos', u: 'https://www.cosmos.so/', d: 'Save and organize visual inspiration' }
+        ] },
+        { stage: 'inspiration', title: 'Real portfolios', items: [
+          { n: 'bestfolios', u: 'https://www.bestfolios.com/', d: 'Curated design portfolios and resumes' },
+          { n: 'Siteinspire', u: 'https://www.siteinspire.com/', d: 'Curated web design showcase' },
+          { n: 'Godly', u: 'https://godly.website/', d: 'Curated web design gallery', note: 'now called Recent' },
+          { n: 'r/webdev', u: 'https://www.reddit.com/r/webdev/', d: 'Ask devs for portfolio feedback' },
+          { n: 'r/web_design', u: 'https://www.reddit.com/r/web_design/', d: 'Web design critique and discussion' }
+        ] },
+        { stage: 'sketch', title: 'Sketch & wireframe tools', items: [
+          { n: 'Figma', u: 'https://www.figma.com/', d: 'Design and prototype in the browser' },
+          { n: 'Canva', u: 'https://www.canva.com/', d: 'Drag-and-drop layouts, fast' },
+          { n: 'Google Slides', u: 'https://docs.google.com/presentation/', d: 'Lay out pages with simple shapes' },
+          { n: 'Excalidraw', u: 'https://excalidraw.com/', d: 'Hand-drawn style whiteboard sketches' },
+          { n: 'tldraw', u: 'https://www.tldraw.com/', d: 'Infinite canvas for quick wireframes' },
+          { n: 'Google Drawings', u: 'https://docs.google.com/drawings/', d: 'Simple shapes, already in your Drive' },
+          { n: 'Miro', u: 'https://miro.com/', d: 'Shared whiteboard for planning' }
+        ] },
+        { stage: 'sketch', title: 'Colors', items: [
+          { n: 'Coolors', u: 'https://coolors.co/', d: 'Generate palettes with the spacebar' },
+          { n: 'Adobe Color', u: 'https://color.adobe.com/', d: 'Color wheel and harmony rules' },
+          { n: 'Realtime Colors', u: 'https://www.realtimecolors.com/', d: 'Preview a palette on a real site' },
+          { n: 'WebAIM Contrast Checker', u: 'https://webaim.org/resources/contrastchecker/', d: 'Check your text is readable' }
+        ] },
+        { stage: 'sketch', title: 'Fonts & type', items: [
+          { n: 'Google Fonts', u: 'https://fonts.google.com/', d: 'Free web fonts, easy to embed', a: ['hero'] },
+          { n: 'Fontshare', u: 'https://www.fontshare.com/', d: 'Free fonts from Indian Type Foundry' },
+          { n: 'Fontjoy', u: 'https://fontjoy.com/', d: 'Generate font pairings' }
+        ] },
+        { stage: 'build', title: 'Learn to code it', items: [
+          { n: 'MDN Web Docs', u: 'https://developer.mozilla.org/', d: 'The reference for HTML, CSS and JS' },
+          { n: 'freeCodeCamp', u: 'https://www.freecodecamp.org/', d: 'Free web dev curriculum and certifications' },
+          { n: 'The Odin Project', u: 'https://www.theodinproject.com/', d: 'Project-based full-stack path' },
+          { n: 'web.dev', u: 'https://web.dev/', d: 'Google guides to the modern web' },
+          { n: 'CSS-Tricks', u: 'https://css-tricks.com/', d: 'CSS guides, including flexbox and grid' }
+        ] },
+        { stage: 'build', title: 'AI tools', ai: true, items: [
+          { n: 'Claude', u: 'https://claude.ai/', d: 'Writing feedback and code help' },
+          { n: 'ChatGPT', u: 'https://chatgpt.com/', d: 'Brainstorm, draft and explain errors' },
+          { n: 'GitHub Copilot', u: 'https://github.com/features/copilot', d: 'AI autocomplete in your editor' },
+          { n: 'Cursor', u: 'https://cursor.com/', d: 'Code editor with AI built in' }
+        ] },
+        { stage: 'build', title: 'UI components & effects', items: [
+          { n: 'CodePen', u: 'https://codepen.io/', d: 'Front-end demos to learn from and remix' },
+          { n: 'UIverse', u: 'https://uiverse.io/', d: 'Open-source buttons, cards and loaders' },
+          { n: 'Hover.dev', u: 'https://www.hover.dev/', d: 'Animated React and Tailwind components' },
+          { n: 'Tailwind CSS', u: 'https://tailwindcss.com/', d: 'Utility-first CSS framework' }
+        ] },
+        { stage: 'build', title: 'Images, icons & assets', items: [
+          { n: 'Unsplash', u: 'https://unsplash.com/', d: 'Free high-quality photos', a: ['hero'] },
+          { n: 'Pexels', u: 'https://www.pexels.com/', d: 'Free stock photos and videos' },
+          { n: 'Heroicons', u: 'https://heroicons.com/', d: 'Clean SVG icons from the Tailwind team' },
+          { n: 'Lucide', u: 'https://lucide.dev/', d: 'Open-source SVG icon library' },
+          { n: 'Font Awesome', u: 'https://fontawesome.com/', d: 'Huge icon library with a free tier', a: ['contact'] },
+          { n: 'TinyPNG', u: 'https://tinypng.com/', d: 'Shrink PNG and JPG files' },
+          { n: 'Squoosh', u: 'https://squoosh.app/', d: 'Compress and convert images in-browser' }
+        ] },
+        { stage: 'deploy', title: 'Test & polish', items: [
+          { n: 'Lighthouse', u: 'https://developer.chrome.com/docs/lighthouse', d: 'Audit speed, SEO and accessibility' },
+          { n: 'PageSpeed Insights', u: 'https://pagespeed.web.dev/', d: 'Lighthouse scores without installing anything' },
+          { n: 'WAVE', u: 'https://wave.webaim.org/', d: 'Spot accessibility errors on your page' },
+          { n: 'Responsively App', u: 'https://responsively.app/', d: 'Preview many screen sizes at once' }
+        ] },
+        { stage: 'deploy', title: 'Host & deploy', items: [
+          { n: 'GitHub Pages', u: 'https://pages.github.com/', d: 'Free static hosting from a repo' },
+          { n: 'Netlify', u: 'https://www.netlify.com/', d: 'Drag-and-drop deploys with a free tier' },
+          { n: 'Vercel', u: 'https://vercel.com/', d: 'Deploy straight from GitHub' },
+          { n: 'Cloudflare Pages', u: 'https://pages.cloudflare.com/', d: 'Free static hosting on Cloudflare' },
+          { n: 'Neocities', u: 'https://neocities.org/', d: 'Free hosting for handmade sites' },
+          { n: 'Notion', u: 'https://www.notion.so/', d: 'Publish a page with no code' },
+          { n: 'Carrd', u: 'https://carrd.co/', d: 'Simple one-page sites' }
+        ] },
+        { stage: 'deploy', title: 'Domains', items: [
+          { n: 'Namecheap', u: 'https://www.namecheap.com/', d: 'Cheap domains with easy DNS' },
+          { n: 'Porkbun', u: 'https://porkbun.com/', d: 'Low-cost domains with free WHOIS privacy' },
+          { n: 'Cloudflare Registrar', u: 'https://www.cloudflare.com/products/registrar/', d: 'Domains at cost, no markup' },
+          { n: 'GitHub Student Developer Pack', u: 'https://education.github.com/pack', d: 'Free dev tools for students', note: 'check current perks' }
+        ] },
+        { stage: 'deploy', title: 'Show your work', items: [
+          { n: 'GitHub', u: 'https://github.com/', d: 'Host code and pin your best repos', a: ['projects'] },
+          { n: 'LinkedIn', u: 'https://www.linkedin.com/', d: 'Feature projects next to your experience', a: ['contact'] },
+          { n: 'Devpost', u: 'https://devpost.com/', d: 'Hackathon projects with demos', a: ['projects'] },
+          { n: 'YouTube', u: 'https://www.youtube.com/', d: 'Demo videos of your projects', a: ['projects'] },
+          { n: 'Loom', u: 'https://www.loom.com/', d: 'Quick screen-recorded walkthroughs', a: ['projects'] }
+        ] }
+      ];
+
+      var PROMPTS = [
+        'Rewrite this project description in my voice: [paste it]',
+        'Give me honest feedback on my About section: [paste it]',
+        'Help me build this layout I sketched in HTML/CSS: [describe it]'
+      ];
+
+      /* ==================== helpers ==================== */
+
+      function esc(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function $(id) { return document.getElementById(id); }
+
+      function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+
+      function copyText(text, btn) {
+        var label = btn.textContent;
+        function done() {
+          btn.textContent = 'copied!';
+          setTimeout(function () { btn.textContent = label; }, 1400);
+        }
+        function fallback() {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = 'press ⌘C'; }
+          document.body.removeChild(ta);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else {
+          fallback();
+        }
+      }
+
+      var BADGE_COLORS = ['#7d5a44', '#5f6f52', '#4f6479', '#8a5a6a', '#6b5b8a', '#8c6d2f', '#5a7a76'];
+
+      function badgeColor(name) {
+        var h = 0;
+        for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+        return BADGE_COLORS[h % BADGE_COLORS.length];
+      }
+
+      function stageName(id) {
+        for (var i = 0; i < STAGES.length; i++) if (STAGES[i].id === id) return STAGES[i].name;
+        return id;
+      }
+
+      /* ==================== nav ==================== */
+
+      $('stepper').innerHTML = STAGES.map(function (s, i) {
+        return '<li><a href="#stage-' + s.id + '" data-spy="stage-' + s.id + '"><span class="num">' + (i + 1) + '</span>' + esc(s.name) + '</a></li>';
+      }).join('');
+
+      // anchor jumps land below the sticky header, whatever height it wraps to
+      (function () {
+        var bar = document.querySelector('.topbar');
+        function measure() {
+          if (bar.querySelector('.hub-nav.open')) return;
+          document.documentElement.style.setProperty('--nav-h', bar.offsetHeight + 'px');
+        }
+        setTimeout(measure, 0);
+        window.addEventListener('load', measure);
+        window.addEventListener('resize', measure);
+      })();
+
+      (function () {
+        var btn = $('menu-btn');
+        var nav = $('hub-nav');
+        function setOpen(open) {
+          btn.setAttribute('aria-expanded', String(open));
+          btn.textContent = open ? 'close' : 'menu';
+          nav.classList.toggle('open', open);
+        }
+        btn.addEventListener('click', function () { setOpen(btn.getAttribute('aria-expanded') !== 'true'); });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+        });
+        each(nav.querySelectorAll('a'), function (a) {
+          a.addEventListener('click', function () { setOpen(false); });
+        });
+      })();
+
+      /* ==================== resources ==================== */
+
+      var filter = { q: '', stage: '' };
+
+      (function () {
+        $('stages').innerHTML = STAGES.map(function (s, si) {
+          var cats = RESOURCES.filter(function (c) { return c.stage === s.id; });
+          if (!cats.length) return '';
+          return '<section class="box stage" id="stage-' + s.id + '" data-spy-section="stage-' + s.id + '" aria-labelledby="stage-' + s.id + '-h">' +
+            '<div class="stage-head"><span class="stage-num">0' + (si + 1) + '</span><h2 id="stage-' + s.id + '-h">' + esc(s.title) + '</h2></div>' +
+            cats.map(renderCat).join('') + '</section>';
+        }).join('');
+
+        function renderCat(c) {
+          var extra = '';
+          if (c.ai) {
+            extra = '<div class="prompts" aria-label="prompt starters">' + PROMPTS.map(function (p) {
+              return '<div class="prompt"><span>' + esc(p) + '</span><button type="button" class="btn btn-small" data-copy="' + esc(p) + '">copy prompt</button></div>';
+            }).join('') + '</div>';
+          }
+          return '<div class="cat">' +
+            '<div class="cat-head"><h3>' + esc(c.title) + '</h3>' +
+            (c.ai ? '<span class="ai-banner">AI drafts. You decide.</span>' : '') + '</div>' +
+            '<ul class="grid">' + c.items.map(function (it) { return renderCard(it, c.stage); }).join('') + '</ul>' +
+            extra + '</div>';
+        }
+
+        function renderCard(it, stage) {
+          var tags = '<span class="chip chip-stage">' + esc(stageName(stage).toLowerCase()) + '</span>';
+          (it.a || []).forEach(function (a) { tags += '<span class="chip">' + esc(a) + '</span>'; });
+          if (it.note) tags += '<span class="chip chip-note">' + esc(it.note) + '</span>';
+          var text = [it.n, it.d, it.note || '', stage, (it.a || []).join(' ')].join(' ').toLowerCase();
+          return '<li class="card" data-stage="' + stage + '" data-text="' + esc(text) + '">' +
+            '<a href="' + esc(it.u) + '" target="_blank" rel="noopener noreferrer">' +
+              '<span class="badge" aria-hidden="true" style="--b:' + badgeColor(it.n) + '">' + esc(it.n.replace(/^r\//, '').charAt(0).toUpperCase()) + '</span>' +
+              '<span class="card-body">' +
+                '<span class="card-name">' + esc(it.n) + '</span>' +
+                '<span class="card-desc">' + esc(it.d) + '</span>' +
+                '<span class="card-tags">' + tags + '</span>' +
+              '</span>' +
+              '<span class="sr-only"> (opens in a new tab)</span>' +
+            '</a></li>';
+        }
+
+        $('stages').addEventListener('click', function (e) {
+          var b = e.target.closest('[data-copy]');
+          if (b) copyText(b.getAttribute('data-copy'), b);
+        });
+
+        var chips = $('stage-chips');
+        chips.innerHTML = [{ v: '', label: 'all steps' }].concat(STAGES.map(function (s) { return { v: s.id, label: s.name.toLowerCase() }; })).map(function (o) {
+          return '<button type="button" data-v="' + o.v + '" aria-pressed="' + (o.v === '') + '">' + esc(o.label) + '</button>';
+        }).join('');
+        chips.addEventListener('click', function (e) {
+          var b = e.target.closest('button');
+          if (!b) return;
+          each(chips.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+          filter.stage = b.getAttribute('data-v');
+          applyFilter();
+        });
+
+        var q = $('q');
+        q.addEventListener('input', function () {
+          filter.q = q.value.trim().toLowerCase();
+          applyFilter();
+        });
+
+        applyFilter();
+      })();
+
+      function applyFilter() {
+        var shown = 0, totalCards = 0;
+        each(document.querySelectorAll('#stages .stage'), function (sec) {
+          var secShown = 0;
+          each(sec.querySelectorAll('.cat'), function (cat) {
+            var catShown = 0;
+            var catText = cat.querySelector('h3').textContent.toLowerCase();
+            each(cat.querySelectorAll('.card'), function (card) {
+              totalCards++;
+              var hit = (!filter.stage || card.getAttribute('data-stage') === filter.stage) &&
+                (!filter.q || (catText + ' ' + card.getAttribute('data-text')).indexOf(filter.q) !== -1);
+              card.hidden = !hit;
+              if (hit) catShown++;
+            });
+            cat.hidden = !catShown;
+            secShown += catShown;
+          });
+          sec.hidden = !secShown;
+          shown += secShown;
+        });
+        $('empty').hidden = shown > 0;
+        $('count').textContent = (filter.q || filter.stage) ? shown + ' of ' + totalCards : totalCards + ' tools';
+      }
+
+      // nav links to a step the filter is hiding should still land somewhere
+      each(document.querySelectorAll('.stepper a'), function (a) {
+        a.addEventListener('click', function () {
+          var target = $(a.getAttribute('href').slice(1));
+          if (target && target.hidden) {
+            filter.q = '';
+            filter.stage = '';
+            $('q').value = '';
+            each(document.querySelectorAll('#stage-chips button'), function (b, i) { b.setAttribute('aria-pressed', String(i === 0)); });
+            applyFilter();
+          }
+        });
+      });
+
+      /* ==================== scroll-spy ==================== */
+
+      (function () {
+        if (!('IntersectionObserver' in window)) return;
+        var links = document.querySelectorAll('[data-spy]');
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            var id = en.target.getAttribute('data-spy-section');
+            each(links, function (a) {
+              var on = a.getAttribute('data-spy') === id;
+              a.classList.toggle('active', on);
+              if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+            });
+          });
+        }, { rootMargin: '-40% 0px -55% 0px' });
+        each(document.querySelectorAll('[data-spy-section]'), function (s) { io.observe(s); });
+      })();
+    </script>
+
+    <script src="/assets/v2.js" defer></script>
+
+    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "bdf4b1ba951e4b668c1fe5f697a97f86"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
+  </body>
+</html>
