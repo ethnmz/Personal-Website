@@ -1,0 +1,145 @@
+[
+  {
+    "name": "Confidant Tracker",
+    "lang": "Python",
+    "about": "Confidant Tracker turns your real communication data into a Persona 5-style confidant menu. It reads iMessage, macOS call history, and Beeper (Instagram/WhatsApp/Discord) entirely on-device, with no network calls and no data ever leaving the machine. Each contact gets scored on message volume, active days, and call time with a 21-day recency decay, then mapped onto a 1&ndash;10 rank tracked independently per academic semester, so you can see who you were actually closest to each semester instead of just an all-time average. Most importantly, everything runs locally and stays secure.",
+    "images": [
+      {
+        "src": "/media/confidant-1.png",
+        "alt": "Confidant Tracker dashboard showing a ranked confidant list and detail card"
+      },
+      {
+        "src": "/media/confidant-2.png",
+        "alt": "Confidant Tracker semester view showing a max-rank confidant"
+      }
+    ]
+  },
+  {
+    "name": "VitalCast AI",
+    "lang": "JavaScript / React",
+    "collab": "Tran Huynh",
+    "about": "A client-side health forecasting web app that ingests 800MB+ Apple Health exports and predicts 10-year cardiovascular risk, sleep quality, and HRV-based stress using validated clinical models (Framingham, PSQI). The parsing engine runs entirely in Web Workers, so large XML exports process in under 30ms without blocking the main thread. Fully privacy-first: everything runs client-side, nothing gets uploaded to a server.",
+    "images": [
+      {
+        "src": "/media/vitalcast-onboarding.png",
+        "alt": "VitalCast AI onboarding step asking basic info"
+      },
+      {
+        "src": "/media/vitalcast-dashboard.png",
+        "alt": "VitalCast AI dashboard showing health snapshot and action plan"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/VitalCast-AI",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "TAMU ColorStack Website &mdash; Hero Section",
+    "lang": "React / Next.js",
+    "about": "Designed and built the entire hero section for TAMU ColorStack's official chapter site in React/Next.js &mdash; the headline, CTA, and the tilted photo collage on the right, all responsive and pulling from the chapter's brand colors. It's the first thing prospective members see when they land on the site, so it was built to load fast and hold up across screen sizes without extra dependencies.",
+    "images": [
+      {
+        "src": "/media/colorstack-hero.png",
+        "alt": "TAMU ColorStack website hero section with headline and photo collage",
+        "full": true
+      }
+    ],
+    "links": [
+      {
+        "href": "https://tamucolorstack.com",
+        "label": "tamucolorstack.com"
+      }
+    ]
+  },
+  {
+    "name": "BookEasy Itinerary Planner",
+    "lang": "TypeScript / Python",
+    "collab": "Gatik B.",
+    "about": "A full-stack travel itinerary planner built in 24 hours at TAMUhack26, with a Next.js/TypeScript frontend and a FastAPI backend. The core piece is a deterministic replanning engine: short flight delays keep the plan as-is, longer ones reshuffle the first day and demote lower-priority stops automatically. Led a 4-person team through architecture, API design, and frontend-backend integration under deadline.",
+    "images": [
+      {
+        "src": "/media/bookeasy-logo.png",
+        "alt": "BookEasy logo"
+      },
+      {
+        "src": "/media/bookeasy-app.png",
+        "alt": "BookEasy itinerary planner showing a Paris trip map and flight search"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/BookEasy-Itinerary-Planner",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "SyllaSync",
+    "lang": "TypeScript",
+    "about": "Transforms course syllabi into organized calendars in seconds, so there's no more manually copying due dates out of a PDF.",
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/SyllaSync",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "Gemini Resume Generator",
+    "lang": "Python",
+    "about": "A tool that tailors a resume against a specific job description automatically, using Gemini.",
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/Gemini-Resume-Generator",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "heb-shopper-mcp",
+    "lang": "Python",
+    "about": "An MCP server for HEB grocery shopping that lets you search products, manage your cart, and clip coupons directly from an AI assistant.",
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/heb-shopper-mcp",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "Micromarket Simulator [High School]",
+    "lang": "Java",
+    "about": "A JavaFX educational tool simulating microeconomic market dynamics: supply and demand, equilibrium pricing, and how different market forces shift the curves.",
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/Micromarket-Simulator",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "MusicLog",
+    "lang": "TypeScript",
+    "about": "A personal practice tracker for musicians that logs sessions, keeps streaks, tracks repertoire, and visualizes progress over time.",
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/Music-Practice-Logger",
+        "label": "github"
+      }
+    ]
+  },
+  {
+    "name": "Linux Server Lab",
+    "lang": "Shell",
+    "about": "An Ubuntu Server 24.04 home lab on UTM (Apple Silicon): SSH key-only auth, a locked-down UFW firewall, nginx, and automated nightly backups via cron.",
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/Linux-Server-Lab",
+        "label": "github"
+      }
+    ]
+  }
+]

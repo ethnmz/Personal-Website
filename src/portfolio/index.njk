@@ -1,0 +1,273 @@
+---
+title: "ethnmz &mdash; portfolio"
+---
+{% extends "layouts/page.njk" %}
+{% block pageStyle %}{% raw %}
+      h1, h2, h3 {
+        font-family: var(--header-font);
+        color: var(--link-color);
+        margin-top: 0;
+        text-align: center;
+      }
+
+      /* --- TOP HEADER --- */
+      .top-header {
+        max-width: 900px;
+        margin: 0 auto 20px auto;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 5px;
+      }
+
+      /* --- MAIN CONTENT STYLES --- */
+      .path-bar {
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 5px;
+      }
+
+      .page-header {
+        font-size: 2em;
+        text-align: left;
+        border-bottom: 1px dashed var(--border-color);
+        margin-bottom: 15px;
+      }
+
+      .page-desc {
+        font-size: 0.95em;
+        margin-bottom: 15px;
+      }
+
+      /* Portfolio List */
+      .portfolio-item {
+        margin-bottom: 18px;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 14px;
+      }
+
+      .portfolio-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .portfolio-name {
+        font-weight: bold;
+        font-size: 1.05em;
+      }
+
+      .portfolio-lang {
+        font-size: 0.8em;
+        font-style: italic;
+        color: var(--link-color);
+        margin-left: 6px;
+      }
+
+      .portfolio-desc {
+        margin: 6px 0 8px 0;
+      }
+
+      .portfolio-collab {
+        display: block;
+        font-size: 0.8em;
+        font-style: italic;
+        color: var(--link-color);
+        margin-top: 2px;
+      }
+
+      .portfolio-img-row {
+        display: flex;
+        gap: 8px;
+        margin: 8px 0;
+      }
+
+      .portfolio-img {
+        width: calc(44% - 4px);
+        border: 1px solid var(--border-color);
+        display: block;
+        cursor: var(--cursor-zoom-in);
+      }
+
+      .portfolio-img--full {
+        width: 100%;
+      }
+
+      .portfolio-img-row--fit {
+        align-items: center;
+      }
+
+      .portfolio-img-row--fit .portfolio-img {
+        width: auto;
+        height: 140px;
+        max-width: calc(60% - 4px);
+        object-fit: contain;
+      }
+
+      .lightbox-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 1001;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        cursor: var(--cursor-zoom-out);
+      }
+
+      .lightbox-overlay.visible {
+        display: flex;
+      }
+
+      .lightbox-overlay img {
+        max-width: 100%;
+        max-height: 100%;
+        border: 2px solid var(--border-color);
+      }
+
+      /* projects with a full case study page */
+      .portfolio-item--case {
+        padding: 12px 12px 14px;
+        border: 1px solid var(--border-color);
+        background: var(--status-bg);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .portfolio-item--case:last-child {
+        padding-bottom: 14px;
+      }
+
+      .case-tag {
+        display: inline-block;
+        margin-bottom: 4px;
+        padding: 0 6px;
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-size: 0.7em;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      a.portfolio-name {
+        display: inline;
+      }
+
+      .case-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 8px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .case-facts li {
+        padding: 1px 8px;
+        border: 1px solid var(--border-color);
+        background: var(--box-bg);
+        font-size: 0.8em;
+      }
+
+      .case-cta {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 5px 12px;
+        border: 0;
+        background: var(--link-color);
+        color: var(--box-bg);
+        font-weight: bold;
+        font-size: 0.9em;
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .case-cta:hover {
+        filter: brightness(1.1);
+      }
+
+      .portfolio-links a {
+        margin-right: 12px;
+        font-size: 0.85em;
+      }
+{% endraw %}{% endblock %}
+{% block main %}{% raw %}      <main>
+
+        <div class="box path-bar" data-scene="portfolio">
+          <strong>portfolio</strong>
+        </div>
+
+        <div class="box">
+          <h1 class="page-header">portfolio</h1>
+
+          <p class="page-desc">
+            everything I have made since college. all of it can be found on my <a href="https://github.com/ethnmz" target="_blank" rel="noopener">github</a>.
+          </p>
+
+          <div class="portfolio-item portfolio-item--case">
+            <span class="case-tag">case study</span>
+            <a href="/portfolio/stack/" class="portfolio-name">Stack (Discord Bot)</a>
+            <span class="portfolio-lang">Python</span>
+            <p class="portfolio-desc">
+              A Discord bot for TAMU ColorStack's 100+ member server. Members fill out one profile form, check in to events with a short code, and look up their own points. I'm the sole developer and product owner.
+            </p>
+            <ul class="case-facts">
+              <li>100+ members</li>
+              <li>~85% verified</li>
+              <li>check-in: 5 min &rarr; &lt;1</li>
+              <li>0 outages on Fly.io</li>
+            </ul>
+            <div class="portfolio-img-row portfolio-img-row--fit">
+              <img src="/media/stack-icon.png" class="portfolio-img" alt="Stack bot icon">
+              <img src="/media/stack-verify.png" class="portfolio-img" alt="Stack bot's Get Verified welcome message in Discord">
+            </div>
+            <a href="/portfolio/stack/" class="case-cta">read the case study &rarr;</a>
+          </div>
+
+{% endraw %}{% for p in projects %}          <div class="portfolio-item">
+            <span class="portfolio-name">{{ p.name | safe }}</span>
+            <span class="portfolio-lang">{{ p.lang | safe }}</span>
+{% if p.collab %}            <span class="portfolio-collab">in collaboration with: {{ p.collab | safe }}</span>
+{% endif %}            <p class="portfolio-desc">
+              {{ p.about | safe }}
+            </p>
+{% if p.images %}            <div class="portfolio-img-row">
+{% for img in p.images %}              <img src="{{ img.src }}" class="portfolio-img{% if img.full %} portfolio-img--full{% endif %}" alt="{{ img.alt | safe }}">
+{% endfor %}            </div>
+{% endif %}{% if p.links %}            <div class="portfolio-links">
+{% for l in p.links %}              <a href="{{ l.href }}" target="_blank" rel="noopener">{{ l.label | safe }} &#8599;</a>
+{% endfor %}            </div>
+{% endif %}          </div>
+
+{% endfor %}{% raw %}        </div>
+
+      </main>
+
+{% endraw %}{% endblock %}
+{% block overlays %}{% raw %}    <div class="lightbox-overlay" id="lightbox-overlay">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+
+{% endraw %}{% endblock %}
+{% block scriptBefore %}{% raw %}      (function () {
+        var overlay = document.getElementById('lightbox-overlay');
+        var lightboxImg = document.getElementById('lightbox-img');
+
+        document.querySelectorAll('.portfolio-img').forEach(function (img) {
+          img.addEventListener('click', function () {
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            overlay.classList.add('visible');
+          });
+        });
+
+        overlay.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+        });
+      })();
+
+{% endraw %}{% endblock %}

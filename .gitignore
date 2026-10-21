@@ -2,3 +2,5 @@
 .claude/
 .playwright-mcp/
 portfolio media/
+_site/
+node_modules/

@@ -1,0 +1,132 @@
+---
+title: "ethnmz &mdash; edc"
+---
+{% extends "layouts/page.njk" %}
+{% block pageStyle %}{% raw %}
+      a:hover {
+        font-style: italic;
+      }
+
+      h1, h2, h3 {
+        font-family: var(--header-font);
+        color: var(--link-color);
+        font-style: italic;
+        margin-top: 0;
+        text-align: center;
+      }
+
+      /* --- TOP HEADER --- */
+      .top-header {
+        max-width: 900px;
+        margin: 0 auto 20px auto;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 5px;
+        font-style: italic;
+      }
+
+      /* --- MAIN CONTENT STYLES --- */
+      .path-bar {
+        font-style: italic;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 5px;
+      }
+
+      .page-header {
+        font-size: 2em;
+        text-align: left;
+        border-bottom: 1px dashed var(--border-color);
+        margin-bottom: 15px;
+        font-style: normal;
+      }
+
+      .page-desc {
+        font-size: 0.95em;
+        margin-bottom: 15px;
+      }
+
+      /* EDC grid */
+      .edc-grid {
+        margin-top: 5px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      @media (max-width: 600px) {
+        .edc-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .edc-card {
+        background: var(--box-bg);
+        border: 1px solid var(--border-color);
+        box-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .edc-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+      }
+
+      .edc-card-img {
+        height: 110px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+
+      .edc-card-img img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+      }
+
+      .edc-name {
+        font-weight: bold;
+      }
+
+      .edc-tags {
+        font-size: 0.85em;
+        font-style: italic;
+        color: var(--link-color);
+        margin-top: 3px;
+      }
+{% endraw %}{% endblock %}
+{% block main %}{% raw %}      <main>
+
+        <div class="box path-bar" data-scene="edc">
+          <strong>edc</strong>
+        </div>
+
+        <div class="box">
+          <h1 class="page-header">edc [2026]</h1>
+
+          <p class="page-desc">
+            some of the products here were either gifted to me or bought cheap second hand
+          </p>
+
+          <div class="edc-grid">
+{% endraw %}{% for item in edc %}            <div class="edc-card">
+              <div class="edc-card-img"><img src="{{ item.img }}" alt="{{ item.alt | safe }}"></div>
+              <span class="edc-name">{{ item.name | safe }}</span>
+              <span class="edc-tags">[{{ item.tags | join("] [") | safe }}]</span>
+            </div>
+{% endfor %}{% raw %}          </div>
+        </div>
+
+      </main>
+
+{% endraw %}{% endblock %}

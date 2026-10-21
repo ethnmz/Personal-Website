@@ -1507,11 +1507,6 @@
       h.textContent = h.textContent.replace(/—/g, '').trim();
     });
     Array.prototype.forEach.call(document.querySelectorAll('h1, h2, h3, .nav-link, .fav-tab, .case-cta, .back-link, .toc a, .chip-nav a'), sentenceCase);
-    var here = location.pathname.replace(/index\.html$/, '');
-    Array.prototype.forEach.call(document.querySelectorAll('.nav-link'), function (a) {
-      var href = a.getAttribute('href');
-      if (href === here || (href !== '/' && href.charAt(0) === '/' && here.indexOf(href) === 0)) a.setAttribute('aria-current', 'page');
-    });
     var tick = setupClock();
     if (tick) setInterval(tick, 30000);
   }

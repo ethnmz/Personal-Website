@@ -1,0 +1,108 @@
+[
+  {
+    "id": "todoist",
+    "name": "todoist",
+    "brand": "#e44332",
+    "icon": "/media/apps/icon-todoist.jpg",
+    "tags": [
+      "tasks",
+      "paid monthly",
+      "since high school"
+    ],
+    "about": "My to-do list for literally everything: school, home, and personal stuff. School is the number one thing I use it for. I&rsquo;ve been using it since high school and pay for the monthly subscription because I love how I can organize everything.",
+    "shots": [
+      {
+        "src": "/media/apps/todoist-1.jpg",
+        "alt": "my Todoist college tasks list with classes and due dates"
+      },
+      {
+        "src": "/media/apps/todoist-2.jpg",
+        "alt": "my Todoist upcoming view laid out as a weekly calendar"
+      }
+    ]
+  },
+  {
+    "id": "beeper",
+    "name": "beeper",
+    "brand": "#6b5cf6",
+    "icon": "/media/apps/icon-beeper.jpg",
+    "tags": [
+      "messaging",
+      "macbook + iphone"
+    ],
+    "about": "If you haven&rsquo;t heard of it, Beeper connects all your other messaging apps into one app. I use it on my MacBook and iPhone so I don&rsquo;t need the social media apps on my phone and can still message everybody.",
+    "shots": [
+      {
+        "src": "/media/apps/beeper-1.jpg",
+        "alt": "my Beeper inbox on Mac, with every conversation blurred"
+      },
+      {
+        "src": "/media/apps/beeper-2.jpg",
+        "alt": "Beeper on three phones showing connected networks and a combined inbox"
+      }
+    ]
+  },
+  {
+    "id": "copilot",
+    "name": "copilot money",
+    "brand": "#1f6feb",
+    "icon": "/media/apps/icon-copilot.jpg",
+    "tags": [
+      "finances"
+    ],
+    "about": "How I manage my finances. I like that I can connect all my credit cards, bank accounts, and investing accounts in one place.",
+    "shots": [
+      {
+        "src": "/media/apps/copilot-1.jpg",
+        "alt": "my Copilot Money dashboard with all amounts and accounts blurred"
+      },
+      {
+        "src": "/media/apps/copilot-2.jpg",
+        "alt": "Copilot Money on four phones showing budgets and spending"
+      }
+    ]
+  },
+  {
+    "id": "obsidian",
+    "name": "obsidian",
+    "brand": "#7c3aed",
+    "icon": "/media/apps/icon-obsidian.jpg",
+    "tags": [
+      "notes",
+      "drawing tablet"
+    ],
+    "about": "My note-taking app. Sometimes I pair it with a drawing tablet to take notes in my classes. I like it because everything is stored locally, and you can really customize it and use it however you want.",
+    "shots": [
+      {
+        "src": "/media/apps/obsidian-1.jpg",
+        "alt": "my Obsidian notes for an engineering exam with handwritten annotations"
+      },
+      {
+        "src": "/media/apps/obsidian-2.jpg",
+        "alt": "Obsidian on Mac showing a graph view, and on iPhone showing a daily note"
+      }
+    ]
+  },
+  {
+    "id": "notion",
+    "name": "notion",
+    "brand": "#191919",
+    "icon": "/media/apps/icon-notion.jpg",
+    "tags": [
+      "personal",
+      "club work",
+      "calendar + events"
+    ],
+    "about": "I use Notion for personal stuff, club work, and keeping track of my calendars and all my events.",
+    "shots": [
+      {
+        "src": "/media/apps/notion-1.jpg",
+        "alt": "my Notion task board for TAMU ColorStack"
+      },
+      {
+        "src": "/media/apps/notion-2.jpg",
+        "alt": "the LeetRoom Lessons gallery in the TAMU ColorStack Notion"
+      }
+    ]
+  }
+]

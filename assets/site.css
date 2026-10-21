@@ -1,0 +1,186 @@
+/* Shared by every page with the sidebar layout. Page-specific rules stay in each page's <style>. */
+
+/* --- CSS VARIABLES (Colors) --- */
+:root {
+  --bg-color: #dcd4cb;         /* Main background */
+  --box-bg: #e8e1d9;           /* Container background */
+  --border-color: #b5aea5;     /* Borders */
+  --text-color: #4a3e35;       /* Main text */
+  --link-color: #7d5a44;       /* Links */
+  --select-bg: #d6cfc7;        /* Theme dropdown background */
+  --status-bg: #ece5dd;        /* Status box background */
+  --header-font: 'JetBrains Mono', monospace;
+  --body-font: 'JetBrains Mono', monospace;
+}
+
+body.dark {
+  --bg-color: #1e1c1a;
+  --box-bg: #28241f;
+  --border-color: #4a423a;
+  --text-color: #d8cfc2;
+  --link-color: #d9a26c;
+  --select-bg: #332e28;
+  --status-bg: #2c2823;
+}
+
+/* --- RESET & BASIC SETUP --- */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--body-font);
+  margin: 0;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--link-color);
+}
+
+/* --- LAYOUT GRID --- */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 700px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  main {
+    order: 1;
+  }
+
+  aside {
+    order: 2;
+  }
+}
+
+/* --- GENERAL BOX STYLES --- */
+.box {
+  background-color: var(--box-bg);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  margin-bottom: 20px;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+}
+
+hr.dashed {
+  border: none;
+  border-top: 1px dashed var(--border-color);
+  margin: 10px 0;
+}
+
+/* --- SIDEBAR STYLES --- */
+.sidebar-section h3 {
+  border-bottom: 3px double var(--border-color);
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.theme-select {
+  width: 100%;
+  padding: 5px;
+  background: var(--select-bg);
+  border: 1px solid var(--border-color);
+  font-family: var(--body-font);
+  color: var(--text-color);
+}
+
+.nav-group {
+  text-align: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.nav-group:last-child {
+  border-bottom: none;
+}
+
+.nav-header {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.nav-link {
+  display: block;
+  padding: 2px 0;
+}
+
+/* Buttons */
+.buttons-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Decorative waves at bottom left */
+.waves {
+  height: 100px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    var(--border-color) 6px,
+    transparent 7px
+  );
+  opacity: 0.2;
+}
+
+/* Mobile notice modal */
+.mobile-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.mobile-modal-overlay.visible {
+  display: flex;
+}
+
+.mobile-modal {
+  background: var(--box-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+  padding: 20px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.mobile-modal p {
+  margin: 10px 0 15px 0;
+  font-size: 0.9em;
+}
+
+.mobile-modal button {
+  background: var(--select-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-family: var(--body-font);
+  font-weight: bold;
+  padding: 8px 16px;
+  cursor: var(--cursor-pointer);
+}
+
+.mobile-modal button:hover {
+  background: var(--border-color);
+}
