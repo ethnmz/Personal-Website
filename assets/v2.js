@@ -38,6 +38,19 @@
     };
   }
 
+  function mix(a, b, t) {
+    var c = [0, 1, 2].map(function (i) { return Math.round(a[i] + (b[i] - a[i]) * t); });
+    c.css = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+    return c;
+  }
+
+  // a stable 0..1 value for a grid cell, so patterns don't shimmer between redraws
+  function hash2(a, b) {
+    var n = Math.imul(a | 0, 374761393) + Math.imul(b | 0, 668265263) | 0;
+    n = Math.imul(n ^ (n >>> 13), 1274126177);
+    return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+  }
+
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   function dither(x, y) { return (BAYER[((y & 3) << 2) | (x & 3)] + 0.5) / 16; }
 
@@ -320,7 +333,8 @@
       tree: '#7f7a62', treeShade: '#6d6852', trunk: '#5f4d3d',
       roof: '#6f5345', roofShade: '#5c4438', wall: '#94755f', wallShade: '#82654f',
       door: '#503c30', window: '#dacdb7', chimney: '#7c6d60',
-      smoke: '#ede6dd', smokeDim: '#ded6cb', glint: '#f2eee6', bird: '#7d7064'
+      smoke: '#ede6dd', smokeDim: '#ded6cb', glint: '#f2eee6', bird: '#7d7064',
+      path: '#b3a68e', pathEdge: '#a09279', rock: '#8a8174', rockLit: '#a69e90', flower: '#e8dcae'
     }),
     night: palette({
       sky: ['#0c0b0a', '#11100f', '#161412', '#1c1916', '#25201b'],
@@ -336,7 +350,8 @@
       roof: '#1a1612', roofShade: '#141110', wall: '#221c17', wallShade: '#1c1713',
       door: '#130f0c', window: '#e2a866', chimney: '#1d1915',
       smoke: '#2f2a25', smokeDim: '#252119', glint: '#d8cdbb',
-      firefly: '#f1c878', fireflyDim: '#7d6437'
+      firefly: '#f1c878', fireflyDim: '#7d6437',
+      path: '#1d1a16', pathEdge: '#181512', rock: '#1b1916', rockLit: '#25221e', flower: '#3a3528', windowGlow: '#33251a'
     })
   };
 
@@ -468,13 +483,15 @@
         mid: '#c9c9c3', midLit: '#d7d7d1', midShade: '#bdbdb7', midField: '#d2d2cc', midTree: '#8d9087',
         bush: '#8e867a', bushLit: '#a39b8f', bushShade: '#7a7266', tree: '#dfe4df', treeShade: '#56634f',
         water: '#cad6dc', waterDark: '#bcc8cf', waterLit: '#eef3f5', shore: '#b9b9b1', reed: '#9b8f7a',
-        roof: '#e6e6e1', roofShade: '#cfcfc9', far: '#cfcac3', farLit: '#d9d4cd', farShade: '#c4bfb8'
+        roof: '#e6e6e1', roofShade: '#cfcfc9', far: '#cfcac3', farLit: '#d9d4cd', farShade: '#c4bfb8',
+        path: '#c5c3bb', pathEdge: '#b3b0a7', rock: '#9e998f', rockLit: '#eceee9'
       },
       night: {
         meadow: '#2a2c31', meadowLit: '#33363c', near: '#25272c', nearLit: '#2f3237', grass: '#3a3b3e',
         mid: '#212328', midLit: '#262930', midShade: '#1d1f24', midField: '#26282d', midTree: '#16181b',
         bush: '#1b1816', tree: '#3a3e44', treeShade: '#111412', water: '#1d2329', waterDark: '#181d22',
-        roof: '#3b3e44', roofShade: '#2f3237'
+        roof: '#3b3e44', roofShade: '#2f3237',
+        path: '#2b2d32', pathEdge: '#232529', rock: '#23252a', rockLit: '#3d4046'
       }
     }
   };
@@ -618,86 +635,90 @@
       disc(B, cx, cy, 7, P.sun);
     }
 
-    var farTop = normalize(ridge(w, tr, 0.56)).map(function (v) { return Math.round(horizon - h * 0.04 - v * h * 0.2); });
-    var snowLine = Math.min.apply(null, farTop) + Math.round(h * (cal.season === 'winter' ? 0.12 : 0.035));
-    for (x = 0; x < w; x++) {
-      var y0 = farTop[x], slope = farTop[Math.min(w - 1, x + 1)] - farTop[Math.max(0, x - 1)];
-      for (y = y0; y < h; y++) {
-        var d = y - y0, c = P.far;
-        if (d < 4) c = slope < 0 ? P.farLit : slope > 0 ? P.farShade : P.far;
-        if (y < snowLine || (y < snowLine + 2 && d < 3 && dither(x, y) > 0.5)) c = P.snow;
-        F(x, y, c);
+    // shades the world blends from its seasonal palette, so every season stays in tune
+    var haze = P.sky[P.sky.length - 1];
+    var C = {
+      farHaze: mix(P.far, haze, 0.55), snowShade: mix(P.snow, P.farShade, 0.45),
+      hill: mix(P.far, P.mid, 0.5), hillLit: mix(P.farLit, P.midLit, 0.5), hillShade: mix(P.farShade, P.midShade, 0.55),
+      hillHaze: mix(mix(P.far, P.mid, 0.5), haze, 0.35),
+      midTreeLit: mix(P.midTree, P.midLit, 0.35), hedge: mix(P.midTree, P.mid, 0.3),
+      furrow: mix(P.midField, P.midShade, 0.5),
+      meadowShade: mix(P.meadow, P.near, 0.6), meadowFleck: mix(P.meadowLit, P.grass, 0.5),
+      nearShade: mix(P.near, P.treeShade, night ? 0.35 : 0.22),
+      waterSky: mix(P.water, haze, night ? 0.25 : 0.5),
+      tuft: mix(P.near, P.grass, 0.4), tuftLit: mix(P.nearLit, P.grass, 0.55)
+    };
+
+    // a ridgeline facing the sun (upper left) gets lit faces; the far side falls into shadow
+    function range(top, cols, depth, snowAt, hazeFrom) {
+      var faces = smooth(top.map(function (_, i) {
+        return clamp((top[Math.max(0, i - 4)] - top[Math.min(w - 1, i + 4)]) / 8, -1, 1);
+      }), 5);
+      for (var rx = 0; rx < w; rx++) {
+        var face = faces[rx];
+        for (var ry = top[rx]; ry < h; ry++) {
+          var dd = ry - top[rx], col = cols.base;
+          var fade = 1 - dd / depth;
+          if (fade > 0) {
+            if (face > 0.1 && face * 1.6 * fade > dither(rx, ry)) col = cols.lit;
+            else if (face < -0.1 && -face * 1.6 * fade > dither(rx, ry)) col = cols.shade;
+          }
+          if (dd === 0) col = face >= 0 ? cols.lit : cols.shade;
+          if (snowAt) {
+            // a ragged snow line, with the shadowed faces in softer grey snow
+            var edge = snowAt + Math.round(Math.sin(rx * 0.13) * 2 + hash2(rx, 5) * 3);
+            if (ry < edge || (ry < edge + 3 && dither(rx, ry) > (ry - edge) / 3)) {
+              col = face < -0.1 && -face * 1.4 > dither(rx, ry) ? C.snowShade : P.snow;
+            }
+          }
+          if (ry > hazeFrom && smoothstep(hazeFrom, horizon + h * 0.01, ry) * 0.9 > dither(rx, ry)) col = cols.haze;
+          F(rx, ry, col);
+        }
       }
     }
 
+    var farTop = smooth(normalize(ridge(w, tr, 0.56)), 1).map(function (v) { return Math.round(horizon - h * 0.04 - v * h * 0.2); });
+    var snowLine = Math.min.apply(null, farTop) + Math.round(h * (cal.season === 'winter' ? 0.12 : 0.035));
+    range(farTop, { base: P.far, lit: P.farLit, shade: P.farShade, haze: C.farHaze }, h * 0.12, snowLine, horizon - h * 0.08);
+
+    var hr = random(5150);
+    var hillTop = smooth(normalize(ridge(w, hr, 0.52)), 3).map(function (v) { return Math.round(horizon + h * 0.01 - v * h * 0.11); });
+    range(hillTop, { base: C.hill, lit: C.hillLit, shade: C.hillShade, haze: C.hillHaze }, h * 0.07, null, horizon - h * 0.015);
+
+    // the near hills: farm rows that curve with the land, hedges between them, a tree line on top
     var midTop = smooth(normalize(ridge(w, tr, 0.5)), 3).map(function (v) { return Math.round(horizon + h * 0.015 - v * h * 0.085); });
     for (x = 0; x < w; x++) {
       var sl = midTop[Math.min(w - 1, x + 1)] - midTop[Math.max(0, x - 1)];
-      for (y = midTop[x]; y < h; y++) F(x, y, y - midTop[x] < 2 ? (sl < 0 ? P.midLit : P.midShade) : P.mid);
-    }
-    for (y = horizon; y < h; y++) {
-      var band = Math.floor(Math.sqrt(y - horizon) * 1.7);
-      var segW = 10 + band * 4, off = (band * 37) % segW;
-      for (x = 0; x < w; x++) {
-        if (y < midTop[x] + 4) continue;
-        var hsh = (Math.floor((x + off) / segW) * 73 + band * 151) % 7;
-        if (hsh < 2) F(x, y, P.midField);
-        else if (hsh === 2) F(x, y, P.midShade);
+      for (y = midTop[x]; y < h; y++) {
+        var dm = y - midTop[x];
+        if (dm < 2) { F(x, y, sl < 0 ? P.midLit : P.midShade); continue; }
+        var band = Math.floor(Math.sqrt(dm) * 1.6), prevBand = Math.floor(Math.sqrt(dm - 1) * 1.6);
+        var segW = 12 + band * 5, cell = Math.floor((x + band * 37 + Math.round(Math.sin(band * 1.7) * 9)) / segW);
+        var kind = Math.floor(hash2(cell, band) * 7), col = P.mid;
+        if (kind < 2) col = band > 2 && dm % 2 === 0 ? C.furrow : P.midField;
+        else if (kind === 2) col = P.midShade;
+        // hedgerows: clumps along some field edges, never a dotted line
+        if (band !== prevBand && band > 1 && hash2(cell, band + 99) < 0.5 && hash2(x >> 1, band) < 0.7) col = C.hedge;
+        F(x, y, col);
       }
     }
     var forest = smooth(normalize(ridge(w, tr, 0.7)), 4);
     for (x = 1; x < w - 1; x += 2 + Math.floor(tr() * 3)) {
-      if (forest[x] > 0.42) pine(F, x, midTop[x] + 2, 4 + Math.floor(tr() * 5), P.midTree, P.midTree, P.midTree);
+      if (forest[x] <= 0.42) continue;
+      var th = 4 + Math.floor(tr() * 5) + (forest[x] > 0.75 && tr() < 0.4 ? 3 : 0);
+      pine(F, x, midTop[x] + 2, th, C.midTreeLit, P.midTree, P.midTree);
     }
 
-    var meadowTop = new Array(w);
-    for (x = 0; x < w; x++) {
-      meadowTop[x] = Math.round(h * 0.735 + Math.sin(x * 0.021 + 0.5) * h * 0.022 + Math.sin(x * 0.063 + 1.7) * h * 0.01);
-    }
-    for (x = 0; x < w; x++) {
-      var ml = meadowTop[Math.min(w - 1, x + 1)] - meadowTop[Math.max(0, x - 1)];
-      for (y = meadowTop[x]; y < h; y++) F(x, y, y === meadowTop[x] && ml <= 0 ? P.meadowLit : P.meadow);
-    }
-
+    // layout: the lake sits under the sun or moon, the cabin in the right margin
     var lakeCx = cx, lakeCy = Math.round(h * 0.84);
     var lakeRx = Math.max(8, Math.round(m * 0.42)), lakeRy = Math.max(3, Math.min(Math.round(h * 0.045), Math.round(lakeRx * 0.4)));
     var lakeBottom = lakeCy + Math.round(lakeRy * 0.35);
     var lakeL = lakeCx - lakeRx - 2, lakeR = lakeCx + lakeRx + 2;
     var cabinX = Math.round(clamp(w - m * 0.5 - CABIN.w / 2, w * 0.66, w - CABIN.w - 2));
 
-    var groves = smooth(normalize(ridge(w, tr, 0.65)), 3);
-    for (x = 2; x < w - 2; x += 3 + Math.floor(tr() * 5)) {
-      if (groves[x] < 0.6 || (x > lakeL - 6 && x < lakeR + 6) || (x > cabinX - 18 && x < cabinX + CABIN.w + 18)) continue;
-      var gy = meadowTop[x] + 2 + Math.floor(tr() * 3), gr = 2 + Math.floor(tr() * 2);
-      var leaves = P.red && dr() < 0.35 ? [P.redLit, P.red, P.redShade] : [P.bushLit, P.bush, P.bushShade];
-      roundTree(F, x, gy, gr, leaves, P.trunk, tr);
-      if (P.blossom) {
-        var crown = gy - Math.max(2, Math.round(gr * 0.8)) - gr;
-        for (var bl = 0; bl < 4; bl++) F(x + Math.floor(dr() * (2 * gr + 1)) - gr, crown + Math.floor(dr() * (2 * gr + 1)) - gr, P.blossom);
-      }
-    }
-
-    var glints = [];
-    for (y = lakeCy - lakeRy - 1; y <= lakeCy + lakeRy + 1; y++) {
-      var rippled = false;
-      for (x = lakeL - 1; x <= lakeR + 1; x++) {
-        var ex = (x - lakeCx) / lakeRx, ey = (y - lakeCy) / lakeRy, e = ex * ex + ey * ey;
-        if (e <= 1) {
-          F(x, y, (y - lakeCy) % 3 === 1 ? P.waterDark : P.water);
-          if (Math.abs(x - lakeCx) <= 1 + Math.floor((y - lakeCy + lakeRy) * 0.25)) glints.push([x, y]);
-        } else if (e <= 1.3 && y <= lakeCy + 1) {
-          F(x, y, P.shore);
-        }
-      }
-      var half = Math.floor(lakeRx * Math.sqrt(Math.max(0, 1 - Math.pow((y - lakeCy) / lakeRy, 2))));
-      if (half > 3 && tr() < 0.6 && !rippled) {
-        var rx = lakeCx - half + 1 + Math.floor(tr() * (2 * half - 3));
-        line(F, rx, y, rx + 1 + Math.floor(tr() * 2), y, P.waterLit);
-      }
-    }
-
-    var nearTop = new Array(w);
+    var meadowTop = new Array(w), nearTop = new Array(w);
     for (x = 0; x < w; x++) {
+      meadowTop[x] = Math.round(h * 0.735 + Math.sin(x * 0.021 + 0.5) * h * 0.022 + Math.sin(x * 0.063 + 1.7) * h * 0.01);
       var yy = h * 0.86 + Math.sin(x * 0.043) * 2.5 + Math.sin(x * 0.11 + 2) * 1.2;
       var dip = smoothstep(lakeR + 10, lakeR - 2, x) * smoothstep(lakeL - 10, lakeL + 2, x);
       nearTop[x] = Math.round(yy + dip * (lakeBottom - yy));
@@ -708,8 +729,104 @@
       var edge = Math.min(x - (cabinX - 8), cabinX + CABIN.w + 8 - x);
       nearTop[x] = Math.round(nearTop[x] + (cabinBase - nearTop[x]) * smoothstep(0, 6, edge));
     }
+
+    // meadow: lit along its crest, deeper toward the foreground, flecked with grass
     for (x = 0; x < w; x++) {
-      for (y = nearTop[x]; y < h; y++) F(x, y, y === nearTop[x] ? P.nearLit : P.near);
+      var ml = meadowTop[Math.min(w - 1, x + 1)] - meadowTop[Math.max(0, x - 1)];
+      var span = Math.max(4, nearTop[x] - meadowTop[x]);
+      for (y = meadowTop[x]; y < h; y++) {
+        var t = (y - meadowTop[x]) / span, mc = P.meadow;
+        if (y === meadowTop[x] && ml <= 0) mc = P.meadowLit;
+        else if (t > 0.35 && (t - 0.35) * 0.9 > dither(x, y)) mc = C.meadowShade;
+        else if (hash2(x, y) < 0.035) mc = C.meadowFleck;
+        F(x, y, mc);
+      }
+    }
+
+    // groves scattered through the meadow, drawn back to front so nearer trees overlap
+    var groves = smooth(normalize(ridge(w, tr, 0.65)), 3), grove = [];
+    for (x = 2; x < w - 2; x += 3 + Math.floor(tr() * 5)) {
+      if (groves[x] < 0.55 || (x > lakeL - 6 && x < lakeR + 6) || (x > cabinX - 18 && x < cabinX + CABIN.w + 18)) continue;
+      var room = Math.max(1, Math.round((nearTop[x] - meadowTop[x]) * 0.55));
+      var depthT = tr();
+      grove.push({ x: x, y: meadowTop[x] + 2 + Math.round(depthT * room), r: 2 + (depthT > 0.6 ? 1 : 0) + Math.floor(tr() * 2) });
+    }
+    grove.sort(function (a, b) { return a.y - b.y; }).forEach(function (g) {
+      var leaves = P.red && dr() < 0.35 ? [P.redLit, P.red, P.redShade] : [P.bushLit, P.bush, P.bushShade];
+      roundTree(F, g.x, g.y, g.r, leaves, P.trunk, tr);
+      if (P.blossom) {
+        var crown = g.y - Math.max(2, Math.round(g.r * 0.8)) - g.r;
+        for (var bl = 0; bl < 4; bl++) F(g.x + Math.floor(dr() * (2 * g.r + 1)) - g.r, crown + Math.floor(dr() * (2 * g.r + 1)) - g.r, P.blossom);
+      }
+    });
+
+    // the lake reflects the sky near its far bank and darkens toward you
+    var glints = [];
+    for (y = lakeCy - lakeRy - 1; y <= lakeCy + lakeRy + 1; y++) {
+      for (x = lakeL - 1; x <= lakeR + 1; x++) {
+        var ex = (x - lakeCx) / lakeRx, ey = (y - lakeCy) / lakeRy, e = ex * ex + ey * ey;
+        if (e <= 1) {
+          var wc = P.water;
+          if (ey < -0.3 && (-0.3 - ey) * 2.2 > dither(x, y)) wc = C.waterSky;
+          else if ((y - lakeCy) % 3 === 1 && ey > -0.3) wc = P.waterDark;
+          F(x, y, wc);
+          if (Math.abs(x - lakeCx) <= 1 + Math.floor((y - lakeCy + lakeRy) * 0.25)) glints.push([x, y]);
+        } else if (e <= 1.3 && y <= lakeCy + 1) {
+          F(x, y, e <= 1.12 ? P.shore : P.meadowLit);
+        }
+      }
+      var half = Math.floor(lakeRx * Math.sqrt(Math.max(0, 1 - Math.pow((y - lakeCy) / lakeRy, 2))));
+      if (half > 3 && tr() < 0.6) {
+        var rx = lakeCx - half + 1 + Math.floor(tr() * (2 * half - 3));
+        line(F, rx, y, rx + 1 + Math.floor(tr() * 2), y, P.waterLit);
+      }
+    }
+
+    // foreground: a lit edge, darker toward the bottom of the screen
+    for (x = 0; x < w; x++) {
+      var deep = Math.max(1, h - nearTop[x]);
+      for (y = nearTop[x]; y < h; y++) {
+        var dn = y - nearTop[x], nc = P.near;
+        if (dn === 0 || (dn < 3 && dither(x, y) < 0.5 - dn * 0.15)) nc = P.nearLit;
+        else if ((dn / deep - 0.3) * 1.6 > dither(x, y)) nc = C.nearShade;
+        F(x, y, nc);
+      }
+    }
+
+    // a dirt path from the cabin door down toward you
+    var doorX = cabinX + 9.5, pathAt = [];
+    for (y = cabinBase + 1; y < h; y++) {
+      var pt = (y - cabinBase) / Math.max(1, h - cabinBase);
+      var pcx = doorX - pt * Math.min(16, m * 0.35) + Math.sin(pt * 5.5) * 2.2, pw = 0.8 + pt * 4.5;
+      pathAt[y] = [pcx, pw];
+      for (x = Math.floor(pcx - pw - 1); x <= Math.ceil(pcx + pw + 1); x++) {
+        var dpx = Math.abs(x + 0.5 - pcx);
+        if (dpx > pw + 0.6) continue;
+        F(x, y, dpx > pw - 0.4 ? P.pathEdge : hash2(x, y) < 0.08 ? P.rock : P.path);
+      }
+    }
+    function onPath(px, py) {
+      var pa = pathAt[py];
+      return pa && Math.abs(px - pa[0]) < pa[1] + 3;
+    }
+
+    // rocks and grass tufts, more of them up close
+    var gr2 = random(31337);
+    for (i = 0; i < Math.round(w / 45) + 3; i++) {
+      var rkx = Math.floor(gr2() * w), rky = nearTop[clamp(rkx, 0, w - 1)] + 3 + Math.floor(gr2() * (h - nearTop[clamp(rkx, 0, w - 1)] - 4));
+      if (onPath(rkx, rky) || (rkx > cabinX - 3 && rkx < cabinX + CABIN.w + 3 && rky < cabinBase + 3)) continue;
+      var rw = 2 + Math.floor(gr2() * 3);
+      for (var rk = 0; rk < rw; rk++) { F(rkx + rk, rky - 1, rk === 0 || rk === rw - 1 ? P.rock : P.rockLit); F(rkx + rk, rky, P.rock); }
+      F(rkx + rw, rky, C.nearShade);
+    }
+    for (i = 0; i < Math.round(w * 0.4); i++) {
+      var tx = Math.floor(gr2() * w), top0 = nearTop[clamp(tx, 0, w - 1)];
+      var ty = top0 + 2 + Math.floor(Math.pow(gr2(), 0.7) * (h - top0 - 2));
+      if (onPath(tx, ty)) continue;
+      var tuft = gr2() < 0.25 ? C.tuftLit : C.tuft;
+      F(tx, ty, tuft); F(tx - 1, ty - 1, tuft); F(tx + 1, ty - 1, tuft);
+      if (gr2() < 0.4) F(tx, ty - 2, tuft);
+      if ((cal.season === 'spring' || cal.season === 'summer') && gr2() < 0.1) F(tx, ty - 2, P.blossom || P.flower);
     }
 
     function bigPine(px, ph) {
@@ -724,6 +841,10 @@
     bigPine(lakeR + 13, 10);
 
     var cabinY = cabinBase - CABIN.h + 1;
+    if (night && P.windowGlow) {
+      halo(F, cabinX + 3, cabinY + 9, 1, 6, P.windowGlow);
+      halo(F, cabinX + 3, cabinBase + 2, 0, 4, P.windowGlow, cabinBase + 1);
+    }
     drawSprite(F, CABIN, cabinX, cabinY, {
       c: P.chimney, R: P.roof, q: P.roofShade, r: P.roofShade,
       W: P.wall, w: P.wallShade, G: P.window, D: P.door
@@ -743,6 +864,7 @@
     }
 
     for (x = 0; x < w; x += 1 + Math.floor(tr() * 3)) {
+      if (onPath(x, nearTop[x] + 1)) continue;
       if (tr() < 0.5) F(x, nearTop[x] - 1, P.grass);
       if (tr() < 0.15) F(x, nearTop[x] - 2, P.grass);
     }
