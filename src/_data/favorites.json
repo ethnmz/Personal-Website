@@ -1,0 +1,102 @@
+{
+  "albums": [
+    {
+      "img": "/media/album-speakerboxxx.jpg",
+      "alt": "Speakerboxxx/The Love Below by OutKast cover art"
+    },
+    {
+      "img": "/media/album-jsr.jpg",
+      "alt": "Jet Set Radio Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-ror2.jpg",
+      "alt": "Risk of Rain 2 Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-vivy.jpg",
+      "alt": "Vivy -Fluorite Eye's Song- Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-city-slicker.jpg",
+      "alt": "City Slicker by Ginger Root cover art"
+    },
+    {
+      "img": "/media/album-neon-white.jpg",
+      "alt": "Neon White Soundtrack by Machine Girl cover art"
+    },
+    {
+      "img": "/media/album-untourable.jpg",
+      "alt": "Untourable Album by Men I Trust cover art"
+    },
+    {
+      "img": "/media/album-simbi.jpg",
+      "alt": "Sometimes I Might Be Introvert by Little Simz cover art"
+    },
+    {
+      "img": "/media/album-discovery.jpg",
+      "alt": "Discovery by Daft Punk cover art"
+    },
+    {
+      "img": "/media/album-sonicr.jpg",
+      "alt": "Sonic R Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-sf3.jpg",
+      "alt": "Street Fighter III 3rd Strike Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-sonic-mania.jpg",
+      "alt": "Sonic Mania Original Sound Track cover art"
+    },
+    {
+      "img": "/media/album-baduizm.png",
+      "alt": "Baduizm by Erykah Badu cover art"
+    },
+    {
+      "img": "/media/album-va11halla.jpg",
+      "alt": "VA-11 Hall-A Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-undertale.jpg",
+      "alt": "Undertale Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-persona5.jpg",
+      "alt": "Persona 5 Original Soundtrack cover art"
+    },
+    {
+      "img": "/media/album-crepuscular.jpg",
+      "alt": "crepuscular by KIRINJI cover art"
+    },
+    {
+      "img": "/media/album-imaginal-disk.jpg",
+      "alt": "Imaginal Disk by Magdalena Bay cover art"
+    }
+  ],
+  "games": [
+    {
+      "img": "/media/game-persona5.jpg",
+      "alt": "Persona 5 Royal cover art"
+    },
+    {
+      "img": "/media/game-undertale.png",
+      "alt": "Undertale cover art"
+    },
+    {
+      "img": "/media/game-bombrush.jpg",
+      "alt": "Bomb Rush Cyberfunk cover art"
+    },
+    {
+      "img": "/media/game-cuphead.jpg",
+      "alt": "Cuphead cover art"
+    },
+    {
+      "img": "/media/game-katanazero.jpg",
+      "alt": "Katana ZERO cover art"
+    },
+    {
+      "img": "/media/game-kirby.jpg",
+      "alt": "Kirby's Return to Dream Land cover art"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "name": "iphone 17",
+    "img": "/media/edc-iphone17.png",
+    "alt": "iPhone 17",
+    "tags": [
+      "main"
+    ]
+  },
+  {
+    "name": "iphone SE",
+    "img": "/media/edc-iphonese.png",
+    "alt": "iPhone SE",
+    "tags": [
+      "dumb"
+    ]
+  },
+  {
+    "name": "garmin instinct",
+    "img": "/media/edc-garmin.png",
+    "alt": "Garmin Instinct",
+    "tags": [
+      "fitness tracker"
+    ]
+  },
+  {
+    "name": "lenovo slim pro",
+    "img": "/media/edc-lenovo.png",
+    "alt": "Lenovo Slim Pro laptop",
+    "tags": [
+      "windows + linux"
+    ]
+  },
+  {
+    "name": "macbook pro m4 max",
+    "img": "/media/edc-macbook.png",
+    "alt": "MacBook Pro M4 Max",
+    "tags": [
+      "mac OS",
+      "main"
+    ]
+  },
+  {
+    "name": "airpods pro",
+    "img": "/media/edc-airpods.png",
+    "alt": "AirPods Pro",
+    "tags": [
+      "workout headphones"
+    ]
+  },
+  {
+    "name": "Sony XM5",
+    "img": "/media/edc-sony.png",
+    "alt": "Sony WH-1000XM5 headphones",
+    "tags": [
+      "study headphones"
+    ]
+  },
+  {
+    "name": "nook glow light",
+    "img": "/media/edc-nook.png",
+    "alt": "Nook GlowLight e-reader",
+    "tags": [
+      "2013",
+      "night e-reader"
+    ]
+  },
+  {
+    "name": "ti-84 plus",
+    "img": "/media/edc-ti84.png",
+    "alt": "TI-84 Plus calculator",
+    "tags": [
+      "calculator"
+    ]
+  }
+]

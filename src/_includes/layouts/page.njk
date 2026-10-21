@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{{ (htmlOpen or "<html>") | safe }}
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% if description %}    <meta name="description" content="{{ description | safe }}">
+{% endif %}    <title>{{ title | safe }}</title>
+    <link rel="icon" type="image/png" href="/media/cat.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="{{ (fonts or "https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap") | safe }}" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/site.css">
+    <style>
+{% block pageStyle %}{% endblock %}
+    </style>
+    <link rel="stylesheet" href="/assets/v2.css">
+  </head>
+  <body>
+
+    <div class="top-header">
+      <span>Ethan Meza</span>
+      <span class="local-time"></span>
+    </div>
+
+    <div class="container">
+
+      <aside>
+{% include "partials/sidebar.njk" %}{% block sidebarLast %}{% raw %}        <div class="box sidebar-section">
+          <h3>buttons</h3>
+          <div class="buttons-grid">
+            <img src="/media/music.gif" alt="music player button" style="width: 82px; height: auto;">
+            <img src="/media/ilikecomputer.png" alt="I like computer">
+            <img src="/media/ilovemusic.gif" alt="I love music">
+          </div>
+        </div>
+
+{% endraw %}{% endblock %}      </aside>
+
+{% block main %}{% endblock %}    </div>
+
+    <div class="mobile-modal-overlay" id="mobile-modal-overlay">
+      <div class="mobile-modal">
+        <h3>heads up &#8982;</h3>
+        <p>this site is designed for desktop.</p>
+        <button id="mobile-modal-dismiss">continue anyway</button>
+      </div>
+    </div>
+
+{% block overlays %}{% endblock %}    <script>
+{% block scriptBefore %}{% endblock %}      (function () {
+        var overlay = document.getElementById('mobile-modal-overlay');
+        var dismissBtn = document.getElementById('mobile-modal-dismiss');
+        var isMobile = window.matchMedia('(max-width: 700px)').matches;
+        var dismissed = sessionStorage.getItem('mobileNoticeDismissed');
+
+        if (isMobile && !dismissed) {
+          overlay.classList.add('visible');
+        }
+
+        dismissBtn.addEventListener('click', function () {
+          overlay.classList.remove('visible');
+          sessionStorage.setItem('mobileNoticeDismissed', '1');
+        });
+      })();
+
+{% block scriptMiddle %}{% endblock %}      (function () {
+        var select = document.querySelector('.theme-select');
+        var themes = ['light', 'dark', 'business'];
+
+        // ?view=business (or light/dark) opens the site in that theme, handy for links on a resume
+        var params = new URLSearchParams(location.search);
+        var view = params.get('view');
+        if (themes.indexOf(view) >= 0) {
+          localStorage.setItem('theme', view);
+          params.delete('view');
+          var rest = params.toString();
+          history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+        }
+
+        var saved = localStorage.getItem('theme') || 'light';
+        if (themes.indexOf(saved) < 0) saved = 'light';
+
+        function applyTheme(theme) {
+          document.body.classList.toggle('dark', theme === 'dark');
+          document.body.classList.toggle('business', theme === 'business');
+          document.documentElement.classList.toggle('business', theme === 'business');
+        }
+
+        applyTheme(saved);
+        select.value = saved;
+
+        select.addEventListener('change', function () {
+          var was = saved;
+          saved = select.value;
+          localStorage.setItem('theme', saved);
+          // the pixel art turns fully on or off with business mode, so reload once
+          if (was === 'business' || saved === 'business') location.reload();
+          else applyTheme(saved);
+        });
+      })();
+{% block scriptExtra %}{% endblock %}    </script>
+
+    <script src="/assets/v2.js" defer></script>
+
+    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "bdf4b1ba951e4b668c1fe5f697a97f86"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
+  </body>
+</html>

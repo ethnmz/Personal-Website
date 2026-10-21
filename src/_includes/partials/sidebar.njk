@@ -1,0 +1,46 @@
+
+        <div class="box sidebar-section">
+          <h3>theme</h3>
+          <select class="theme-select">
+            <option>light</option>
+            <option>dark</option>
+            <option value="business">business mode</option>
+          </select>
+        </div>
+
+        <div class="box sidebar-section">
+          <h3>navigation</h3>
+
+          <div class="nav-group">
+            <a href="/" class="nav-link"{{ "/" | navCurrent(page.url) | safe }}>home</a>
+            <a href="/about/" class="nav-link"{{ "/about/" | navCurrent(page.url) | safe }}>about</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; work &mdash;</span>
+            <a href="/portfolio/" class="nav-link"{{ "/portfolio/" | navCurrent(page.url) | safe }}>portfolio</a>
+            <a href="/resume/" class="nav-link"{{ "/resume/" | navCurrent(page.url) | safe }}>resume</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; daily &mdash;</span>
+            <a href="/vgm/" class="nav-link"{{ "/vgm/" | navCurrent(page.url) | safe }}>vg song of the day</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; personal &mdash;</span>
+            <a href="/edc/" class="nav-link"{{ "/edc/" | navCurrent(page.url) | safe }}>edc</a>
+            <a href="/apps/" class="nav-link"{{ "/apps/" | navCurrent(page.url) | safe }}>daily apps</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-header">&mdash; socials &mdash;</span>
+            <a href="https://github.com/ethnmz" class="nav-link" target="_blank" rel="noopener">github</a>
+            <a href="https://www.goodreads.com/user/show/155671209-ethan-meza" class="nav-link" target="_blank" rel="noopener">goodreads</a>
+            <a href="https://www.instagram.com/ethnmz" class="nav-link" target="_blank" rel="noopener">instagram</a>
+            <a href="https://open.spotify.com/user/31awkcd6qoymlogoavf3cly3jqra?si=3d55bfc0e1224de8" class="nav-link" target="_blank" rel="noopener">spotify</a>
+            <a href="https://www.tiktok.com/@ethanmeza10" class="nav-link" target="_blank" rel="noopener">tiktok</a>
+          </div>
+
+        </div>
+

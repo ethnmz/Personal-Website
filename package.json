@@ -1,0 +1,12 @@
+{
+  "name": "ethnmz-site",
+  "private": true,
+  "description": "ethnmz.com, built with Eleventy",
+  "scripts": {
+    "build": "eleventy",
+    "start": "eleventy --serve --port 8423"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.0"
+  }
+}
