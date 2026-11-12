@@ -1,5 +1,32 @@
 [
   {
+    "name": "ShiftSync",
+    "award": "3rd place &middot; NMC&sup2; track &middot; HackUTD 2026",
+    "lang": "TypeScript / Python",
+    "collab": "Diego Lozano, Akshi Biswal, Aditri Tangeti",
+    "about": "A two-way shift-handoff app for data center operators, built at HackUTD 2026: ZeroDay. The outgoing operator records or types a note, ShiftSync turns it into a structured handoff and asks up to three questions about gaps like unfinished work or a missing reason, and then the incoming shift has to explain the critical items in their own words so misunderstandings get caught. I led the frontend, design, and demo in React, TypeScript, and Tailwind, on a FastAPI backend that uses NVIDIA Nemotron for extraction and grading and Whisper for voice notes.",
+    "images": [
+      {
+        "src": "/media/shiftsync-hero.jpg",
+        "alt": "ShiftSync logo with its round mascot and the tagline: carry the context into the next shift"
+      },
+      {
+        "src": "/media/shiftsync-app.jpg",
+        "alt": "ShiftSync handoff screen showing a voice note transcript with hedged words underlined and AI follow-up questions"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/ShiftSync",
+        "label": "github"
+      },
+      {
+        "href": "https://devpost.com/software/shiftsync-udjfkm",
+        "label": "devpost"
+      }
+    ]
+  },
+  {
     "name": "Confidant Tracker",
     "lang": "Python",
     "about": "Confidant Tracker turns your real communication data into a Persona 5-style confidant menu. It reads iMessage, macOS call history, and Beeper (Instagram/WhatsApp/Discord) entirely on-device, with no network calls and no data ever leaving the machine. Each contact gets scored on message volume, active days, and call time with a 21-day recency decay, then mapped onto a 1&ndash;10 rank tracked independently per academic semester, so you can see who you were actually closest to each semester instead of just an all-time average. Most importantly, everything runs locally and stays secure.",
