@@ -154,6 +154,12 @@ title: "ethnmz &mdash; portfolio"
         letter-spacing: 0.06em;
       }
 
+      .award-tag {
+        display: table;
+        background: #b8862b;
+        color: #fff8ea;
+      }
+
       a.portfolio-name {
         display: inline;
       }
@@ -229,7 +235,8 @@ title: "ethnmz &mdash; portfolio"
           </div>
 
 {% endraw %}{% for p in projects %}          <div class="portfolio-item">
-            <span class="portfolio-name">{{ p.name | safe }}</span>
+{% if p.award %}            <span class="case-tag award-tag">{{ p.award | safe }}</span>
+{% endif %}            <span class="portfolio-name">{{ p.name | safe }}</span>
             <span class="portfolio-lang">{{ p.lang | safe }}</span>
 {% if p.collab %}            <span class="portfolio-collab">in collaboration with: {{ p.collab | safe }}</span>
 {% endif %}            <p class="portfolio-desc">
