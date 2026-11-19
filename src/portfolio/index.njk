@@ -79,12 +79,14 @@ title: "ethnmz &mdash; portfolio"
 
       .portfolio-img-row {
         display: flex;
+        align-items: flex-start;
         gap: 8px;
         margin: 8px 0;
       }
 
       .portfolio-img {
         width: calc(44% - 4px);
+        height: auto;
         border: 1px solid var(--border-color);
         display: block;
         cursor: var(--cursor-zoom-in);
@@ -158,6 +160,16 @@ title: "ethnmz &mdash; portfolio"
         display: table;
         background: #b8862b;
         color: #fff8ea;
+      }
+
+      .award-tag--silver {
+        background: #8b949c;
+        color: #fbfcfd;
+      }
+
+      .award-tag--bronze {
+        background: #9c5f36;
+        color: #fff4ea;
       }
 
       a.portfolio-name {
@@ -235,7 +247,7 @@ title: "ethnmz &mdash; portfolio"
           </div>
 
 {% endraw %}{% for p in projects %}          <div class="portfolio-item">
-{% if p.award %}            <span class="case-tag award-tag">{{ p.award | safe }}</span>
+{% if p.award %}            <span class="case-tag award-tag{% if p.awardTier %} award-tag--{{ p.awardTier }}{% endif %}">{{ p.award | safe }}</span>
 {% endif %}            <span class="portfolio-name">{{ p.name | safe }}</span>
             <span class="portfolio-lang">{{ p.lang | safe }}</span>
 {% if p.collab %}            <span class="portfolio-collab">in collaboration with: {{ p.collab | safe }}</span>

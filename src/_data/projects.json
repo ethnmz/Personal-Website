@@ -1,5 +1,33 @@
 [
   {
+    "name": "The Price is Live",
+    "award": "2nd place &middot; Chert track &middot; HackUTA 2026",
+    "awardTier": "silver",
+    "lang": "TypeScript",
+    "collab": "Diego Lozano, Akshi Biswal, Aditri Tangeti",
+    "about": "A price-guessing game show you play on a group FaceTime call, hosted live by an AI named Odysseus. Friends join by text, the agent calls everyone into one group FaceTime, and each player holds up something from home while the others guess its price out loud. The host prices items from a 236-item reference list or a Gemini web lookup, counts down guesses on a drawn stage, and reveals the price with a drumroll. I led the stage, Odysseus, and the demo; the rest runs on Chert, LiveKit, ElevenLabs, Gemini, and MongoDB.",
+    "images": [
+      {
+        "src": "/media/priceislive-hero.jpg",
+        "alt": "The Price is Live title card: the cartoon host Odysseus at a Greek podium over the sea"
+      },
+      {
+        "src": "/media/priceislive-call.jpg",
+        "alt": "a group FaceTime call with the game show stage in the middle showing round 1, a mystery item, and each player's score"
+      }
+    ],
+    "links": [
+      {
+        "href": "https://github.com/ethnmz/The-Price-Is-Live",
+        "label": "github"
+      },
+      {
+        "href": "https://devpost.com/software/the-price-is-live",
+        "label": "devpost"
+      }
+    ]
+  },
+  {
     "name": "ShiftSync",
     "award": "3rd place &middot; NMC&sup2; track &middot; HackUTD 2026",
     "lang": "TypeScript / Python",
@@ -24,7 +52,8 @@
         "href": "https://devpost.com/software/shiftsync-udjfkm",
         "label": "devpost"
       }
-    ]
+    ],
+    "awardTier": "bronze"
   },
   {
     "name": "Confidant Tracker",
